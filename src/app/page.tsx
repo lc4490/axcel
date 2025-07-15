@@ -14,11 +14,13 @@ import { SetStateAction, useState } from "react";
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
   const [name, setName] = useState("");
-  const [height, setHeight] = useState("");
   const [heightCM, setHeightCM] = useState("");
   const [heightFT, setHeightFT] = useState("");
   const [heightIN, setHeightIN] = useState("");
   const [heightUnit, setHeightUnit] = useState("cm");
+  const [weightKG, setWeightKG] = useState("");
+  const [weightLB, setWeightLB] = useState("");
+  const [weightUnit, setWeightUnit] = useState("kg");
 
   return (
     <Box
@@ -36,6 +38,11 @@ export default function Home() {
               {heightUnit === "cm" ? heightCM : heightFT + "/" + heightIN}
               {" " + heightUnit}
             </Typography>
+            <Typography>
+              {weightUnit === "kg" ? weightKG : weightLB}
+              {" " + weightUnit}
+            </Typography>
+            <Button onClick={() => setOnboarded(false)}></Button>
           </Box>
         ) : (
           <Box
@@ -104,7 +111,7 @@ export default function Home() {
                   >
                     身高
                   </Typography>
-                  {/* heigh unit */}
+                  {/* height unit */}
                   <ToggleButtonGroup
                     size="small"
                     exclusive
@@ -113,22 +120,32 @@ export default function Home() {
                       if (newValue !== null) {
                         if (newValue == "ft/in") {
                           setHeightFT(
-                            String(Math.floor(parseFloat(heightCM) / 2.54 / 12))
+                            heightCM
+                              ? String(
+                                  Math.floor(parseFloat(heightCM) / 2.54 / 12)
+                                )
+                              : ""
                           );
                           setHeightIN(
-                            String(
-                              ((parseFloat(heightCM) / 2.54) % 12).toFixed(2)
-                            )
+                            heightCM
+                              ? String(
+                                  ((parseFloat(heightCM) / 2.54) % 12).toFixed(
+                                    2
+                                  )
+                                )
+                              : ""
                           );
                         } else {
                           setHeightCM(
-                            String(
-                              (
-                                (parseInt(heightFT) * 12 +
-                                  parseFloat(heightIN)) *
-                                2.54
-                              ).toFixed(2)
-                            )
+                            heightIN && heightFT
+                              ? String(
+                                  (
+                                    (parseInt(heightFT) * 12 +
+                                      parseFloat(heightIN)) *
+                                    2.54
+                                  ).toFixed(2)
+                                )
+                              : ""
                           );
                         }
                         setHeightUnit(newValue);
@@ -238,6 +255,117 @@ export default function Home() {
                       }}
                     />
                   </Stack>
+                )}
+              </Box>
+              {/* weight */}
+              <Box sx={{ p: 1 }}>
+                <Stack
+                  display={"flex"}
+                  flexDirection={"row"}
+                  sx={{ gap: 0.5, marginBottom: 1 }}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                  >
+                    重量
+                  </Typography>
+                  {/* height unit */}
+                  <ToggleButtonGroup
+                    size="small"
+                    exclusive
+                    value={weightUnit}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        if (newValue == "lbs") {
+                          setWeightLB(
+                            weightKG
+                              ? String((parseFloat(weightKG) * 2.2).toFixed(2))
+                              : ""
+                          );
+                        } else {
+                          setWeightKG(
+                            weightLB
+                              ? String((parseFloat(weightLB) / 2.2).toFixed(2))
+                              : ""
+                          );
+                        }
+                        setWeightUnit(newValue);
+                      }
+                    }}
+                    sx={{
+                      "& .MuiToggleButton-root": {
+                        padding: "4px 8px", // reduce vertical & horizontal padding
+                        fontSize: "0.75rem", // smaller text
+                        minWidth: "40px", // optional: reduce minimum width
+                      },
+                    }}
+                  >
+                    <ToggleButton value="kg">kg</ToggleButton>
+                    <ToggleButton value="lbs">lbs</ToggleButton>
+                  </ToggleButtonGroup>
+                </Stack>
+                {weightUnit === "kg" && (
+                  <TextField
+                    variant="outlined"
+                    placeholder="輸入重量（kg）"
+                    value={weightKG || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (parseFloat(value)) {
+                        setWeightKG(String(parseFloat(value)));
+                      } else {
+                        setWeightKG("");
+                      }
+                    }}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px", // rounded corners
+                        backgroundColor: "#fafafa", // subtle background
+                        "& fieldset": {
+                          borderColor: "#ddd", // lighter border
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#aaa", // darker border on hover
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#000", // strong border on focus
+                        },
+                      },
+                    }}
+                  />
+                )}
+                {weightUnit === "lbs" && (
+                  <TextField
+                    variant="outlined"
+                    placeholder="輸入重量（lbs）"
+                    value={weightLB || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (parseFloat(value)) {
+                        setWeightLB(String(parseFloat(value)));
+                      } else {
+                        setWeightLB("");
+                      }
+                    }}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px", // rounded corners
+                        backgroundColor: "#fafafa", // subtle background
+                        "& fieldset": {
+                          borderColor: "#ddd", // lighter border
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#aaa", // darker border on hover
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#000", // strong border on focus
+                        },
+                      },
+                    }}
+                  />
                 )}
               </Box>
             </Box>
