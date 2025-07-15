@@ -48,12 +48,12 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  const [suggestions, setSuggestions] = useState([
-    "爆發力增強",
-    "提升敏捷性",
-    "持久力鍛煉",
-  ]);
+  const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  // const [suggestions, setSuggestions] = useState([
+  //   "爆發力增強",
+  //   "提升敏捷性",
+  //   "持久力鍛煉",
+  // ]);
   const [input, setInput] = useState("");
 
   const makeSuggestions = async () => {
