@@ -662,7 +662,7 @@ export default function Home() {
                   justifyContent={"center"}
                   alignItems={"center"}
                   flexDirection={"column"}
-                  gap={5}
+                  gap={2.5}
                 >
                   <Typography
                     sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
@@ -671,7 +671,7 @@ export default function Home() {
                   </Typography>
                   {suggestions[0] !== "" && (
                     <Stack
-                      width="600px"
+                      width="500px"
                       direction="row"
                       spacing={1}
                       padding={2}
@@ -705,7 +705,7 @@ export default function Home() {
                             borderRadius: "9999px",
                             paddingX: 3,
                             paddingY: 1.5,
-                            minWidth: 150,
+                            minWidth: 125,
                             height: "auto",
                             display: "flex",
                             justifyContent: "center",
