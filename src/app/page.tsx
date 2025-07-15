@@ -125,15 +125,26 @@ export default function Home() {
                 }}
                 sx={{
                   position: "absolute",
-                  top: 8,
-                  right: 8,
-                  // bgcolor: "#000",
-                  color: "#000",
-                  borderRadius: "9999px",
-                  // "&:hover": { bgcolor: "#333" },
+                  top: 12,
+                  right: 12,
+                  minWidth: "32px", // small circle size
+                  height: "32px",
+                  padding: 0,
+                  borderRadius: "50%", // make it circular
+                  // border: "1px solid #ccc", // subtle border
+                  // backgroundColor: "#f5f5f5", // light gray background
+                  color: "#333", // dark gray X
+                  fontWeight: "bold",
+                  fontSize: "1.1rem",
+                  lineHeight: 1,
+                  "&:hover": {
+                    backgroundColor: "#e0e0e0", // slightly darker on hover
+                    borderColor: "#999", // darker border on hover
+                  },
+                  zIndex: 10, // float above content
                 }}
               >
-                X
+                x
               </Button>
             )}
             {page === 0 && (
