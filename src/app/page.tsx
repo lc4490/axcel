@@ -14,7 +14,7 @@ import { SetStateAction, useState } from "react";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [heightCM, setHeightCM] = useState("");
@@ -680,7 +680,7 @@ export default function Home() {
                       // maxWidth="500px" // ✅ optional: cap width on larger screens
                       direction="row"
                       // spacing={1}
-                      // padding={2}
+                      paddingY={2}
                       justifyContent="space-between" // Align items to the start for horizontal scroll
                       alignItems="center"
                       flexWrap="nowrap" // Prevent wrapping
@@ -711,7 +711,7 @@ export default function Home() {
                             borderRadius: "9999px",
                             // paddingX: 3,
                             paddingY: 1.5,
-                            minWidth: 100,
+                            // minWidth: 100,
                             height: "auto",
                             display: "flex",
                             justifyContent: "center",
