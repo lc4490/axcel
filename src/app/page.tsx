@@ -42,6 +42,33 @@ export default function Home() {
       display="flex"
       justifyContent={"center"}
       alignItems={"center"}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+
+          if (page === 0) {
+            if (
+              name !== "" &&
+              !(
+                (heightUnit === "cm" && heightCM === "") ||
+                (heightUnit === "ft/in" &&
+                  (heightFT === "" || heightIN === "")) ||
+                (weightUnit === "kg" && weightKG === "") ||
+                (weightUnit === "lbs" && weightLB === "")
+              )
+            ) {
+              setPage(page + 1);
+            }
+          }
+          if (page === 1) {
+            // const isComplete = values.every((v) => v !== "");
+            // if (isComplete) {
+            setOnboarded(true);
+            // }
+          }
+        }
+      }}
+      tabIndex={0}
     >
       <>
         {onboarded ? (
