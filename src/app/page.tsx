@@ -14,6 +14,7 @@ import { SetStateAction, useState } from "react";
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
   const [page, setPage] = useState(0);
+  const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [heightCM, setHeightCM] = useState("");
   const [heightFT, setHeightFT] = useState("");
@@ -22,6 +23,7 @@ export default function Home() {
   const [weightKG, setWeightKG] = useState("");
   const [weightLB, setWeightLB] = useState("");
   const [weightUnit, setWeightUnit] = useState("kg");
+  const [goal, setGoal] = useState("");
   const labels = [
     "1.身體組成:",
     "2.垂直跳:",
@@ -34,6 +36,7 @@ export default function Home() {
     "9.Yo-yo Test:",
   ];
   const [values, setValues] = useState(Array(9).fill(""));
+  const suggestions = ["hi", "hello", "yo"];
 
   return (
     <Box
@@ -43,6 +46,7 @@ export default function Home() {
       justifyContent={"center"}
       alignItems={"center"}
       onKeyDown={(e) => {
+        // enter to go to next step
         if (e.key === "Enter") {
           e.preventDefault();
 
@@ -63,8 +67,18 @@ export default function Home() {
           if (page === 1) {
             // const isComplete = values.every((v) => v !== "");
             // if (isComplete) {
-            setOnboarded(true);
+            setPage(page + 1);
             // }
+          }
+          if (page === 2) {
+            setOnboarded(true);
+          }
+        }
+        // escape to exit
+        if (e.key === "Escape") {
+          if (editing) {
+            e.preventDefault();
+            setOnboarded(true);
           }
         }
       }}
@@ -73,16 +87,22 @@ export default function Home() {
       <>
         {onboarded ? (
           <Box>
-            <Typography>{name}</Typography>
-            <Typography>
-              {heightUnit === "cm" ? heightCM : heightFT + "/" + heightIN}
-              {" " + heightUnit}
-            </Typography>
-            <Typography>
-              {weightUnit === "kg" ? weightKG : weightLB}
-              {" " + weightUnit}
-            </Typography>
-            <Button onClick={() => setOnboarded(false)}></Button>
+            {/* Edit button */}
+            <Button
+              onClick={() => {
+                setOnboarded(false), setPage(0), setEditing(true);
+              }}
+              sx={{
+                position: "absolute",
+                top: 16,
+                left: 16,
+                bgcolor: "#000",
+                color: "#fff",
+                "&:hover": { bgcolor: "#333" },
+              }}
+            >
+              Edit
+            </Button>
           </Box>
         ) : (
           <Box
@@ -97,6 +117,25 @@ export default function Home() {
               position: "relative",
             }}
           >
+            {/* X button to close */}
+            {editing && (
+              <Button
+                onClick={() => {
+                  setOnboarded(true);
+                }}
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  // bgcolor: "#000",
+                  color: "#000",
+                  borderRadius: "9999px",
+                  // "&:hover": { bgcolor: "#333" },
+                }}
+              >
+                X
+              </Button>
+            )}
             {page === 0 && (
               <>
                 <Box>
@@ -454,11 +493,12 @@ export default function Home() {
               </>
             )}
             {page === 1 && (
-              <Box width="100%" height="100%">
+              <>
                 <Box
+                  width="100%"
                   height="90%"
                   sx={{
-                    overflowY: "auto", //
+                    overflowY: "auto",
                     pr: 1,
                     position: "relative",
                   }}
@@ -527,6 +567,125 @@ export default function Home() {
                   上一步
                 </Button>
                 <Button
+                  onClick={() => setPage(page + 1)}
+                  sx={{
+                    position: "absolute",
+                    bottom: 16,
+                    right: 16,
+                    bgcolor: "#000",
+                    color: "#fff",
+                    "&:hover": { bgcolor: "#333" },
+                  }}
+                >
+                  下一步
+                </Button>
+              </>
+            )}
+            {page === 2 && (
+              <>
+                <Box
+                  width="100%"
+                  height="100%"
+                  display="flex"
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
+                  gap={5}
+                >
+                  <Typography
+                    sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
+                  >
+                    目標設定
+                  </Typography>
+                  <Stack
+                    width="100%"
+                    direction="row"
+                    spacing={2}
+                    padding={2}
+                    justifyContent="space-between" // Align items to the start for horizontal scroll
+                    alignItems="center"
+                    flexWrap="nowrap" // Prevent wrapping
+                    sx={{
+                      // width: isMobile ? '100%' : '92.5%',
+                      backgroundColor: "background.paper",
+                      gap: 2,
+                      overflowX: "auto", // Enable horizontal scrolling
+                      whiteSpace: "nowrap", // Prevent items from breaking to the next line
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "rgba(0, 0, 0, 0.2)",
+                        borderRadius: "3px",
+                      },
+                    }}
+                  >
+                    {suggestions.map((suggestion, index) => (
+                      <Button
+                        key={index}
+                        variant="outlined"
+                        onClick={() => setGoal(suggestion)}
+                        sx={{
+                          textTransform: "none",
+                          backgroundColor: "background.default",
+                          color: "text.primary",
+                          borderRadius: "9999px",
+                          paddingX: 3,
+                          paddingY: 1.5,
+                          minWidth: 150,
+                          height: "auto",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          whiteSpace: "normal",
+                          boxShadow: 1,
+                          "&:hover": {
+                            backgroundColor: "primary.light",
+                            boxShadow: 2,
+                          },
+                        }}
+                      >
+                        {suggestion}
+                      </Button>
+                    ))}
+                  </Stack>
+                  <TextField
+                    variant="outlined"
+                    placeholder="輸入目標"
+                    value={goal}
+                    onChange={(e) => setGoal(e.target.value)}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px", // rounded corners
+                        backgroundColor: "#fafafa", // subtle background
+                        "& fieldset": {
+                          borderColor: "#ddd", // lighter border
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#aaa", // darker border on hover
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#000", // strong border on focus
+                        },
+                      },
+                    }}
+                  />
+                </Box>
+                <Button
+                  onClick={() => setPage(page - 1)}
+                  sx={{
+                    position: "absolute",
+                    bottom: 16,
+                    left: 16,
+                    bgcolor: "#000",
+                    color: "#fff",
+                    "&:hover": { bgcolor: "#333" },
+                  }}
+                >
+                  上一步
+                </Button>
+                <Button
                   onClick={() => setOnboarded(true)}
                   sx={{
                     position: "absolute",
@@ -539,7 +698,7 @@ export default function Home() {
                 >
                   完成
                 </Button>
-              </Box>
+              </>
             )}
           </Box>
         )}
