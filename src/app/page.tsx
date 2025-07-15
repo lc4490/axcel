@@ -1,10 +1,12 @@
 "use client";
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
+  const [name, setName] = useState("");
+  const [height, setHeight] = useState(0);
   return (
     <Box
       width="100vw"
@@ -15,7 +17,9 @@ export default function Home() {
     >
       <>
         {onboarded ? (
-          <Box>onboard complete</Box>
+          <Box>
+            <Typography>{name}</Typography>
+          </Box>
         ) : (
           <Box
             width="600px"
@@ -40,10 +44,36 @@ export default function Home() {
               >
                 你好！讓我們先了解你，以便為你量身定制專屬體驗
               </Typography>
-              <Typography sx={{ color: "black", fontWeight: "600" }}>
-                名字
-              </Typography>
-              <TextField sx={{ width: "100%" }}></TextField>
+
+              <Box sx={{ p: 1 }}>
+                <Typography
+                  sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                >
+                  名字
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  placeholder="輸入名字"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px", // rounded corners
+                      backgroundColor: "#fafafa", // subtle background
+                      "& fieldset": {
+                        borderColor: "#ddd", // lighter border
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#aaa", // darker border on hover
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#000", // strong border on focus
+                      },
+                    },
+                  }}
+                />
+              </Box>
             </Box>
             <Button
               onClick={() => setOnboarded(true)}
