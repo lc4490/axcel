@@ -674,13 +674,13 @@ export default function Home() {
                   >
                     目標設定
                   </Typography>
-                  {/* {suggestions[0] !== "" && (
+                  {suggestions[0] !== "" && (
                     <Stack
                       width="100%" // ✅ make it responsive
                       // maxWidth="500px" // ✅ optional: cap width on larger screens
                       direction="row"
                       // spacing={1}
-                      padding={2}
+                      // padding={2}
                       justifyContent="space-between" // Align items to the start for horizontal scroll
                       alignItems="center"
                       flexWrap="nowrap" // Prevent wrapping
@@ -728,7 +728,7 @@ export default function Home() {
                         </Button>
                       ))}
                     </Stack>
-                  )} */}
+                  )}
                   {suggestions[0] === "" && <CircularProgress />}
                   <TextField
                     variant="outlined"
