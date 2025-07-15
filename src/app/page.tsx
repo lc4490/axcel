@@ -15,6 +15,10 @@ export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
   const [name, setName] = useState("");
   const [height, setHeight] = useState("");
+  const [heightCM, setHeightCM] = useState("");
+  const [heightFT, setHeightFT] = useState("");
+  const [heightIN, setHeightIN] = useState("");
+  const [heightUnit, setHeightUnit] = useState("cm");
 
   return (
     <Box
@@ -28,7 +32,10 @@ export default function Home() {
         {onboarded ? (
           <Box>
             <Typography>{name}</Typography>
-            <Typography>{height}</Typography>
+            <Typography>
+              {heightUnit === "cm" ? heightCM : heightFT + "/" + heightIN}
+              {" " + heightUnit}
+            </Typography>
           </Box>
         ) : (
           <Box
@@ -95,11 +102,38 @@ export default function Home() {
                   <Typography
                     sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
                   >
-                    高度
+                    身高
                   </Typography>
+                  {/* heigh unit */}
                   <ToggleButtonGroup
                     size="small"
                     exclusive
+                    value={heightUnit}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        if (newValue == "ft/in") {
+                          setHeightFT(
+                            String(Math.floor(parseFloat(heightCM) / 2.54 / 12))
+                          );
+                          setHeightIN(
+                            String(
+                              ((parseFloat(heightCM) / 2.54) % 12).toFixed(2)
+                            )
+                          );
+                        } else {
+                          setHeightCM(
+                            String(
+                              (
+                                (parseInt(heightFT) * 12 +
+                                  parseFloat(heightIN)) *
+                                2.54
+                              ).toFixed(2)
+                            )
+                          );
+                        }
+                        setHeightUnit(newValue);
+                      }
+                    }}
                     sx={{
                       "& .MuiToggleButton-root": {
                         padding: "4px 8px", // reduce vertical & horizontal padding
@@ -112,35 +146,99 @@ export default function Home() {
                     <ToggleButton value="ft/in">ft/in</ToggleButton>
                   </ToggleButtonGroup>
                 </Stack>
-                <TextField
-                  variant="outlined"
-                  placeholder="輸入高度"
-                  value={height || ""}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (parseFloat(value)) {
-                      setHeight(value);
-                    } else {
-                      setHeight("");
-                    }
-                  }}
-                  sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "12px", // rounded corners
-                      backgroundColor: "#fafafa", // subtle background
-                      "& fieldset": {
-                        borderColor: "#ddd", // lighter border
+                {heightUnit === "cm" && (
+                  <TextField
+                    variant="outlined"
+                    placeholder="輸入身高（cm）"
+                    value={heightCM || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (parseFloat(value)) {
+                        setHeightCM(String(parseFloat(value)));
+                      } else {
+                        setHeightCM("");
+                      }
+                    }}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "12px", // rounded corners
+                        backgroundColor: "#fafafa", // subtle background
+                        "& fieldset": {
+                          borderColor: "#ddd", // lighter border
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#aaa", // darker border on hover
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#000", // strong border on focus
+                        },
                       },
-                      "&:hover fieldset": {
-                        borderColor: "#aaa", // darker border on hover
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#000", // strong border on focus
-                      },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                )}
+                {heightUnit === "ft/in" && (
+                  <Stack display={"flex"} flexDirection={"row"}>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入身高（ft）"
+                      value={heightFT || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (parseInt(value)) {
+                          setHeightFT(String(parseInt(value)));
+                        } else {
+                          setHeightFT("");
+                        }
+                      }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#000", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入身高（in）"
+                      value={heightIN || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (parseFloat(value) && parseFloat(value) <= 11) {
+                          setHeightIN(value);
+                        } else {
+                          setHeightIN("");
+                        }
+                      }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#000", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Stack>
+                )}
               </Box>
             </Box>
             <Button
