@@ -8,6 +8,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { SetStateAction, useState } from "react";
 
@@ -35,8 +36,52 @@ export default function Home() {
     "8.折返跑:",
     "9.Yo-yo Test:",
   ];
-  const [values, setValues] = useState(Array(9).fill(""));
-  const suggestions = ["hi", "hello", "yo"];
+  // const [values, setValues] = useState(Array(9).fill(""));
+  const [values, setValues] = useState([
+    "體脂 16%、瘦體重 58.8 kg",
+    "52 cm",
+    "4.3 秒",
+    "10.2 秒",
+    "臥推: 85 kg、深蹲: 110 kg",
+    "5.8 秒",
+    "45 次/分鐘、伏地挺身: 35 次",
+    "8.5 秒",
+    "Level 17.1 (~1800 m)",
+  ]);
+  const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  const [input, setInput] = useState("");
+
+  const makeSuggestions = async () => {
+    let input = "";
+    const height =
+      heightUnit === "cm"
+        ? heightCM + " " + heightUnit
+        : heightFT + ", " + heightIN + " " + heightUnit;
+    const weight =
+      weightUnit === "kg"
+        ? weightKG + " " + weightUnit
+        : weightLB + " " + weightUnit;
+
+    input += "身高：" + height + "\n";
+    input += "體重：" + weight + "\n";
+    input += "測試結果:\n";
+
+    for (let i = 0; i < labels.length; i++) {
+      input += labels[i] + values[i] + "\n";
+    }
+    setInput(input);
+
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input }),
+    });
+
+    const data = await res.json();
+    console.log("AI Response:", data.result);
+    const titles = data.result;
+    setSuggestions(titles.split("\n"));
+  };
 
   return (
     <Box
@@ -127,24 +172,24 @@ export default function Home() {
                   position: "absolute",
                   top: 12,
                   right: 12,
-                  minWidth: "32px", // small circle size
+                  minWidth: "32px",
                   height: "32px",
                   padding: 0,
-                  borderRadius: "50%", // make it circular
+                  borderRadius: "50%",
                   // border: "1px solid #ccc", // subtle border
                   // backgroundColor: "#f5f5f5", // light gray background
-                  color: "#333", // dark gray X
+                  color: "#333",
                   fontWeight: "bold",
                   fontSize: "1.1rem",
                   lineHeight: 1,
                   "&:hover": {
-                    backgroundColor: "#e0e0e0", // slightly darker on hover
-                    borderColor: "#999", // darker border on hover
+                    backgroundColor: "#e0e0e0",
+                    borderColor: "#999",
                   },
-                  zIndex: 10, // float above content
+                  zIndex: 10,
                 }}
               >
-                x
+                ×
               </Button>
             )}
             {page === 0 && (
@@ -578,7 +623,9 @@ export default function Home() {
                   上一步
                 </Button>
                 <Button
-                  onClick={() => setPage(page + 1)}
+                  onClick={() => {
+                    setPage(page + 1), makeSuggestions();
+                  }}
                   sx={{
                     position: "absolute",
                     bottom: 16,
@@ -608,58 +655,61 @@ export default function Home() {
                   >
                     目標設定
                   </Typography>
-                  <Stack
-                    width="100%"
-                    direction="row"
-                    spacing={2}
-                    padding={2}
-                    justifyContent="space-between" // Align items to the start for horizontal scroll
-                    alignItems="center"
-                    flexWrap="nowrap" // Prevent wrapping
-                    sx={{
-                      // width: isMobile ? '100%' : '92.5%',
-                      backgroundColor: "background.paper",
-                      gap: 2,
-                      overflowX: "auto", // Enable horizontal scrolling
-                      whiteSpace: "nowrap", // Prevent items from breaking to the next line
-                      "&::-webkit-scrollbar": {
-                        height: "6px",
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "rgba(0, 0, 0, 0.2)",
-                        borderRadius: "3px",
-                      },
-                    }}
-                  >
-                    {suggestions.map((suggestion, index) => (
-                      <Button
-                        key={index}
-                        variant="outlined"
-                        onClick={() => setGoal(suggestion)}
-                        sx={{
-                          textTransform: "none",
-                          backgroundColor: "background.default",
-                          color: "text.primary",
-                          borderRadius: "9999px",
-                          paddingX: 3,
-                          paddingY: 1.5,
-                          minWidth: 150,
-                          height: "auto",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          whiteSpace: "normal",
-                          boxShadow: 1,
-                          "&:hover": {
-                            backgroundColor: "primary.light",
-                            boxShadow: 2,
-                          },
-                        }}
-                      >
-                        {suggestion}
-                      </Button>
-                    ))}
-                  </Stack>
+                  {suggestions[0] !== "" && (
+                    <Stack
+                      width="100%"
+                      direction="row"
+                      spacing={2}
+                      padding={2}
+                      justifyContent="space-between" // Align items to the start for horizontal scroll
+                      alignItems="center"
+                      flexWrap="nowrap" // Prevent wrapping
+                      sx={{
+                        // width: isMobile ? '100%' : '92.5%',
+                        backgroundColor: "background.paper",
+                        gap: 2,
+                        overflowX: "auto", // Enable horizontal scrolling
+                        whiteSpace: "nowrap", // Prevent items from breaking to the next line
+                        "&::-webkit-scrollbar": {
+                          height: "6px",
+                        },
+                        "&::-webkit-scrollbar-thumb": {
+                          backgroundColor: "rgba(0, 0, 0, 0.2)",
+                          borderRadius: "3px",
+                        },
+                      }}
+                    >
+                      {suggestions.map((suggestion, index) => (
+                        <Button
+                          key={index}
+                          variant="outlined"
+                          onClick={() => setGoal(suggestion)}
+                          sx={{
+                            textTransform: "none",
+                            backgroundColor: "background.default",
+                            color: "text.primary",
+                            borderRadius: "9999px",
+                            paddingX: 3,
+                            paddingY: 1.5,
+                            minWidth: 150,
+                            height: "auto",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            whiteSpace: "normal",
+                            boxShadow: 1,
+                            "&:hover": {
+                              backgroundColor: "primary.light",
+                              boxShadow: 2,
+                            },
+                          }}
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </Stack>
+                  )}
+                  {suggestions[0] === "" && <CircularProgress />}
                   <TextField
                     variant="outlined"
                     placeholder="輸入目標"

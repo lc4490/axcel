@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AXCEL",
-  description: "Acceleration your excellence",
+  description: "Accelerate your excellence",
 };
 
 export default function RootLayout({
