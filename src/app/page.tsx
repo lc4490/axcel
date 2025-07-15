@@ -76,16 +76,16 @@ export default function Home() {
     }
     setInput(input);
 
-    // const res = await fetch("/api/openai", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ input }),
-    // });
+    const res = await fetch("/api/goal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input }),
+    });
 
-    // const data = await res.json();
-    // console.log("AI Response:", data.result);
-    // const titles = data.result;
-    // setSuggestions(titles.split("\n"));
+    const data = await res.json();
+    console.log("AI Response:", data.result);
+    const titles = data.result;
+    setSuggestions(titles.split("\n"));
   };
 
   return (
