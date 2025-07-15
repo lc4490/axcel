@@ -14,7 +14,7 @@ import { SetStateAction, useState } from "react";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(2);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
   const [heightCM, setHeightCM] = useState("");
@@ -76,16 +76,16 @@ export default function Home() {
     }
     setInput(input);
 
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input }),
-    });
+    // const res = await fetch("/api/openai", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ input }),
+    // });
 
-    const data = await res.json();
-    console.log("AI Response:", data.result);
-    const titles = data.result;
-    setSuggestions(titles.split("\n"));
+    // const data = await res.json();
+    // console.log("AI Response:", data.result);
+    // const titles = data.result;
+    // setSuggestions(titles.split("\n"));
   };
 
   return (
@@ -711,7 +711,7 @@ export default function Home() {
                             borderRadius: "9999px",
                             // paddingX: 3,
                             paddingY: 1.5,
-                            minWidth: 125,
+                            minWidth: 100,
                             height: "auto",
                             display: "flex",
                             justifyContent: "center",
