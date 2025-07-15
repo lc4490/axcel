@@ -671,9 +671,9 @@ export default function Home() {
                   </Typography>
                   {suggestions[0] !== "" && (
                     <Stack
-                      width="100%"
+                      width="600px"
                       direction="row"
-                      spacing={2}
+                      spacing={1}
                       padding={2}
                       justifyContent="space-between" // Align items to the start for horizontal scroll
                       alignItems="center"
