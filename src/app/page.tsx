@@ -673,7 +673,7 @@ export default function Home() {
                     <Stack
                       width="500px"
                       direction="row"
-                      spacing={1}
+                      // spacing={1}
                       padding={2}
                       justifyContent="space-between" // Align items to the start for horizontal scroll
                       alignItems="center"
@@ -681,7 +681,7 @@ export default function Home() {
                       sx={{
                         // width: isMobile ? '100%' : '92.5%',
                         backgroundColor: "background.paper",
-                        gap: 2,
+                        // gap: 2,
                         overflowX: "auto", // Enable horizontal scrolling
                         whiteSpace: "nowrap", // Prevent items from breaking to the next line
                         "&::-webkit-scrollbar": {
