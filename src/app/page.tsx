@@ -703,7 +703,7 @@ export default function Home() {
                             backgroundColor: "background.default",
                             color: "text.primary",
                             borderRadius: "9999px",
-                            paddingX: 3,
+                            // paddingX: 3,
                             paddingY: 1.5,
                             minWidth: 125,
                             height: "auto",
