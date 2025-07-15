@@ -110,10 +110,11 @@ export default function Home() {
             }
           }
           if (page === 1) {
-            // const isComplete = values.every((v) => v !== "");
-            // if (isComplete) {
-            setPage(page + 1);
-            // }
+            const isComplete = values.every((v) => v !== "");
+            if (isComplete) {
+              setPage(page + 1);
+              makeSuggestions();
+            }
           }
           if (page === 2) {
             setOnboarded(true);
@@ -618,14 +619,23 @@ export default function Home() {
                     bgcolor: "#000",
                     color: "#fff",
                     "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
                   }}
                 >
                   上一步
                 </Button>
                 <Button
                   onClick={() => {
-                    setPage(page + 1), makeSuggestions();
+                    const isComplete = values.every((v) => v !== "");
+                    if (isComplete) {
+                      setPage(page + 1);
+                      makeSuggestions();
+                    }
                   }}
+                  disabled={values.every((v) => v === "")}
                   sx={{
                     position: "absolute",
                     bottom: 16,
@@ -633,6 +643,10 @@ export default function Home() {
                     bgcolor: "#000",
                     color: "#fff",
                     "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
                   }}
                 >
                   下一步
@@ -742,12 +756,17 @@ export default function Home() {
                     bgcolor: "#000",
                     color: "#fff",
                     "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
                   }}
                 >
                   上一步
                 </Button>
                 <Button
                   onClick={() => setOnboarded(true)}
+                  disabled={goal === ""}
                   sx={{
                     position: "absolute",
                     bottom: 16,
@@ -755,6 +774,10 @@ export default function Home() {
                     bgcolor: "#000",
                     color: "#fff",
                     "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
                   }}
                 >
                   完成
