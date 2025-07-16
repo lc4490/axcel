@@ -53,23 +53,23 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  // useEffect(() => {
-  //   setSuggestions(Array(3).fill(""));
-  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
-  const [suggestions, setSuggestions] = useState([
-    "爆發力增強",
-    "提升敏捷性",
-    "持久力鍛煉",
-  ]);
+  const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  useEffect(() => {
+    setSuggestions(Array(3).fill(""));
+  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  // const [suggestions, setSuggestions] = useState([
+  //   "爆發力增強",
+  //   "提升敏捷性",
+  //   "持久力鍛煉",
+  // ]);
   const [input, setInput] = useState("");
-  // const [workouts, setWorkouts] = useState<string[]>([]);
-  const [workouts, setWorkouts] = useState([
-    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
-  ]);
+  const [workouts, setWorkouts] = useState<string[]>([]);
+  // const [workouts, setWorkouts] = useState([
+  //   "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+  //   "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+  //   "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+  //   "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+  // ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   const makeSuggestions = async () => {
@@ -120,9 +120,21 @@ export default function Home() {
         console.log("Generated Plan:", data.plan);
         setWorkouts(
           data.plan
-            .split("第")
-            .slice(1)
-            .map((w: string) => "第" + w)
+            .split("天")
+            .slice(2)
+            .map((w: string, index: number) => {
+              let text = "第" + (index + 1) + "天" + w;
+
+              // Trim everything after ### or ---
+              if (text.includes("###")) {
+                text = text.split("###")[0].trim();
+              }
+              if (text.includes("---")) {
+                text = text.split("---")[0].trim();
+              }
+
+              return text.trim();
+            })
         );
       } catch (err) {
         console.error("Failed to generate workout plan", err);
@@ -228,19 +240,18 @@ export default function Home() {
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
-                      onClick={() => setSelectedWorkout(item)} // 👈 open modal
                       sx={{
                         position: "relative",
                         backgroundColor: "#f9f9f9",
                         borderRadius: "16px",
                         boxShadow: 3,
                         padding: 3,
-                        cursor: "pointer",
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                        "&:hover": {
-                          transform: "scale(1.02)",
-                          boxShadow: 5,
-                        },
+                        // cursor: "pointer",
+                        // transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        // "&:hover": {
+                        //   transform: "scale(1.02)",
+                        //   boxShadow: 5,
+                        // },
                         aspectRatio: "1 / 1", // ✅ keep square shape
                       }}
                     >
@@ -258,6 +269,36 @@ export default function Home() {
                       >
                         {item}
                       </Typography>
+                      <Button
+                        onClick={() => setSelectedWorkout(item)}
+                        variant="contained"
+                        size="large"
+                        sx={{
+                          backgroundColor: "#1976d2",
+                          color: "#fff",
+                          fontWeight: "bold",
+                          borderRadius: "999px",
+                          paddingX: 4,
+                          paddingY: 1.5,
+                          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+                          textTransform: "none",
+                          fontSize: "1.1rem",
+                          transition: "all 0.3s ease",
+                          position: "absolute",
+                          left: "50%", // ✅ center horizontally
+                          bottom: 16, // ✅ stick to bottom
+                          transform: "translateX(-50%)", // ✅ offset by half width
+                          "&:hover": {
+                            backgroundColor: "#1565c0",
+                            boxShadow: "0px 6px 16px rgba(0,0,0,0.15)",
+                            transform: "translateX(-50%) scale(1.05)", // ✅ maintain centering on hover
+                          },
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 600 }}>
+                          开始训练
+                        </Typography>
+                      </Button>
                     </Box>
                   ))}
                 </Grid>
@@ -268,16 +309,69 @@ export default function Home() {
                 open={selectedWorkout !== null}
                 onClose={() => setSelectedWorkout(null)}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
+                slotProps={{
+                  paper: {
+                    sx: {
+                      borderRadius: "20px",
+                      height: "90vh", // ✅ almost fullscreen height
+                    },
+                  },
+                }}
               >
-                <DialogTitle>訓練課程詳情</DialogTitle>
-                <DialogContent>
-                  <Typography sx={{ whiteSpace: "pre-wrap" }}>
+                <DialogTitle
+                  sx={{
+                    fontSize: "1.8rem",
+                    fontWeight: 700,
+                    backgroundColor: "#1976d2", // ✅ primary color header
+                    color: "white",
+                    textAlign: "center",
+                    py: 2,
+                  }}
+                >
+                  🏋️‍♂️ 訓練課程詳情
+                </DialogTitle>
+
+                <DialogContent
+                  sx={{
+                    padding: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      whiteSpace: "pre-wrap",
+                      fontSize: "1.2rem",
+                      lineHeight: 1.6,
+                      color: "#333",
+                    }}
+                  >
                     {selectedWorkout}
                   </Typography>
                 </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setSelectedWorkout(null)}>關閉</Button>
+
+                <DialogActions
+                  sx={{
+                    justifyContent: "center",
+                    paddingBottom: 2,
+                  }}
+                >
+                  <Button
+                    onClick={() => setSelectedWorkout(null)}
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      borderRadius: "999px",
+                      px: 5,
+                      py: 1,
+                      textTransform: "none",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    结束
+                  </Button>
                 </DialogActions>
               </Dialog>
             </>
