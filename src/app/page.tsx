@@ -9,6 +9,11 @@ import {
   ToggleButtonGroup,
   Typography,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 
@@ -48,21 +53,24 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  useEffect(() => {
-    setSuggestions(Array(3).fill(""));
-  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
-  // const [suggestions, setSuggestions] = useState([
-  //   "爆發力增強",
-  //   "提升敏捷性",
-  //   "持久力鍛煉",
-  // ]);
+  // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  // useEffect(() => {
+  //   setSuggestions(Array(3).fill(""));
+  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  const [suggestions, setSuggestions] = useState([
+    "爆發力增強",
+    "提升敏捷性",
+    "持久力鍛煉",
+  ]);
   const [input, setInput] = useState("");
-  const [plan, setPlan] = useState(
-    // "--- 🏋️ 訓練目標: 極速衝刺 📅 訓練週期: 4 週 📈 每週訓練頻率: 4 天 (例如: 星期一、二、四、六) ⏱️ 單次訓練時間: 約 60–75 分鐘 ### 🗓️ 第1天 – 速度與爆發力訓練 1. 30公尺衝刺 – 6x @ 全力爆發 2. 槌球扔 – 5x3 @ 70%力道 3. 撑地跳昇 – 4x5 @ 全力爆發 4. 雙膝曲舉 – 3x10 ### 🗓️ 第2天 – 力量訓練 1. 深蹲 – 4x5 @ 75% 1RM 2. 硬拉 – 4x5 @ 75% 1RM 3. 立式跳躍 – 4x5 @ 全力爆發 4. 仰臥舉腿 – 3x15 ### 🗓️ 第3天 – 速度耐力訓練 1. 100公尺衝刺 – 8x @ 儘全力但保存一點氣力以完成所有回合 2. 蹬翻胎 – 5x3 @ 60%力道 3. 槌球擲遠 – 4x5 @ 全力爆發 4. 扭腰舉腿 – 3x15 ### 🗓️ 第4天 – 復健與伸展訓練 1. 泡綿滾輪按摩 – 按需進行 2. 單腿直立 – 4x10 @ 輕度強度 3. 單腿深蹲 – 4x5 @ 輕度彈跳 4. 腹輪滾動 – 3x10 ---"
-    ""
-  );
-  const [workouts, setWorkouts] = useState<string[]>([]);
+  // const [workouts, setWorkouts] = useState<string[]>([]);
+  const [workouts, setWorkouts] = useState([
+    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 60% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+  ]);
+  const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   const makeSuggestions = async () => {
     if (suggestions[0] === "") {
@@ -99,8 +107,7 @@ export default function Home() {
   };
 
   const makePlan = async () => {
-    if (plan === "") {
-      console.log("Generating plan...");
+    if (workouts.length === 0) {
       try {
         // setLoading(true); // show spinner
         const res = await fetch("/api/plan", {
@@ -111,7 +118,6 @@ export default function Home() {
 
         const data = await res.json();
         console.log("Generated Plan:", data.plan);
-        setPlan(data.plan);
         setWorkouts(
           data.plan
             .split("第")
@@ -193,19 +199,88 @@ export default function Home() {
             >
               Edit
             </Button>
-            <Box>
-              {plan === "" ? (
-                <>
-                  <Stack display="flex" flexDirection="column">
-                    {"正在為您指定訓練課程規劃..."} <CircularProgress />
-                  </Stack>
-                </>
+            <>
+              {workouts.length === 0 ? (
+                <Stack
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={2}
+                  height="300px"
+                >
+                  <Typography>正在為您指定訓練課程規劃...</Typography>
+                  <CircularProgress />
+                </Stack>
               ) : (
-                workouts.map((item, index) => (
-                  <Typography key={index}>{item}</Typography>
-                ))
+                <Grid
+                  container
+                  maxHeight="80vh"
+                  sx={{
+                    p: 2,
+                    overflowY: "scroll",
+                    display: "grid", // ✅ turn into a CSS grid
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
+                    gap: 4, // ✅ space between boxes
+                  }}
+                >
+                  {workouts.map((item, index) => (
+                    <Box
+                      key={index}
+                      onClick={() => setSelectedWorkout(item)} // 👈 open modal
+                      sx={{
+                        position: "relative",
+                        backgroundColor: "#f9f9f9",
+                        borderRadius: "16px",
+                        boxShadow: 3,
+                        padding: 3,
+                        cursor: "pointer",
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        "&:hover": {
+                          transform: "scale(1.02)",
+                          boxShadow: 5,
+                        },
+                        aspectRatio: "1 / 1", // ✅ keep square shape
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{
+                          whiteSpace: "pre-wrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 8, // 👈 limit visible lines
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Grid>
               )}
-            </Box>
+
+              {/* 🖼️ Modal for Workout Details */}
+              <Dialog
+                open={selectedWorkout !== null}
+                onClose={() => setSelectedWorkout(null)}
+                fullWidth
+                maxWidth="sm"
+              >
+                <DialogTitle>訓練課程詳情</DialogTitle>
+                <DialogContent>
+                  <Typography sx={{ whiteSpace: "pre-wrap" }}>
+                    {selectedWorkout}
+                  </Typography>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setSelectedWorkout(null)}>關閉</Button>
+                </DialogActions>
+              </Dialog>
+            </>
           </Box>
         ) : (
           <Box
