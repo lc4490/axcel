@@ -10,7 +10,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
@@ -49,6 +49,9 @@ export default function Home() {
     "Level 17.1 (~1800 m)",
   ]);
   const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  useEffect(() => {
+    setSuggestions(Array(3).fill(""));
+  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   // const [suggestions, setSuggestions] = useState([
   //   "爆發力增強",
   //   "提升敏捷性",
@@ -57,35 +60,37 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   const makeSuggestions = async () => {
-    let input = "";
-    const height =
-      heightUnit === "cm"
-        ? heightCM + " " + heightUnit
-        : heightFT + ", " + heightIN + " " + heightUnit;
-    const weight =
-      weightUnit === "kg"
-        ? weightKG + " " + weightUnit
-        : weightLB + " " + weightUnit;
+    if (suggestions[0] === "") {
+      let input = "";
+      const height =
+        heightUnit === "cm"
+          ? heightCM + " " + heightUnit
+          : heightFT + ", " + heightIN + " " + heightUnit;
+      const weight =
+        weightUnit === "kg"
+          ? weightKG + " " + weightUnit
+          : weightLB + " " + weightUnit;
 
-    input += "身高：" + height + "\n";
-    input += "體重：" + weight + "\n";
-    input += "測試結果:\n";
+      input += "身高：" + height + "\n";
+      input += "體重：" + weight + "\n";
+      input += "測試結果:\n";
 
-    for (let i = 0; i < labels.length; i++) {
-      input += labels[i] + values[i] + "\n";
+      for (let i = 0; i < labels.length; i++) {
+        input += labels[i] + values[i] + "\n";
+      }
+      setInput(input);
+
+      const res = await fetch("/api/goal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input }),
+      });
+
+      const data = await res.json();
+      console.log("AI Response:", data.result);
+      const titles = data.result;
+      setSuggestions(titles.split("\n"));
     }
-    setInput(input);
-
-    const res = await fetch("/api/goal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input }),
-    });
-
-    const data = await res.json();
-    console.log("AI Response:", data.result);
-    const titles = data.result;
-    setSuggestions(titles.split("\n"));
   };
 
   return (
