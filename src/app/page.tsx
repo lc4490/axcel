@@ -58,6 +58,11 @@ export default function Home() {
   //   "持久力鍛煉",
   // ]);
   const [input, setInput] = useState("");
+  const [plan, setPlan] = useState(
+    // "--- 🏋️ 訓練目標: 極速衝刺 📅 訓練週期: 4 週 📈 每週訓練頻率: 4 天 (例如: 星期一、二、四、六) ⏱️ 單次訓練時間: 約 60–75 分鐘 ### 🗓️ 第1天 – 速度與爆發力訓練 1. 30公尺衝刺 – 6x @ 全力爆發 2. 槌球扔 – 5x3 @ 70%力道 3. 撑地跳昇 – 4x5 @ 全力爆發 4. 雙膝曲舉 – 3x10 ### 🗓️ 第2天 – 力量訓練 1. 深蹲 – 4x5 @ 75% 1RM 2. 硬拉 – 4x5 @ 75% 1RM 3. 立式跳躍 – 4x5 @ 全力爆發 4. 仰臥舉腿 – 3x15 ### 🗓️ 第3天 – 速度耐力訓練 1. 100公尺衝刺 – 8x @ 儘全力但保存一點氣力以完成所有回合 2. 蹬翻胎 – 5x3 @ 60%力道 3. 槌球擲遠 – 4x5 @ 全力爆發 4. 扭腰舉腿 – 3x15 ### 🗓️ 第4天 – 復健與伸展訓練 1. 泡綿滾輪按摩 – 按需進行 2. 單腿直立 – 4x10 @ 輕度強度 3. 單腿深蹲 – 4x5 @ 輕度彈跳 4. 腹輪滾動 – 3x10 ---"
+    ""
+  );
+  const [workouts, setWorkouts] = useState([]);
 
   const makeSuggestions = async () => {
     if (suggestions[0] === "") {
@@ -90,6 +95,30 @@ export default function Home() {
       console.log("AI Response:", data.result);
       const titles = data.result;
       setSuggestions(titles.split("\n"));
+    }
+  };
+
+  const makePlan = async () => {
+    console.log(input);
+    console.log(goal);
+    if (plan === "") {
+      console.log("Generating plan...");
+      try {
+        // setLoading(true); // show spinner
+        const res = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, goal }),
+        });
+
+        const data = await res.json();
+        console.log("Generated Plan:", data.plan);
+        setPlan(data.plan);
+      } catch (err) {
+        console.error("Failed to generate workout plan", err);
+      } finally {
+        // setLoading(false); // hide spinner
+      }
     }
   };
 
@@ -128,6 +157,7 @@ export default function Home() {
           }
           if (page === 2) {
             setOnboarded(true);
+            makePlan();
           }
         }
         // escape to exit
@@ -159,6 +189,18 @@ export default function Home() {
             >
               Edit
             </Button>
+            <Box>
+              {plan === "" ? (
+                <CircularProgress />
+              ) : (
+                plan
+                  .split("第")
+                  .slice(1)
+                  .map((item, index) => (
+                    <Typography key={index}>第{item}</Typography>
+                  ))
+              )}
+            </Box>
           </Box>
         ) : (
           <Box
@@ -776,7 +818,9 @@ export default function Home() {
                   上一步
                 </Button>
                 <Button
-                  onClick={() => setOnboarded(true)}
+                  onClick={() => {
+                    setOnboarded(true), makePlan();
+                  }}
                   disabled={goal === ""}
                   sx={{
                     position: "absolute",
