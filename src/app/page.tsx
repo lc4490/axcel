@@ -150,6 +150,7 @@ export default function Home() {
       width="100vw"
       height="90vh"
       display="flex"
+      flexDirection={"column"}
       justifyContent={"center"}
       alignItems={"center"}
       onKeyDown={(e) => {
@@ -209,6 +210,34 @@ export default function Home() {
       }}
       tabIndex={0}
     >
+      <Box
+        sx={{
+          position: "absolute", // keeps it fixed when scrolling
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#000", // header background
+          color: "#fff",
+          px: 3,
+          py: 2,
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
+        }}
+      >
+        {/* Logo / Title */}
+        <Box
+          component="img"
+          src="/logo.png"
+          alt="AXCEL Logo"
+          sx={{
+            height: 40, // adjust height
+            width: "auto", // maintain aspect ratio
+          }}
+        />
+      </Box>
       <>
         {onboarded ? (
           <Box
