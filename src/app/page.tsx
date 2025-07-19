@@ -145,7 +145,6 @@ export default function Home() {
     //   }
     // }
   };
-  console.log(birthdate);
   return (
     <Box
       width="100vw"
@@ -167,6 +166,20 @@ export default function Home() {
                   (heightFT === "" || heightIN === "")) ||
                 (weightUnit === "kg" && weightKG === "") ||
                 (weightUnit === "lbs" && weightLB === "")
+              ) &&
+              birthdate !== null
+            ) {
+              setPage(page + 1);
+            }
+          }
+          if (page === 1) {
+            if (
+              !(
+                team === "" ||
+                jersey === "" ||
+                position === "" ||
+                maxHeartRate === "" ||
+                maxVelocity === ""
               )
             ) {
               setPage(page + 1);
@@ -423,7 +436,15 @@ export default function Home() {
             )}
             {page === 0 && (
               <>
-                <Box>
+                <Box
+                  width="100%"
+                  height="90%"
+                  sx={{
+                    overflowY: "auto",
+                    pr: 1,
+                    position: "relative",
+                  }}
+                >
                   <Typography
                     sx={{
                       color: "black",
@@ -543,7 +564,15 @@ export default function Home() {
                         value={heightCM || ""}
                         onChange={(e) => {
                           const value = e.target.value;
-                          if (parseFloat(value)) {
+                          if (
+                            value.slice(-1) === "." &&
+                            !isNaN(parseFloat(value.slice(0, -1))) &&
+                            !value.slice(0, -1).includes(".")
+                          ) {
+                            setHeightCM(
+                              String(parseFloat(value.slice(0, -1)) + ".")
+                            );
+                          } else if (parseFloat(value)) {
                             setHeightCM(String(parseFloat(value)));
                           } else {
                             setHeightCM("");
@@ -604,8 +633,16 @@ export default function Home() {
                           value={heightIN || ""}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (parseFloat(value) && parseFloat(value) <= 11) {
-                              setHeightIN(value);
+                            if (
+                              value.slice(-1) === "." &&
+                              !isNaN(parseFloat(value.slice(0, -1))) &&
+                              !value.slice(0, -1).includes(".")
+                            ) {
+                              setHeightIN(
+                                String(parseFloat(value.slice(0, -1)) + ".")
+                              );
+                            } else if (parseFloat(value)) {
+                              setHeightIN(String(parseFloat(value)));
                             } else {
                               setHeightIN("");
                             }
@@ -693,7 +730,15 @@ export default function Home() {
                         value={weightKG || ""}
                         onChange={(e) => {
                           const value = e.target.value;
-                          if (parseFloat(value)) {
+                          if (
+                            value.slice(-1) === "." &&
+                            !isNaN(parseFloat(value.slice(0, -1))) &&
+                            !value.slice(0, -1).includes(".")
+                          ) {
+                            setWeightKG(
+                              String(parseFloat(value.slice(0, -1)) + ".")
+                            );
+                          } else if (parseFloat(value)) {
                             setWeightKG(String(parseFloat(value)));
                           } else {
                             setWeightKG("");
@@ -724,7 +769,15 @@ export default function Home() {
                         value={weightLB || ""}
                         onChange={(e) => {
                           const value = e.target.value;
-                          if (parseFloat(value)) {
+                          if (
+                            value.slice(-1) === "." &&
+                            !isNaN(parseFloat(value.slice(0, -1))) &&
+                            !value.slice(0, -1).includes(".")
+                          ) {
+                            setWeightLB(
+                              String(parseFloat(value.slice(0, -1)) + ".")
+                            );
+                          } else if (parseFloat(value)) {
                             setWeightLB(String(parseFloat(value)));
                           } else {
                             setWeightLB("");
@@ -811,7 +864,15 @@ export default function Home() {
             )}
             {page === 1 && (
               <>
-                <Box sx={{ width: "100%" }}>
+                <Box
+                  width="100%"
+                  height="90%"
+                  sx={{
+                    overflowY: "auto",
+                    pr: 1,
+                    position: "relative",
+                  }}
+                >
                   {/* team */}
                   <Box sx={{ p: 1 }}>
                     <Typography
@@ -907,11 +968,11 @@ export default function Home() {
                     <Typography
                       sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
                     >
-                      最大心跳
+                      最高心跳
                     </Typography>
                     <TextField
                       variant="outlined"
-                      placeholder="輸入最大心跳"
+                      placeholder="輸入最高心跳"
                       value={maxHeartRate || ""}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -952,14 +1013,10 @@ export default function Home() {
                       value={maxVelocity}
                       onChange={(e) => {
                         const value = e.target.value;
-                        console.log(value.slice(-1));
-                        console.log(
-                          value.slice(-1) === "." &&
-                            !isNaN(parseFloat(value.slice(0, -1)))
-                        );
                         if (
                           value.slice(-1) === "." &&
-                          !isNaN(parseFloat(value.slice(0, -1)))
+                          !isNaN(parseFloat(value.slice(0, -1))) &&
+                          !value.slice(0, -1).includes(".")
                         ) {
                           setMaxVelocity(
                             String(parseFloat(value.slice(0, -1)) + ".")
