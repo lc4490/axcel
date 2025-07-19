@@ -19,6 +19,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
@@ -272,7 +273,7 @@ export default function Home() {
                   "&:hover": { bgcolor: "#333", borderColor: "#fff" },
                 }}
               >
-                Sign In
+                <AccountCircleIcon />
               </Button>
             </Box>
             <>
