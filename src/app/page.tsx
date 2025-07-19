@@ -34,6 +34,10 @@ export default function Home() {
   const [weightUnit, setWeightUnit] = useState("kg");
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
   const [team, setTeam] = useState("");
+  const [jersey, setJersey] = useState("");
+  const [position, setPosition] = useState("");
+  const [maxHeartRate, setMaxHeartRate] = useState("");
+  const [maxVelocity, setMaxVelocity] = useState("");
   const [goal, setGoal] = useState("");
   const labels = [
     "1.身體組成:",
@@ -807,8 +811,8 @@ export default function Home() {
             )}
             {page === 1 && (
               <>
-                <Box sx={{ bgcolor: "red", width: "100%" }}>
-                  {/* name */}
+                <Box sx={{ width: "100%" }}>
+                  {/* team */}
                   <Box sx={{ p: 1 }}>
                     <Typography
                       sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
@@ -817,9 +821,155 @@ export default function Home() {
                     </Typography>
                     <TextField
                       variant="outlined"
-                      placeholder="輸入名字"
+                      placeholder="輸入球队"
                       value={team}
                       onChange={(e) => setTeam(e.target.value)}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* jersey */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      球号
+                    </Typography>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入球号"
+                      value={jersey}
+                      onChange={(e) => setJersey(e.target.value)}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* position */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      球位
+                    </Typography>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入球位"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* max hr */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      最大心跳
+                    </Typography>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入最大心跳"
+                      value={maxHeartRate || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (parseFloat(value)) {
+                          setMaxHeartRate(String(parseFloat(value)));
+                        } else {
+                          setMaxHeartRate("");
+                        }
+                      }}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                  {/* max vel */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      最快速度
+                    </Typography>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入最快速度"
+                      value={maxVelocity}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        console.log(value.slice(-1));
+                        console.log(
+                          value.slice(-1) === "." &&
+                            !isNaN(parseFloat(value.slice(0, -1)))
+                        );
+                        if (
+                          value.slice(-1) === "." &&
+                          !isNaN(parseFloat(value.slice(0, -1)))
+                        ) {
+                          setMaxVelocity(
+                            String(parseFloat(value.slice(0, -1)) + ".")
+                          );
+                        } else if (parseFloat(value)) {
+                          setMaxVelocity(String(parseFloat(value)));
+                        } else {
+                          setMaxVelocity("");
+                        }
+                      }}
                       sx={{
                         width: "100%",
                         "& .MuiOutlinedInput-root": {
@@ -859,13 +1009,11 @@ export default function Home() {
                 <Button
                   onClick={() => setPage(page + 1)}
                   disabled={
-                    name === "" ||
-                    (heightUnit === "cm" && heightCM === "") ||
-                    (heightUnit === "ft/in" &&
-                      (heightFT === "" || heightIN === "")) ||
-                    (weightUnit === "kg" && weightKG === "") ||
-                    (weightUnit === "lbs" && weightLB === "") ||
-                    birthdate === null
+                    team === "" ||
+                    jersey === "" ||
+                    position === "" ||
+                    maxHeartRate === "" ||
+                    maxVelocity === ""
                   }
                   sx={{
                     position: "absolute",
