@@ -16,6 +16,9 @@ import {
   Grid,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
@@ -29,6 +32,8 @@ export default function Home() {
   const [weightKG, setWeightKG] = useState("");
   const [weightLB, setWeightLB] = useState("");
   const [weightUnit, setWeightUnit] = useState("kg");
+  const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
+  const [team, setTeam] = useState("");
   const [goal, setGoal] = useState("");
   const labels = [
     "1.身體組成:",
@@ -53,97 +58,90 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  useEffect(() => {
-    setSuggestions(Array(3).fill(""));
-  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
-  // const [suggestions, setSuggestions] = useState([
-  //   "爆發力增強",
-  //   "提升敏捷性",
-  //   "持久力鍛煉",
-  // ]);
+  // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
+  // useEffect(() => {
+  //   setSuggestions(Array(3).fill(""));
+  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  const [suggestions, setSuggestions] = useState([
+    "爆發力增強",
+    "提升敏捷性",
+    "持久力鍛煉",
+  ]);
   const [input, setInput] = useState("");
-  const [workouts, setWorkouts] = useState<string[]>([]);
-  // const [workouts, setWorkouts] = useState([
-  //   "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-  //   "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-  //   "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-  //   "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
-  // ]);
+  // const [workouts, setWorkouts] = useState<string[]>([]);
+  const [workouts, setWorkouts] = useState([
+    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+  ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   const makeSuggestions = async () => {
-    if (suggestions[0] === "") {
-      let input = "";
-      const height =
-        heightUnit === "cm"
-          ? heightCM + " " + heightUnit
-          : heightFT + ", " + heightIN + " " + heightUnit;
-      const weight =
-        weightUnit === "kg"
-          ? weightKG + " " + weightUnit
-          : weightLB + " " + weightUnit;
-
-      input += "身高：" + height + "\n";
-      input += "體重：" + weight + "\n";
-      input += "測試結果:\n";
-
-      for (let i = 0; i < labels.length; i++) {
-        input += labels[i] + values[i] + "\n";
-      }
-      setInput(input);
-
-      const res = await fetch("/api/goal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input }),
-      });
-
-      const data = await res.json();
-      console.log("AI Response:", data.result);
-      const titles = data.result;
-      setSuggestions(titles.split("\n"));
-    }
+    // if (suggestions[0] === "") {
+    //   let input = "";
+    //   const height =
+    //     heightUnit === "cm"
+    //       ? heightCM + " " + heightUnit
+    //       : heightFT + ", " + heightIN + " " + heightUnit;
+    //   const weight =
+    //     weightUnit === "kg"
+    //       ? weightKG + " " + weightUnit
+    //       : weightLB + " " + weightUnit;
+    //   input += "身高：" + height + "\n";
+    //   input += "體重：" + weight + "\n";
+    //   input += "測試結果:\n";
+    //   for (let i = 0; i < labels.length; i++) {
+    //     input += labels[i] + values[i] + "\n";
+    //   }
+    //   setInput(input);
+    //   const res = await fetch("/api/goal", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ input }),
+    //   });
+    //   const data = await res.json();
+    //   console.log("AI Response:", data.result);
+    //   const titles = data.result;
+    //   setSuggestions(titles.split("\n"));
+    // }
   };
 
   const makePlan = async () => {
-    if (workouts.length === 0) {
-      try {
-        // setLoading(true); // show spinner
-        const res = await fetch("/api/plan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input, goal }),
-        });
-
-        const data = await res.json();
-        console.log("Generated Plan:", data.plan);
-        setWorkouts(
-          data.plan
-            .split("天")
-            .slice(2)
-            .map((w: string, index: number) => {
-              let text = "第" + (index + 1) + "天" + w;
-
-              // Trim everything after ### or ---
-              if (text.includes("###")) {
-                text = text.split("###")[0].trim();
-              }
-              if (text.includes("---")) {
-                text = text.split("---")[0].trim();
-              }
-
-              return text.trim();
-            })
-        );
-      } catch (err) {
-        console.error("Failed to generate workout plan", err);
-      } finally {
-        // setLoading(false); // hide spinner
-      }
-    }
+    // if (workouts.length === 0) {
+    //   try {
+    //     // setLoading(true); // show spinner
+    //     const res = await fetch("/api/plan", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ input, goal }),
+    //     });
+    //     const data = await res.json();
+    //     console.log("Generated Plan:", data.plan);
+    //     setWorkouts(
+    //       data.plan
+    //         .split("天")
+    //         .slice(2)
+    //         .map((w: string, index: number) => {
+    //           let text = "第" + (index + 1) + "天" + w;
+    //           // Trim everything after ### or ---
+    //           if (text.includes("###")) {
+    //             text = text.split("###")[0].trim();
+    //           }
+    //           if (text.includes("---")) {
+    //             text = text.split("---")[0].trim();
+    //           }
+    //           return text.trim();
+    //         })
+    //     );
+    //   } catch (err) {
+    //     console.error("Failed to generate workout plan", err);
+    //   } finally {
+    //     // setLoading(false); // hide spinner
+    //   }
+    // }
   };
-
+  console.log(birthdate);
   return (
     <Box
       width="100vw"
@@ -170,14 +168,14 @@ export default function Home() {
               setPage(page + 1);
             }
           }
-          if (page === 1) {
+          if (page === 2) {
             const isComplete = values.every((v) => v !== "");
             if (isComplete) {
               setPage(page + 1);
               makeSuggestions();
             }
           }
-          if (page === 2) {
+          if (page === 3) {
             setOnboarded(true);
             makePlan();
           }
@@ -456,7 +454,7 @@ export default function Home() {
                             borderColor: "#aaa", // darker border on hover
                           },
                           "&.Mui-focused fieldset": {
-                            borderColor: "#000", // strong border on focus
+                            borderColor: "#1976d2", // strong border on focus
                           },
                         },
                       }}
@@ -559,7 +557,7 @@ export default function Home() {
                               borderColor: "#aaa", // darker border on hover
                             },
                             "&.Mui-focused fieldset": {
-                              borderColor: "#000", // strong border on focus
+                              borderColor: "#1976d2", // strong border on focus
                             },
                           },
                         }}
@@ -591,7 +589,7 @@ export default function Home() {
                                 borderColor: "#aaa", // darker border on hover
                               },
                               "&.Mui-focused fieldset": {
-                                borderColor: "#000", // strong border on focus
+                                borderColor: "#1976d2", // strong border on focus
                               },
                             },
                           }}
@@ -620,7 +618,7 @@ export default function Home() {
                                 borderColor: "#aaa", // darker border on hover
                               },
                               "&.Mui-focused fieldset": {
-                                borderColor: "#000", // strong border on focus
+                                borderColor: "#1976d2", // strong border on focus
                               },
                             },
                           }}
@@ -709,7 +707,7 @@ export default function Home() {
                               borderColor: "#aaa", // darker border on hover
                             },
                             "&.Mui-focused fieldset": {
-                              borderColor: "#000", // strong border on focus
+                              borderColor: "#1976d2", // strong border on focus
                             },
                           },
                         }}
@@ -740,12 +738,43 @@ export default function Home() {
                               borderColor: "#aaa", // darker border on hover
                             },
                             "&.Mui-focused fieldset": {
-                              borderColor: "#000", // strong border on focus
+                              borderColor: "#1976d2", // strong border on focus
                             },
                           },
                         }}
                       />
                     )}
+                  </Box>
+                  {/* birthdate */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      出生日期
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        // label="出生日期"
+                        value={birthdate}
+                        onChange={setBirthdate}
+                        maxDate={dayjs()}
+                        disableFuture
+                        sx={{
+                          width: "100%",
+                        }}
+                        slotProps={{
+                          textField: {
+                            // size: "small",
+                            InputProps: {
+                              sx: {
+                                borderRadius: "12px",
+                                backgroundColor: "#fafafa",
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
                   </Box>
                 </Box>
                 <Button
@@ -756,7 +785,8 @@ export default function Home() {
                     (heightUnit === "ft/in" &&
                       (heightFT === "" || heightIN === "")) ||
                     (weightUnit === "kg" && weightKG === "") ||
-                    (weightUnit === "lbs" && weightLB === "")
+                    (weightUnit === "lbs" && weightLB === "") ||
+                    birthdate === null
                   }
                   sx={{
                     position: "absolute",
@@ -776,6 +806,85 @@ export default function Home() {
               </>
             )}
             {page === 1 && (
+              <>
+                <Box sx={{ bgcolor: "red", width: "100%" }}>
+                  {/* name */}
+                  <Box sx={{ p: 1 }}>
+                    <Typography
+                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
+                    >
+                      球队
+                    </Typography>
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入名字"
+                      value={team}
+                      onChange={(e) => setTeam(e.target.value)}
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+                </Box>
+                <Button
+                  onClick={() => setPage(page - 1)}
+                  sx={{
+                    position: "absolute",
+                    bottom: 16,
+                    left: 16,
+                    bgcolor: "#000",
+                    color: "#fff",
+                    "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
+                  }}
+                >
+                  上一步
+                </Button>
+                <Button
+                  onClick={() => setPage(page + 1)}
+                  disabled={
+                    name === "" ||
+                    (heightUnit === "cm" && heightCM === "") ||
+                    (heightUnit === "ft/in" &&
+                      (heightFT === "" || heightIN === "")) ||
+                    (weightUnit === "kg" && weightKG === "") ||
+                    (weightUnit === "lbs" && weightLB === "") ||
+                    birthdate === null
+                  }
+                  sx={{
+                    position: "absolute",
+                    bottom: 16,
+                    right: 16,
+                    bgcolor: "#000",
+                    color: "#fff",
+                    "&:hover": { bgcolor: "#333" },
+                    "&.Mui-disabled": {
+                      bgcolor: "#ccc",
+                      color: "#888",
+                    },
+                  }}
+                >
+                  下一步
+                </Button>
+              </>
+            )}
+            {page === 2 && (
               <>
                 <Box
                   width="100%"
@@ -827,7 +936,7 @@ export default function Home() {
                               borderColor: "#aaa",
                             },
                             "&.Mui-focused fieldset": {
-                              borderColor: "#000",
+                              borderColor: "#1976d2",
                             },
                           },
                         }}
@@ -879,7 +988,7 @@ export default function Home() {
                 </Button>
               </>
             )}
-            {page === 2 && (
+            {page === 3 && (
               <>
                 <Box
                   width="100%"
@@ -968,7 +1077,7 @@ export default function Home() {
                           borderColor: "#aaa", // darker border on hover
                         },
                         "&.Mui-focused fieldset": {
-                          borderColor: "#000", // strong border on focus
+                          borderColor: "#1976d2", // strong border on focus
                         },
                       },
                     }}
