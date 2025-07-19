@@ -286,7 +286,7 @@ export default function Home() {
                   maxHeight="80vh"
                   sx={{
                     // marginTop: 16,
-                    p: 10,
+                    p: 2,
                     overflowY: "scroll",
                     display: "grid", // ✅ turn into a CSS grid
                     gridTemplateColumns:
