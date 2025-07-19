@@ -148,7 +148,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height="90vh"
+      height="85vh"
       display="flex"
       justifyContent={"center"}
       alignItems={"center"}
@@ -394,7 +394,7 @@ export default function Home() {
         ) : (
           <Box
             width="600px"
-            height="70%"
+            height="80%"
             display="flex"
             sx={{
               bgcolor: "white",
