@@ -446,6 +446,7 @@ export default function Home() {
             width="600px"
             height="80%"
             display="flex"
+            flexDirection="column" // 👈 stack logo and content vertically
             sx={{
               bgcolor: "white",
               borderRadius: "16px",
@@ -454,6 +455,24 @@ export default function Home() {
               position: "relative",
             }}
           >
+            {/* 🖼️ Logo at Top */}
+            <Box
+              display="flex"
+              justifyContent="center" // 👈 center horizontally
+              alignItems="center" // 👈 center vertically
+              sx={{ mb: 2 }} // 👈 margin-bottom for spacing
+            >
+              <Box
+                component="img"
+                src="/logo.png"
+                alt="AXCEL Logo"
+                sx={{
+                  height: 50, // 👈 adjust size
+                  width: "auto", // maintain aspect ratio
+                  // cursor: "pointer",
+                }}
+              />
+            </Box>
             {/* X button to close */}
             {editing && (
               <Button
@@ -488,7 +507,7 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="90%"
+                  height="80%"
                   sx={{
                     overflowY: "auto",
                     pr: 1,
@@ -916,7 +935,7 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="90%"
+                  height="80%"
                   sx={{
                     overflowY: "auto",
                     pr: 1,
@@ -1143,7 +1162,7 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="90%"
+                  height="80%"
                   sx={{
                     overflowY: "auto",
                     pr: 1,
@@ -1247,9 +1266,9 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="100%"
+                  height="70%"
                   display="flex"
-                  justifyContent={"center"}
+                  justifyContent={"space-between"}
                   alignItems={"center"}
                   flexDirection={"column"}
                   gap={2.5}
@@ -1259,84 +1278,86 @@ export default function Home() {
                   >
                     目標設定
                   </Typography>
-                  {suggestions[0] !== "" && (
-                    <Stack
-                      width="100%" // ✅ make it responsive
-                      // maxWidth="500px" // ✅ optional: cap width on larger screens
-                      direction="row"
-                      // spacing={1}
-                      paddingY={2}
-                      justifyContent="space-between" // Align items to the start for horizontal scroll
-                      alignItems="center"
-                      flexWrap="nowrap" // Prevent wrapping
+                  <Stack width="100%">
+                    {suggestions[0] !== "" && (
+                      <Stack
+                        width="100%" // ✅ make it responsive
+                        // maxWidth="500px" // ✅ optional: cap width on larger screens
+                        direction="row"
+                        // spacing={1}
+                        paddingY={2}
+                        justifyContent="space-between" // Align items to the start for horizontal scroll
+                        alignItems="center"
+                        flexWrap="nowrap" // Prevent wrapping
+                        sx={{
+                          // width: isMobile ? '100%' : '92.5%',
+                          backgroundColor: "background.paper",
+                          gap: 2,
+                          overflowX: "auto", // Enable horizontal scrolling
+                          whiteSpace: "nowrap", // Prevent items from breaking to the next line
+                          "&::-webkit-scrollbar": {
+                            height: "6px",
+                          },
+                          "&::-webkit-scrollbar-thumb": {
+                            backgroundColor: "rgba(0, 0, 0, 0.2)",
+                            borderRadius: "3px",
+                          },
+                        }}
+                      >
+                        {suggestions.map((suggestion, index) => (
+                          <Button
+                            key={index}
+                            variant="outlined"
+                            onClick={() => setGoal(suggestion)}
+                            sx={{
+                              textTransform: "none",
+                              backgroundColor: "background.default",
+                              color: "text.primary",
+                              borderRadius: "9999px",
+                              // paddingX: 3,
+                              paddingY: 1.5,
+                              // minWidth: 100,
+                              height: "auto",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              whiteSpace: "normal",
+                              boxShadow: 1,
+                              "&:hover": {
+                                backgroundColor: "primary.light",
+                                boxShadow: 2,
+                              },
+                            }}
+                          >
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </Stack>
+                    )}
+                    {suggestions[0] === "" && <CircularProgress />}
+                    <TextField
+                      variant="outlined"
+                      placeholder="輸入目標"
+                      value={goal}
+                      onChange={(e) => setGoal(e.target.value)}
                       sx={{
-                        // width: isMobile ? '100%' : '92.5%',
-                        backgroundColor: "background.paper",
-                        gap: 2,
-                        overflowX: "auto", // Enable horizontal scrolling
-                        whiteSpace: "nowrap", // Prevent items from breaking to the next line
-                        "&::-webkit-scrollbar": {
-                          height: "6px",
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "rgba(0, 0, 0, 0.2)",
-                          borderRadius: "3px",
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "12px", // rounded corners
+                          backgroundColor: "#fafafa", // subtle background
+                          "& fieldset": {
+                            borderColor: "#ddd", // lighter border
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#aaa", // darker border on hover
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#1976d2", // strong border on focus
+                          },
                         },
                       }}
-                    >
-                      {suggestions.map((suggestion, index) => (
-                        <Button
-                          key={index}
-                          variant="outlined"
-                          onClick={() => setGoal(suggestion)}
-                          sx={{
-                            textTransform: "none",
-                            backgroundColor: "background.default",
-                            color: "text.primary",
-                            borderRadius: "9999px",
-                            // paddingX: 3,
-                            paddingY: 1.5,
-                            // minWidth: 100,
-                            height: "auto",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            whiteSpace: "normal",
-                            boxShadow: 1,
-                            "&:hover": {
-                              backgroundColor: "primary.light",
-                              boxShadow: 2,
-                            },
-                          }}
-                        >
-                          {suggestion}
-                        </Button>
-                      ))}
-                    </Stack>
-                  )}
-                  {suggestions[0] === "" && <CircularProgress />}
-                  <TextField
-                    variant="outlined"
-                    placeholder="輸入目標"
-                    value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
-                    sx={{
-                      width: "100%",
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px", // rounded corners
-                        backgroundColor: "#fafafa", // subtle background
-                        "& fieldset": {
-                          borderColor: "#ddd", // lighter border
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#aaa", // darker border on hover
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#1976d2", // strong border on focus
-                        },
-                      },
-                    }}
-                  />
+                    />
+                  </Stack>
                 </Box>
                 <Button
                   onClick={() => setPage(page - 1)}
