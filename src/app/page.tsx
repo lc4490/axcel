@@ -209,23 +209,64 @@ export default function Home() {
     >
       <>
         {onboarded ? (
-          <Box>
-            {/* Edit button */}
-            <Button
-              onClick={() => {
-                setOnboarded(false), setPage(0), setEditing(true);
-              }}
+          <Box
+            width={"100%"}
+            height={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"flex-start"}
+            sx={{ position: "relative" }}
+          >
+            {/* Header */}
+            <Box
               sx={{
-                position: "absolute",
-                top: 16,
-                left: 16,
-                bgcolor: "#000",
+                position: "sticky", // keeps it fixed when scrolling
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 10,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                bgcolor: "#000", // header background
                 color: "#fff",
-                "&:hover": { bgcolor: "#333" },
+                px: 3,
+                py: 2,
+                boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
               }}
             >
-              Edit
-            </Button>
+              <Button
+                onClick={() => {
+                  setOnboarded(false);
+                  setPage(0);
+                  setEditing(true);
+                }}
+                variant="outlined"
+                sx={{
+                  color: "#fff",
+                  borderColor: "#fff",
+                  "&:hover": { bgcolor: "#333", borderColor: "#fff" },
+                }}
+              >
+                Edit
+              </Button>
+              {/* Logo / Title */}
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                AXCEL
+              </Typography>
+
+              {/* Buttons */}
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "#1976d2",
+                  color: "#fff",
+                  "&:hover": { bgcolor: "#1565c0" },
+                }}
+              >
+                Sign In
+              </Button>
+            </Box>
             <>
               {workouts.length === 0 ? (
                 <Stack
@@ -244,8 +285,8 @@ export default function Home() {
                   container
                   maxHeight="80vh"
                   sx={{
-                    marginTop: 16,
-                    p: 2,
+                    // marginTop: 16,
+                    p: 10,
                     overflowY: "scroll",
                     display: "grid", // ✅ turn into a CSS grid
                     gridTemplateColumns:
