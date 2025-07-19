@@ -450,7 +450,7 @@ export default function Home() {
                       color: "black",
                       fontWeight: "500",
                       fontSize: "1.4rem",
-                      marginBottom: 2,
+                      // marginBottom: 2,
                     }}
                   >
                     你好！讓我們先了解你，以便為你量身定制專屬體驗
