@@ -129,10 +129,9 @@ export default function Home() {
       });
       const data = await res.json();
       const suggestions = data.result
-        .split(/\d+\.\s*/) // split by "1.", "2.", etc.
+        .split(/\*\*\d+\.\s*/) // split by "1.", "2.", etc.
         .filter(Boolean) // remove any empty strings
-        .slice(1) // remove first string
-        .map((str: string) => `**${str}`); // remove existing ** and add **
+        .map((str: string) => `**${str}`); // add **
 
       console.log(suggestions);
       setSuggestions(suggestions);
