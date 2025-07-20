@@ -20,6 +20,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const [onboarded, setOnboarded] = useState(false);
@@ -64,9 +65,9 @@ export default function Home() {
     "Level 17.1 (~1800 m)",
   ]);
   // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  // useEffect(() => {
-  //   setSuggestions(Array(3).fill(""));
-  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  useEffect(() => {
+    setSuggestions(Array(3).fill(""));
+  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   const [suggestions, setSuggestions] = useState([
     `1. 增肌雕塑（Hypertrophy & Definition）
     目標: 增加 3–5kg 瘦體重，體脂降至 12–14%，打造更清晰的肌肉線條。
@@ -1360,18 +1361,44 @@ export default function Home() {
                               justifyContent: "flex-start",
                             }}
                           >
-                            <Typography
-                              sx={{
-                                color: "#333", // dark text for contrast
-                                fontSize: "1rem",
-                                lineHeight: 1.6,
-                                wordBreak: "break-word",
-                                overflowWrap: "break-word",
-                                whiteSpace: "normal",
+                            <ReactMarkdown
+                              children={suggestion}
+                              components={{
+                                p: ({ node, ...props }) => (
+                                  <Typography
+                                    sx={{
+                                      color: "#444", // body text color
+                                      fontSize: "0.95rem",
+                                      lineHeight: 1.6,
+                                      mb: 1,
+                                      whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
+                                    }}
+                                    {...props}
+                                  />
+                                ),
+                                li: ({ node, ...props }) => (
+                                  <li
+                                    style={{
+                                      marginBottom: "0.5rem",
+                                      color: "#555", // muted list color
+                                      whiteSpace: "pre-wrap", // ✅ preserve line breaks
+                                    }}
+                                    {...props}
+                                  />
+                                ),
+                                strong: ({ node, ...props }) => (
+                                  <Typography
+                                    component="span"
+                                    sx={{
+                                      color: "#111", // darker bold text
+                                      fontWeight: "bold",
+                                      whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
+                                    }}
+                                    {...props}
+                                  />
+                                ),
                               }}
-                            >
-                              {suggestion}
-                            </Typography>
+                            />
                           </Box>
 
                           // <Button
