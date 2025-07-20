@@ -128,9 +128,14 @@ export default function Home() {
         body: JSON.stringify({ input }),
       });
       const data = await res.json();
-      console.log("AI Response:", data.result);
-      const titles = data.result;
-      setSuggestions(titles.split("\n\n"));
+      const suggestions = data.result
+        .split(/\d+\.\s*/) // split by "1.", "2.", etc.
+        .filter(Boolean) // remove any empty strings
+        .slice(1) // remove first string
+        .map((str: string) => `**${str}`); // remove existing ** and add **
+
+      console.log(suggestions);
+      setSuggestions(suggestions);
     }
   };
 
@@ -191,7 +196,8 @@ export default function Home() {
                 (weightUnit === "kg" && weightKG === "") ||
                 (weightUnit === "lbs" && weightLB === "")
               ) &&
-              birthdate !== null
+              birthdate !== null &&
+              birthdate.isValid()
             ) {
               setPage(page + 1);
             }
@@ -938,7 +944,8 @@ export default function Home() {
                       (heightFT === "" || heightIN === "")) ||
                     (weightUnit === "kg" && weightKG === "") ||
                     (weightUnit === "lbs" && weightLB === "") ||
-                    birthdate === null
+                    birthdate === null ||
+                    (birthdate !== null && !birthdate.isValid())
                   }
                   sx={{
                     position: "absolute",
