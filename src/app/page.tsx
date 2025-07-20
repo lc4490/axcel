@@ -68,9 +68,27 @@ export default function Home() {
   //   setSuggestions(Array(3).fill(""));
   // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   const [suggestions, setSuggestions] = useState([
-    "爆發力增強",
-    "提升敏捷性",
-    "持久力鍛煉",
+    `1. 增肌雕塑（Hypertrophy & Definition）
+    目標: 增加 3–5kg 瘦體重，體脂降至 12–14%，打造更清晰的肌肉線條。
+    原因: 你的力量基礎不錯（深蹲/臥推比例佳），但體脂還有下修空間，可結合增肌期與微調飲食，塑造理想身形。
+    重點:
+    每週 4–5 天力量訓練（分化部位訓練 + 核心訓練）
+    高蛋白飲食（每公斤體重 1.8–2.2g 蛋白質）
+    保持輕度有氧（如每週 2 次慢跑/間歇跑 30 分鐘）`,
+    `2. 爆發力與敏捷度提升（Power & Agility）
+    目標: 垂直跳提升至 60cm、T-Test 縮短至 9.5秒、30m/40m衝刺加速更快。
+    原因: 你在垂直跳和衝刺已有不錯成績，但若想進階到高階運動員水準，需要專注於神經適應與爆發力開發。
+    重點:
+    每週 2–3 天進行短距離衝刺、變向跑、折返跑等敏捷性訓練
+    採用負荷跳躍（如負重深蹲跳、箱跳）
+    結合奧林匹克舉（如抓舉、高翻`,
+    `3. 有氧耐力與功能性體能（Conditioning & Endurance）
+    目標: Yo-Yo 測試提升至 Level 19 (~2200m)、仰臥起坐達到 55次/分鐘
+    原因: 你的短時間爆發力優秀，但長時間持續耐力稍弱。這對球類、跑步運動或軍警體能測驗也有幫助。
+    重點:
+    每週 3 天間歇訓練（如 400m 間歇跑）
+    每週 1–2 天長時間 Zone 2 有氧（45–60 分鐘）
+    核心訓練（如藥球擲、反向卷腹`,
   ]);
   const [input, setInput] = useState("");
   // const [workouts, setWorkouts] = useState<string[]>([]);
@@ -82,36 +100,40 @@ export default function Home() {
   ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
+  // takes input and sends an openai request to get suggestions for goals, generates three possible goals
   const makeSuggestions = async () => {
-    // if (suggestions[0] === "") {
-    //   let input = "";
-    //   const height =
-    //     heightUnit === "cm"
-    //       ? heightCM + " " + heightUnit
-    //       : heightFT + ", " + heightIN + " " + heightUnit;
-    //   const weight =
-    //     weightUnit === "kg"
-    //       ? weightKG + " " + weightUnit
-    //       : weightLB + " " + weightUnit;
-    //   input += "身高：" + height + "\n";
-    //   input += "體重：" + weight + "\n";
-    //   input += "測試結果:\n";
-    //   for (let i = 0; i < labels.length; i++) {
-    //     input += labels[i] + values[i] + "\n";
-    //   }
-    //   setInput(input);
-    //   const res = await fetch("/api/goal", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({ input }),
-    //   });
-    //   const data = await res.json();
-    //   console.log("AI Response:", data.result);
-    //   const titles = data.result;
-    //   setSuggestions(titles.split("\n"));
-    // }
+    console.log("makesuggestions function running");
+    if (suggestions[0] === "") {
+      console.log("if statement passed");
+      let input = "";
+      const height =
+        heightUnit === "cm"
+          ? heightCM + " " + heightUnit
+          : heightFT + ", " + heightIN + " " + heightUnit;
+      const weight =
+        weightUnit === "kg"
+          ? weightKG + " " + weightUnit
+          : weightLB + " " + weightUnit;
+      input += "身高：" + height + "\n";
+      input += "體重：" + weight + "\n";
+      input += "測試結果:\n";
+      for (let i = 0; i < labels.length; i++) {
+        input += labels[i] + values[i] + "\n";
+      }
+      setInput(input);
+      const res = await fetch("/api/goal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input }),
+      });
+      const data = await res.json();
+      console.log("AI Response:", data.result);
+      const titles = data.result;
+      setSuggestions(titles.split("\n\n"));
+    }
   };
 
+  // takes input and goals and sends an openai request to craft a suggested workout plan, generates an array of individual workout plans
   const makePlan = async () => {
     // if (workouts.length === 0) {
     //   try {
@@ -154,7 +176,7 @@ export default function Home() {
       justifyContent={"center"}
       alignItems={"center"}
       onKeyDown={(e) => {
-        // enter to go to next step
+        // enter logic per page to go to next step
         if (e.key === "Enter") {
           e.preventDefault();
 
@@ -211,6 +233,7 @@ export default function Home() {
       tabIndex={0}
     >
       <>
+        {/* after the user inputs information */}
         {onboarded ? (
           <Box
             width={"100%"}
@@ -238,6 +261,7 @@ export default function Home() {
                 boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
               }}
             >
+              {/* Edit button */}
               <Button
                 onClick={() => {
                   setOnboarded(false);
@@ -263,8 +287,7 @@ export default function Home() {
                   width: "auto", // maintain aspect ratio
                 }}
               />
-
-              {/* Buttons */}
+              {/* User button */}
               <Button
                 variant="outlined"
                 sx={{
@@ -443,11 +466,12 @@ export default function Home() {
             </>
           </Box>
         ) : (
+          // onboarding page for user to input info
           <Box
             width="600px"
             height="80%"
             display="flex"
-            flexDirection="column" // 👈 stack logo and content vertically
+            flexDirection="column"
             sx={{
               bgcolor: "white",
               borderRadius: "16px",
@@ -456,20 +480,20 @@ export default function Home() {
               position: "relative",
             }}
           >
-            {/* 🖼️ Logo at Top */}
+            {/* Logo  */}
             <Box
               display="flex"
-              justifyContent="center" // 👈 center horizontally
-              alignItems="center" // 👈 center vertically
-              sx={{ mb: 2 }} // 👈 margin-bottom for spacing
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mb: 2 }}
             >
               <Box
                 component="img"
                 src="/logo.png"
                 alt="AXCEL Logo"
                 sx={{
-                  height: 50, // 👈 adjust size
-                  width: "auto", // maintain aspect ratio
+                  height: 50,
+                  width: "auto",
                   // cursor: "pointer",
                 }}
               />
@@ -1272,14 +1296,14 @@ export default function Home() {
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   flexDirection={"column"}
-                  gap={2.5}
+                  gap={2}
                 >
                   <Typography
                     sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
                   >
                     目標設定
                   </Typography>
-                  <Stack width="100%">
+                  <Stack width="100%" height="100%">
                     {suggestions[0] !== "" && (
                       <Stack
                         width="100%" // ✅ make it responsive
@@ -1294,7 +1318,7 @@ export default function Home() {
                           // width: isMobile ? '100%' : '92.5%',
                           backgroundColor: "background.paper",
                           gap: 2,
-                          overflowX: "auto", // Enable horizontal scrolling
+                          // overflowX: "auto", // Enable horizontal scrolling
                           whiteSpace: "nowrap", // Prevent items from breaking to the next line
                           "&::-webkit-scrollbar": {
                             height: "6px",
@@ -1306,36 +1330,85 @@ export default function Home() {
                         }}
                       >
                         {suggestions.map((suggestion, index) => (
-                          <Button
+                          <Box
                             key={index}
-                            variant="outlined"
-                            onClick={() => setGoal(suggestion)}
+                            onClick={() => {
+                              setGoal(suggestion);
+                            }}
                             sx={{
-                              textTransform: "none",
-                              backgroundColor: "background.default",
-                              color: "text.primary",
-                              borderRadius: "9999px",
-                              // paddingX: 3,
-                              paddingY: 1.5,
-                              // minWidth: 100,
-                              height: "auto",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              whiteSpace: "normal",
-                              boxShadow: 1,
+                              backgroundColor: "#f5f5f5", // light background
+                              width: "100%",
+                              height: "250px",
+                              cursor: "pointer",
+                              borderRadius: "12px", // smoother rounded corners
+                              overflow: "auto", // auto-scroll if content overflows
+                              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // subtle shadow
+                              transition: "all 0.3s ease", // smooth hover effects
                               "&:hover": {
-                                backgroundColor: "primary.light",
-                                boxShadow: 2,
+                                backgroundColor: "#e0e0e0", // light hover effect
+                                boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)", // stronger shadow on hover
+                                transform: "scale(1.02)", // slight grow
                               },
+                              p: 2, // consistent inner padding
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "flex-start",
                             }}
                           >
-                            {suggestion}
-                          </Button>
+                            <Typography
+                              sx={{
+                                color: "#333", // dark text for contrast
+                                fontSize: "1rem",
+                                lineHeight: 1.6,
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                                whiteSpace: "normal",
+                              }}
+                            >
+                              {suggestion}
+                            </Typography>
+                          </Box>
+
+                          // <Button
+                          //   key={index}
+                          //   variant="outlined"
+                          //   onClick={() => setGoal(suggestion)}
+                          //   sx={{
+                          //     textTransform: "none",
+                          //     backgroundColor: "background.default",
+                          //     color: "text.primary",
+                          //     // borderRadius: "9999px",
+                          //     // paddingX: 3,
+                          //     paddingY: 1.5,
+                          //     // minWidth: 100,
+                          //     height: "auto",
+                          //     display: "flex",
+                          //     justifyContent: "center",
+                          //     alignItems: "center",
+                          //     whiteSpace: "normal",
+                          //     boxShadow: 1,
+                          //     "&:hover": {
+                          //       backgroundColor: "primary.light",
+                          //       boxShadow: 2,
+                          //     },
+                          //   }}
+                          // >
+                          //   {suggestion}
+                          // </Button>
                         ))}
                       </Stack>
                     )}
-                    {suggestions[0] === "" && <CircularProgress />}
+                    {suggestions[0] === "" && (
+                      <Box
+                        width="100%"
+                        height="100%"
+                        display="flex"
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <CircularProgress />
+                      </Box>
+                    )}
                     <TextField
                       variant="outlined"
                       placeholder="輸入目標"
