@@ -1344,7 +1344,7 @@ export default function Home() {
                             sx={{
                               backgroundColor: "#f5f5f5", // light background
                               width: "100%",
-                              height: "225px",
+                              height: "200px",
                               cursor: "pointer",
                               borderRadius: "12px", // smoother rounded corners
                               overflow: "auto", // auto-scroll if content overflows
