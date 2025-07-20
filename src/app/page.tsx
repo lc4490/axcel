@@ -1291,12 +1291,17 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="70%"
+                  height="80%"
                   display="flex"
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   flexDirection={"column"}
                   gap={2}
+                  sx={{
+                    overflowY: "auto",
+                    pr: 1,
+                    position: "relative",
+                  }}
                 >
                   <Typography
                     sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
@@ -1338,7 +1343,7 @@ export default function Home() {
                             sx={{
                               backgroundColor: "#f5f5f5", // light background
                               width: "100%",
-                              height: "250px",
+                              height: "225px",
                               cursor: "pointer",
                               borderRadius: "12px", // smoother rounded corners
                               overflow: "auto", // auto-scroll if content overflows
