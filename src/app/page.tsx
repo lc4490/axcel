@@ -1292,7 +1292,7 @@ export default function Home() {
               <>
                 <Box
                   width="100%"
-                  height="80%"
+                  height="75%"
                   display="flex"
                   justifyContent={"space-between"}
                   alignItems={"center"}
