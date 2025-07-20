@@ -1297,7 +1297,7 @@ export default function Home() {
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   flexDirection={"column"}
-                  gap={2}
+                  // gap={2}
                   sx={{
                     overflowY: "auto",
                     pr: 1,
