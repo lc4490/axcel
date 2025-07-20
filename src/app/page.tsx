@@ -1362,7 +1362,6 @@ export default function Home() {
                             }}
                           >
                             <ReactMarkdown
-                              children={suggestion}
                               components={{
                                 p: ({ node, ...props }) => (
                                   <Typography
@@ -1398,7 +1397,9 @@ export default function Home() {
                                   />
                                 ),
                               }}
-                            />
+                            >
+                              {suggestion}
+                            </ReactMarkdown>
                           </Box>
 
                           // <Button
