@@ -368,7 +368,7 @@ export default function Home() {
                     flexWrap: "nowrap", // ✅ prevent wrapping to new lines
                     padding: 1, // ✅ optional spacing inside scroll area
                     // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
-                    marinBottom: "10vh",
+                    marginBottom: "10vh",
                   }}
                 >
                   {workouts.map((item, index) => (
@@ -1498,7 +1498,9 @@ export default function Home() {
                 </Button>
                 <Button
                   onClick={() => {
-                    setOnboarded(true), makePlan();
+                    setOnboarded(true),
+                      makePlan(),
+                      window.scrollTo({ top: 0, behavior: "auto" });
                   }}
                   disabled={goal === ""}
                   sx={{
