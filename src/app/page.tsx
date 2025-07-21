@@ -340,6 +340,7 @@ export default function Home() {
                   alignItems={"center"}
                   flexDirection={isMobile ? "column" : "row"}
                   gap={2}
+                  sx={{ overflow: "scroll" }}
                 >
                   {workouts.map((item, index) => (
                     <Box
