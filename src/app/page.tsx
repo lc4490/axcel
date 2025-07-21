@@ -338,16 +338,15 @@ export default function Home() {
                 <Stack
                   width="100%"
                   height="325px"
-                  direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
-                  justifyContent={"flex-start"}
+                  direction={isMobile ? "column" : "row"} // ✅ vertical on mobile, horizontal on desktop
+                  justifyContent={isMobile ? "center" : "flex-start"}
                   alignItems="center"
                   gap={2}
                   sx={{
-                    overflow: "auto",
-                    // overflowY: "auto", // ✅ prevent vertical scroll
-                    flexWrap: "nowrap", // ✅ prevent wrapping to new lines
-                    padding: 1, // ✅ optional spacing inside scroll area
-                    // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
+                    overflowY: isMobile ? "auto" : "hidden", // ✅ vertical scroll on mobile
+                    overflowX: isMobile ? "hidden" : "auto", // ✅ horizontal scroll on desktop
+                    flexWrap: "nowrap", // ✅ no wrapping
+                    padding: 1,
                   }}
                 >
                   {workouts.map((item, index) => (
@@ -355,14 +354,14 @@ export default function Home() {
                       key={index}
                       onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
-                        width: "300px", // ✅ fixed box width for scroll
+                        width: "300px", // ✅ fixed box width
                         height: "300px",
                         flex: "0 0 auto", // ✅ prevent resizing
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
                         boxShadow: 3,
                         padding: 3,
-                        cursor: "pointer", // ✅ clickable indicator
+                        cursor: "pointer",
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                         overflow: "hidden",
                         "&:hover": {
