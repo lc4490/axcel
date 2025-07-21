@@ -24,7 +24,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-  const [onboarded, setOnboarded] = useState(false);
+  const [onboarded, setOnboarded] = useState(true);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -287,6 +287,7 @@ export default function Home() {
               justifyContent={"center"}
               alignItems={"center"}
               flexDirection={"column"}
+              sx={{ overflow: "scroll" }}
             >
               {/* Logo / Title */}
               <Box
@@ -352,8 +353,8 @@ export default function Home() {
                         borderRadius: "4px",
                         boxShadow: 3,
                         padding: 3,
-                        height: "200px",
-                        width: "200px",
+                        height: "250px",
+                        width: "250px",
                         aspectRatio: "1 / 1", // ✅ keep square shape
                         cursor: "pointer", // ✅ indicate clickable
                         transition: "transform 0.2s ease, box-shadow 0.2s ease", // ✅ smooth hover effect
