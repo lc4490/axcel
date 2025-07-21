@@ -322,22 +322,9 @@ export default function Home() {
                   <CircularProgress />
                 </Stack>
               ) : (
-                // <Grid
-                //   container
-                //   maxHeight="400px"
-                //   sx={{
-                //     // marginTop: 16,
-                //     p: 2,
-                //     overflowY: "scroll",
-                //     display: "grid", // ✅ turn into a CSS grid
-                //     gridTemplateColumns:
-                //       "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
-                //     gap: 4, // ✅ space between boxes
-                //   }}
-                // >
                 <Stack
                   width="100%"
-                  height="325px"
+                  // height="325px"
                   direction={isMobile ? "column" : "row"} // ✅ vertical on mobile, horizontal on desktop
                   justifyContent={isMobile ? "center" : "flex-start"}
                   alignItems="center"
@@ -387,8 +374,6 @@ export default function Home() {
                     </Box>
                   ))}
                 </Stack>
-
-                // </Grid>
               )}
 
               {/* 🖼️ Modal for Workout Details */}
