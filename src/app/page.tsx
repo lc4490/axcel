@@ -13,7 +13,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Grid,
 } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -179,6 +178,10 @@ export default function Home() {
       display="flex"
       justifyContent={"center"}
       alignItems={"center"}
+      sx={{
+        overflowX: isMobile ? "visible" : "auto", // ✅ scroll parent horizontally on desktop
+        overflowY: isMobile ? "auto" : "hidden", // ✅ scroll parent vertically on mobile
+      }}
       onKeyDown={(e) => {
         // enter logic per page to go to next step
         if (e.key === "Enter") {
