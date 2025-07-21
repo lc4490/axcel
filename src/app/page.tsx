@@ -368,7 +368,7 @@ export default function Home() {
                     flexWrap: "nowrap", // ✅ prevent wrapping to new lines
                     padding: 1, // ✅ optional spacing inside scroll area
                     // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
-                    marinBottom: 4,
+                    marinBottom: "10vh",
                   }}
                 >
                   {workouts.map((item, index) => (
