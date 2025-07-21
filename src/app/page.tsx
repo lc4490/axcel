@@ -383,6 +383,7 @@ export default function Home() {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
+                        {isMobile ? "HI" : ""}
                         {item}
                       </Typography>
                     </Box>
