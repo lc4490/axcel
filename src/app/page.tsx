@@ -361,7 +361,7 @@ export default function Home() {
                   width="100%"
                   maxHeight={isMobile ? "90vh" : "auto"}
                   direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
-                  justifyContent={"center"}
+                  justifyContent={isMobile ? "flex-start" : "center"}
                   alignItems={
                     isMobile
                       ? "center"
