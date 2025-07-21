@@ -24,7 +24,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-  const [onboarded, setOnboarded] = useState(true);
+  const [onboarded, setOnboarded] = useState(false);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -36,11 +36,11 @@ export default function Home() {
   const [weightLB, setWeightLB] = useState("");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [birthdate, setBirthdate] = useState<Dayjs | null>(null);
-  const [team, setTeam] = useState("");
-  const [jersey, setJersey] = useState("");
-  const [position, setPosition] = useState("");
-  const [maxHeartRate, setMaxHeartRate] = useState("");
-  const [maxVelocity, setMaxVelocity] = useState("");
+  const [team, setTeam] = useState("Lakers");
+  const [jersey, setJersey] = useState("23");
+  const [position, setPosition] = useState("PF");
+  const [maxHeartRate, setMaxHeartRate] = useState("100");
+  const [maxVelocity, setMaxVelocity] = useState("20");
   const [goal, setGoal] = useState("");
   const labels = [
     "1.身體組成:",
@@ -75,17 +75,13 @@ export default function Home() {
   ]);
   // const [suggestions, setSuggestions] = useState(["", "", ""]);
   const [input, setInput] = useState("");
-  // const [workouts, setWorkouts] = useState<string[]>([]);
-  const [workouts, setWorkouts] = useState([
-    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
-    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
-  ]);
+  const [workouts, setWorkouts] = useState<string[]>([]);
+  // const [workouts, setWorkouts] = useState([
+  //   "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+  //   "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+  //   "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+  //   "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+  // ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   // takes input and sends an openai request to get suggestions for goals, generates three possible goals
@@ -127,38 +123,43 @@ export default function Home() {
 
   // takes input and goals and sends an openai request to craft a suggested workout plan, generates an array of individual workout plans
   const makePlan = async () => {
-    // if (workouts.length === 0) {
-    //   try {
-    //     // setLoading(true); // show spinner
-    //     const res = await fetch("/api/plan", {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify({ input, goal }),
-    //     });
-    //     const data = await res.json();
-    //     console.log("Generated Plan:", data.plan);
-    //     setWorkouts(
-    //       data.plan
-    //         .split("天")
-    //         .slice(2)
-    //         .map((w: string, index: number) => {
-    //           let text = "第" + (index + 1) + "天" + w;
-    //           // Trim everything after ### or ---
-    //           if (text.includes("###")) {
-    //             text = text.split("###")[0].trim();
-    //           }
-    //           if (text.includes("---")) {
-    //             text = text.split("---")[0].trim();
-    //           }
-    //           return text.trim();
-    //         })
-    //     );
-    //   } catch (err) {
-    //     console.error("Failed to generate workout plan", err);
-    //   } finally {
-    //     // setLoading(false); // hide spinner
-    //   }
-    // }
+    console.log("makeplan function running");
+    if (workouts.length === 0) {
+      console.log("if statement passed");
+      try {
+        // setLoading(true); // show spinner
+        const res = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, goal }),
+        });
+        const data = await res.json();
+        console.log("Generated Plan:", data.plan);
+        setWorkouts(
+          data.plan
+            .split("天")
+            .slice(2)
+            .map((w: string, index: number) => {
+              let text = "第" + (index + 1) + "天" + w;
+              // Trim everything after ### or ---
+              if (text.includes("###")) {
+                text = text.split("###")[0].trim();
+              }
+              if (text.includes("---")) {
+                text = text.split("---")[0].trim();
+              }
+              if (text.includes("\n\n")) {
+                text = text.split("\n\n")[0].trim();
+              }
+              return text.trim();
+            })
+        );
+      } catch (err) {
+        console.error("Failed to generate workout plan", err);
+      } finally {
+        // setLoading(false); // hide spinner
+      }
+    }
   };
   return (
     <Box
@@ -339,7 +340,13 @@ export default function Home() {
                   width="100%"
                   // height="325px"
                   direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
-                  justifyContent={"flex-start"}
+                  justifyContent={
+                    isMobile
+                      ? "flex-start"
+                      : workouts.length < 5
+                      ? "center"
+                      : "flex-start"
+                  }
                   alignItems="center"
                   gap={2}
                   sx={{
@@ -355,36 +362,40 @@ export default function Home() {
                       key={index}
                       onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
-                        width: "300px", // ✅ fixed box width for scroll
+                        width: "300px",
                         height: "300px",
-                        flex: "0 0 auto", // ✅ prevent resizing
+                        flex: "0 0 auto",
                         backgroundColor: "#f9f9f9",
-                        borderRadius: "4px",
-                        boxShadow: 3,
-                        padding: 3,
-                        cursor: "pointer", // ✅ clickable indicator
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        borderRadius: "4px", // ✅ softer rounded corners
+                        boxShadow: "0 6px 18px rgba(0,0,0,0.1)", // ✅ modern shadow
+                        padding: 2,
+                        cursor: "pointer",
+                        position: "relative", // ✅ for positioning text inside
                         overflow: "hidden",
+                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
                         "&:hover": {
                           transform: "scale(1.05)",
-                          boxShadow: 5,
+                          boxShadow: "0 12px 24px rgba(0,0,0,0.15)", // ✅ stronger hover shadow
                         },
                       }}
                     >
                       <Typography
                         variant="body1"
-                        color="text.secondary"
+                        color="text.primary"
                         sx={{
-                          whiteSpace: "pre-wrap",
+                          position: "absolute", // ✅ position relative to Box
+                          bottom: 16, // ✅ offset from bottom
+                          left: 16, // ✅ offset from left
+                          fontWeight: 600, // ✅ make it bolder
+                          padding: "4px 8px", // ✅ little padding for aesthetics
+                          fontSize: "1.25rem",
+                          maxWidth: "90%",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 8,
-                          WebkitBoxOrient: "vertical",
+                          whiteSpace: "nowrap", // ✅ single line text
                         }}
                       >
-                        {isMobile ? "HI" : ""}
-                        {item}
+                        {item.split("\n")[0]}
                       </Typography>
                     </Box>
                   ))}
