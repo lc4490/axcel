@@ -178,6 +178,9 @@ export default function Home() {
       display="flex"
       justifyContent={"center"}
       alignItems={"center"}
+      sx={{
+        overflow: "hidden", // ✅ disable scrolling
+      }}
       onKeyDown={(e) => {
         // enter logic per page to go to next step
         if (e.key === "Enter") {
@@ -353,7 +356,7 @@ export default function Home() {
                   justifyContent={"center"}
                   alignItems={
                     isMobile
-                      ? "flex-start"
+                      ? "center"
                       : workouts.length < 5
                       ? "center"
                       : "flex-start"
