@@ -317,7 +317,6 @@ export default function Home() {
                   alignItems="center"
                   justifyContent="center"
                   spacing={2}
-                  height="300px"
                 >
                   <Typography>正在為您指定訓練課程規劃...</Typography>
                   <CircularProgress />
@@ -338,17 +337,17 @@ export default function Home() {
                 // >
                 <Stack
                   width="100%"
-                  height="275px"
-                  direction="row" // ✅ enforce horizontal flow
+                  height="325px"
+                  direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
                   justifyContent={"flex-start"}
                   alignItems="center"
                   gap={2}
                   sx={{
-                    overflowX: "auto", // ✅ horizontal scroll
-                    overflowY: "hidden", // ✅ prevent vertical scroll
+                    overflow: "auto",
+                    // overflowY: "auto", // ✅ prevent vertical scroll
                     flexWrap: "nowrap", // ✅ prevent wrapping to new lines
                     padding: 1, // ✅ optional spacing inside scroll area
-                    scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
+                    // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
                   }}
                 >
                   {workouts.map((item, index) => (
@@ -356,8 +355,8 @@ export default function Home() {
                       key={index}
                       onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
-                        width: "250px", // ✅ fixed box width for scroll
-                        height: "250px",
+                        width: "300px", // ✅ fixed box width for scroll
+                        height: "300px",
                         flex: "0 0 auto", // ✅ prevent resizing
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
