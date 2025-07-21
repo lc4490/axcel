@@ -33,7 +33,7 @@ const boxColors = [
 
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-  const [onboarded, setOnboarded] = useState(false);
+  const [onboarded, setOnboarded] = useState(true);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -84,13 +84,13 @@ export default function Home() {
   ]);
   // const [suggestions, setSuggestions] = useState(["", "", ""]);
   const [input, setInput] = useState("");
-  const [workouts, setWorkouts] = useState<string[]>([]);
-  // const [workouts, setWorkouts] = useState([
-  //   "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-  //   "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-  //   "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-  //   "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
-  // ]);
+  // const [workouts, setWorkouts] = useState<string[]>([]);
+  const [workouts, setWorkouts] = useState([
+    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+  ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   // takes input and sends an openai request to get suggestions for goals, generates three possible goals
@@ -163,6 +163,7 @@ export default function Home() {
               return text.trim();
             })
         );
+        console.log(workouts);
       } catch (err) {
         console.error("Failed to generate workout plan", err);
       } finally {
@@ -173,7 +174,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height={isMobile ? "90vh" : "100vh"}
+      height="100vh"
       bgcolor={"#eb834c"}
       display="flex"
       justifyContent={"center"}
