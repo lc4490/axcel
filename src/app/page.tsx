@@ -163,7 +163,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height={isMobile ? "100%" : "100vh"}
+      height={isMobile ? "90vh" : "100vh"}
       bgcolor={"#eb834c"}
       display="flex"
       justifyContent={"center"}
@@ -337,7 +337,7 @@ export default function Home() {
                 // >
                 <Stack
                   width="100%"
-                  height="100%"
+                  height="325px"
                   direction={isMobile ? "column" : "row"} // ✅ vertical on mobile, horizontal on desktop
                   justifyContent={isMobile ? "center" : "flex-start"}
                   alignItems="center"
