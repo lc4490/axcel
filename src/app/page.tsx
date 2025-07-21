@@ -33,7 +33,7 @@ const boxColors = [
 
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-  const [onboarded, setOnboarded] = useState(true);
+  const [onboarded, setOnboarded] = useState(false);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -86,10 +86,10 @@ export default function Home() {
   const [input, setInput] = useState("");
   // const [workouts, setWorkouts] = useState<string[]>([]);
   const [workouts, setWorkouts] = useState([
-    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
-    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
-    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
-    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+    "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
+    "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
+    "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
+    "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
   ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
@@ -163,7 +163,6 @@ export default function Home() {
               return text.trim();
             })
         );
-        console.log(workouts);
       } catch (err) {
         console.error("Failed to generate workout plan", err);
       } finally {
@@ -357,7 +356,13 @@ export default function Home() {
                       ? "center"
                       : "flex-start"
                   }
-                  alignItems="center"
+                  alignItems={
+                    isMobile
+                      ? "flex-start"
+                      : workouts.length < 5
+                      ? "center"
+                      : "flex-start"
+                  }
                   gap={2}
                   sx={{
                     overflow: "auto",
@@ -370,7 +375,9 @@ export default function Home() {
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
-                      onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
+                      onClick={() => {
+                        setSelectedWorkout(item), console.log(item);
+                      }} // ✅ make box clickable
                       sx={{
                         width: "300px",
                         height: "300px",
