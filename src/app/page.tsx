@@ -324,15 +324,15 @@ export default function Home() {
               ) : (
                 <Stack
                   width="100%"
-                  // height="325px"
-                  direction={isMobile ? "column" : "row"} // ✅ vertical on mobile, horizontal on desktop
+                  height={isMobile ? "auto" : "325px"} // ✅ expand vertically on mobile
+                  direction={isMobile ? "column" : "row"} // ✅ vertical stack on mobile
                   justifyContent={isMobile ? "center" : "flex-start"}
                   alignItems="center"
                   gap={2}
                   sx={{
-                    overflowY: isMobile ? "auto" : "hidden", // ✅ vertical scroll on mobile
-                    overflowX: isMobile ? "hidden" : "auto", // ✅ horizontal scroll on desktop
-                    flexWrap: "nowrap", // ✅ no wrapping
+                    overflowY: isMobile ? "visible" : "hidden", // ✅ let page scroll vertically on mobile
+                    overflowX: isMobile ? "hidden" : "auto", // ✅ horizontal scroll only on desktop
+                    flexWrap: isMobile ? "wrap" : "nowrap", // ✅ allow wrapping on mobile
                     padding: 1,
                   }}
                 >
@@ -343,7 +343,6 @@ export default function Home() {
                       sx={{
                         width: "300px", // ✅ fixed box width
                         height: "300px",
-                        flex: "0 0 auto", // ✅ prevent resizing
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
                         boxShadow: 3,
@@ -351,6 +350,9 @@ export default function Home() {
                         cursor: "pointer",
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                         overflow: "hidden",
+                        ...(isMobile
+                          ? {} // ✅ remove flex for mobile
+                          : { flex: "0 0 auto" }), // ✅ only apply on desktop
                         "&:hover": {
                           transform: "scale(1.05)",
                           boxShadow: 5,
