@@ -22,6 +22,15 @@ import dayjs, { Dayjs } from "dayjs";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ReactMarkdown from "react-markdown";
 
+const boxColors = [
+  // "#c0ef6b", // lime green
+  "#7badaf", // muted teal
+  "#f8ce7e", // peach
+  "#7eb1eb", // light blue
+  "#aa6b87", // mauve
+  "#e57974", // coral pink
+];
+
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
   const [onboarded, setOnboarded] = useState(false);
@@ -338,7 +347,7 @@ export default function Home() {
                 // >
                 <Stack
                   width="100%"
-                  // height="325px"
+                  maxHeight={isMobile ? "90vh" : "auto"}
                   direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
                   justifyContent={
                     isMobile
@@ -365,7 +374,8 @@ export default function Home() {
                         width: "300px",
                         height: "300px",
                         flex: "0 0 auto",
-                        backgroundColor: "#f9f9f9",
+                        // backgroundColor: "#f9f9f9",
+                        backgroundColor: boxColors[index % boxColors.length],
                         borderRadius: "4px", // ✅ softer rounded corners
                         boxShadow: "0 6px 18px rgba(0,0,0,0.1)", // ✅ modern shadow
                         padding: 2,
@@ -381,7 +391,8 @@ export default function Home() {
                     >
                       <Typography
                         variant="body1"
-                        color="text.primary"
+                        // color="text.primary"
+                        color="white"
                         sx={{
                           position: "absolute", // ✅ position relative to Box
                           bottom: 16, // ✅ offset from bottom
