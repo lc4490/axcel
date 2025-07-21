@@ -337,7 +337,7 @@ export default function Home() {
                 // >
                 <Stack
                   width="100%"
-                  height="325px"
+                  // height="325px"
                   direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
                   justifyContent={"flex-start"}
                   alignItems="center"
