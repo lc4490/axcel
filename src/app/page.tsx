@@ -322,30 +322,47 @@ export default function Home() {
                   <CircularProgress />
                 </Stack>
               ) : (
+                // <Grid
+                //   container
+                //   maxHeight="400px"
+                //   sx={{
+                //     // marginTop: 16,
+                //     p: 2,
+                //     overflowY: "scroll",
+                //     display: "grid", // ✅ turn into a CSS grid
+                //     gridTemplateColumns:
+                //       "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
+                //     gap: 4, // ✅ space between boxes
+                //   }}
+                // >
                 <Stack
                   width="100%"
-                  height={isMobile ? "auto" : "325px"} // ✅ allow height to grow on mobile
-                  direction={isMobile ? "column" : "row"} // ✅ vertical flow on mobile
-                  justifyContent={isMobile ? "flex-start" : "flex-start"} // ✅ left align on mobile
+                  height="325px"
+                  direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
+                  justifyContent={"flex-start"}
                   alignItems="center"
                   gap={2}
                   sx={{
-                    overflow: "visible", // ✅ remove both horizontal and vertical scrolling
-                    flexWrap: "wrap", // ✅ allow wrapping on mobile
+                    overflow: "auto",
+                    // overflowY: "auto", // ✅ prevent vertical scroll
+                    flexWrap: "nowrap", // ✅ prevent wrapping to new lines
+                    padding: 1, // ✅ optional spacing inside scroll area
+                    // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
                   }}
                 >
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
-                      onClick={() => setSelectedWorkout(item)}
+                      onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
-                        width: "300px",
+                        width: "300px", // ✅ fixed box width for scroll
                         height: "300px",
+                        flex: "0 0 auto", // ✅ prevent resizing
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
                         boxShadow: 3,
                         padding: 3,
-                        cursor: "pointer",
+                        cursor: "pointer", // ✅ clickable indicator
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                         overflow: "hidden",
                         "&:hover": {
@@ -371,6 +388,8 @@ export default function Home() {
                     </Box>
                   ))}
                 </Stack>
+
+                // </Grid>
               )}
 
               {/* 🖼️ Modal for Workout Details */}
