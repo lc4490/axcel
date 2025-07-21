@@ -173,7 +173,7 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height={isMobile ? "90vh" : "100vh"}
+      height={isMobile ? "100%" : "100vh"}
       bgcolor={"#eb834c"}
       display="flex"
       justifyContent={"center"}
