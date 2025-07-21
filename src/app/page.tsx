@@ -81,6 +81,10 @@ export default function Home() {
     "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
     "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
     "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
+    "第1天 – 力量訓練 1. 深蹲 跳 – 4x6 @ 全力爆發 2. 俯臥推舉 – 4x6 @ 全力爆發 3. 無器械肩頭推舉 – 3x8 @ 60% 1RM 4. 腹部滾輪 – 3x15 ",
+    "第2天 – 速度訓練 1. 30 公尺衝刺 – 6x1 @ 全力爆發 2. 鴨步走 – 3x20 @ 50% 1RM 3. 高位引體向上 – 3x8 @ 60% 1RM 4. 自由槓上推 – 3x8 @ 60% 1RM",
+    "第3天 – 敏捷性訓練 1. 果糖梯式訓練 – 4x1 @ 全力爆發 2. 單腳深蹲 – 3x10 @ 50% 1RM 3. 俯臥挺身 – 3x10 @ 60% 1RM 4. 仰臥起坐 – 3x15",
+    "第4天 – 整體訓練 1. 倒立步行 – 4x1 @ 全力爆發 2. 雙腿跳躍 – 3x15 @ 50% 1RM 3. 田徑投擲 – 3x6 @ 60% 1RM 4. 垂直躍起 – 3x10 @ 60% 1RM",
   ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
@@ -287,7 +291,6 @@ export default function Home() {
               justifyContent={"center"}
               alignItems={"center"}
               flexDirection={"column"}
-              sx={{ overflow: "scroll" }}
             >
               {/* Logo / Title */}
               <Box
@@ -334,34 +337,38 @@ export default function Home() {
                 //   }}
                 // >
                 <Stack
-                  // width={"100%"}
-                  // height={"100%"}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  flexDirection={isMobile ? "column" : "row"}
+                  width="100%"
+                  height="275px"
+                  direction="row" // ✅ enforce horizontal flow
+                  justifyContent={"flex-start"}
+                  alignItems="center"
                   gap={2}
-                  sx={{ overflow: "scroll" }}
+                  sx={{
+                    overflowX: "auto", // ✅ horizontal scroll
+                    overflowY: "hidden", // ✅ prevent vertical scroll
+                    flexWrap: "nowrap", // ✅ prevent wrapping to new lines
+                    padding: 1, // ✅ optional spacing inside scroll area
+                    scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
+                  }}
                 >
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
                       onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
-                        position: "relative",
+                        width: "250px", // ✅ fixed box width for scroll
+                        height: "250px",
+                        flex: "0 0 auto", // ✅ prevent resizing
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
                         boxShadow: 3,
                         padding: 3,
-                        height: "250px",
-                        width: "250px",
-                        aspectRatio: "1 / 1", // ✅ keep square shape
-                        cursor: "pointer", // ✅ indicate clickable
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease", // ✅ smooth hover effect
-                        overflowY: "scroll",
+                        cursor: "pointer", // ✅ clickable indicator
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                        overflow: "hidden",
                         "&:hover": {
-                          transform: "scale(1.05)", // ✅ expand on hover
-                          boxShadow: 5, // ✅ stronger shadow
+                          transform: "scale(1.05)",
+                          boxShadow: 5,
                         },
                       }}
                     >
@@ -373,7 +380,7 @@ export default function Home() {
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           display: "-webkit-box",
-                          WebkitLineClamp: 8, // ✅ limit visible lines
+                          WebkitLineClamp: 8,
                           WebkitBoxOrient: "vertical",
                         }}
                       >
@@ -382,6 +389,7 @@ export default function Home() {
                     </Box>
                   ))}
                 </Stack>
+
                 // </Grid>
               )}
 
