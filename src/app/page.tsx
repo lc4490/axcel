@@ -242,6 +242,7 @@ export default function Home() {
           <Box
             width={"100%"}
             height={"100%"}
+            bgcolor={"#eb834c"}
             display={"flex"}
             flexDirection={"column"}
             justifyContent={"flex-start"}
