@@ -74,9 +74,9 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  // useEffect(() => {
-  //   setSuggestions(Array(3).fill(""));
-  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  useEffect(() => {
+    setSuggestions(Array(3).fill(""));
+  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   const [suggestions, setSuggestions] = useState([
     `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
     `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
@@ -84,14 +84,17 @@ export default function Home() {
   ]);
   // const [suggestions, setSuggestions] = useState(["", "", ""]);
   const [input, setInput] = useState("");
-  // const [workouts, setWorkouts] = useState<string[]>([]);
-  const [workouts, setWorkouts] = useState([
-    "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
-    "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
-    "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
-    "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
-  ]);
+  const [workouts, setWorkouts] = useState<string[]>([]);
+  // const [workouts, setWorkouts] = useState([
+  //   "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
+  //   "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
+  //   "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
+  //   "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
+  // ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
+
+  const [deviceID, setDeviceID] = useState("");
+  const [tempID, setTempID] = useState("");
 
   // takes input and sends an openai request to get suggestions for goals, generates three possible goals
   const makeSuggestions = async () => {
@@ -169,6 +172,11 @@ export default function Home() {
         // setLoading(false); // hide spinner
       }
     }
+  };
+
+  const handleDeviceID = (temp: string) => {
+    // check if temp is valid device
+    setDeviceID(temp);
   };
   return (
     <Box
@@ -406,7 +414,7 @@ export default function Home() {
                           left: 16, // ✅ offset from left
                           fontWeight: 600, // ✅ make it bolder
                           padding: "4px 8px", // ✅ little padding for aesthetics
-                          fontSize: "1.25rem",
+                          fontSize: "1.5rem",
                           maxWidth: "90%",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -426,49 +434,167 @@ export default function Home() {
               <Dialog
                 open={selectedWorkout !== null}
                 onClose={() => setSelectedWorkout(null)}
-                fullWidth
-                maxWidth="md"
+                fullScreen // ✅ truly fullscreen dialog
                 slotProps={{
+                  transition: {
+                    timeout: 500, // ✅ half-second cinematic fade
+                  },
                   paper: {
                     sx: {
-                      borderRadius: "20px",
-                      height: "90vh", // ✅ almost fullscreen height
+                      backgroundColor: "#000", // 🖤 black background
+                      color: "#fff", // 🖤 white text
+                      width: "100vw",
+                      height: "100vh",
                     },
                   },
                 }}
               >
-                <DialogTitle
+                {/* <DialogTitle
                   sx={{
                     fontSize: "1.8rem",
                     fontWeight: 700,
-                    backgroundColor: "#1976d2", // ✅ primary color header
-                    color: "white",
+                    backgroundColor: "white", // ✅ primary color header
+                    color: "black",
                     textAlign: "center",
                     py: 2,
                   }}
                 >
-                  🏋️‍♂️ 訓練課程詳情
-                </DialogTitle>
-
-                <DialogContent
-                  sx={{
-                    padding: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  <Typography
+                  {selectedWorkout?.split("\n")[0]}
+                </DialogTitle> */}
+                {deviceID === "" && (
+                  <DialogContent
                     sx={{
-                      whiteSpace: "pre-wrap",
-                      fontSize: "1.2rem",
-                      lineHeight: 1.6,
-                      color: "#333",
+                      padding: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 3,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "#121212", // 🖤 sleek dark background
+                      borderRadius: "12px", // ✅ softer edges
                     }}
                   >
-                    {selectedWorkout}
-                  </Typography>
-                </DialogContent>
+                    <Typography
+                      sx={{
+                        fontSize: "1.5rem",
+                        fontWeight: 600,
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                    >
+                      請輸入您的感測器號碼
+                    </Typography>
+                    <Stack display="flex" flexDirection={"row"} gap={2}>
+                      <TextField
+                        // placeholder="Sensor ID"
+                        variant="outlined"
+                        value={tempID}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (parseInt(value)) {
+                            setTempID(String(parseInt(value)));
+                          } else {
+                            setTempID("");
+                          }
+                        }}
+                        // fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            color: "white", // ✅ input text color
+                            "& fieldset": {
+                              borderColor: "white", // ✅ default border color
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "#90caf9", // ✅ subtle hover border color
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "#90caf9", // ✅ focus border color
+                            },
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "white", // ✅ label text color
+                            "&.Mui-focused": {
+                              color: "#90caf9", // ✅ focus label color
+                            },
+                          },
+                          input: {
+                            color: "white", // ✅ placeholder & input color
+                          },
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        size="large"
+                        onClick={() => handleDeviceID(tempID)}
+                        sx={{
+                          // mt: 2,
+                          // backgroundColor: "white", // ✅ light blue button
+                          // color: "#000", // ✅ black text
+                          fontWeight: "bold",
+                          px: 4,
+                          py: 1.5,
+                          textTransform: "none",
+                          fontSize: "1.1rem",
+                          // "&:hover": {
+                          //   backgroundColor: "gray", // ✅ slightly darker on hover
+                          // },
+                          bgcolor: "#fff",
+                          color: "#000",
+                          "&:hover": { bgcolor: "#333" },
+                          "&.Mui-disabled": {
+                            bgcolor: "#ccc",
+                            color: "#888",
+                          },
+                        }}
+                      >
+                        輸入
+                      </Button>
+                    </Stack>
+                  </DialogContent>
+                )}
+                {deviceID !== "" && (
+                  <DialogContent
+                    sx={{
+                      padding: 3,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                    }}
+                  >
+                    <Stack
+                      display="flex"
+                      flexDirection={isMobile ? "column" : "row"}
+                    >
+                      <Box
+                        // bgcolor="red"
+                        width={isMobile ? "100%" : "50%"}
+                        padding={5}
+                      >
+                        <Typography
+                          sx={{
+                            whiteSpace: "pre-wrap",
+                            fontSize: "1.5rem",
+                            lineHeight: 2.5,
+                            // color: "#333",
+                          }}
+                        >
+                          {selectedWorkout}
+                        </Typography>
+                      </Box>
+                      <Box
+                        // bgcolor="blue"
+                        width={isMobile ? "100%" : "50%"}
+                        padding={5}
+                      >
+                        <Typography
+                          sx={{ fontSize: "1.5rem", lineHeight: 2.5 }}
+                        >
+                          感測器資料
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </DialogContent>
+                )}
 
                 <DialogActions
                   sx={{
