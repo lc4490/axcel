@@ -324,24 +324,22 @@ export default function Home() {
               ) : (
                 <Stack
                   width="100%"
-                  height={isMobile ? "auto" : "325px"} // ✅ expand vertically on mobile
-                  direction={isMobile ? "column" : "row"} // ✅ vertical stack on mobile
-                  justifyContent={isMobile ? "center" : "flex-start"}
+                  height={isMobile ? "auto" : "325px"} // ✅ allow height to grow on mobile
+                  direction={isMobile ? "column" : "row"} // ✅ vertical flow on mobile
+                  justifyContent={isMobile ? "flex-start" : "flex-start"} // ✅ left align on mobile
                   alignItems="center"
                   gap={2}
                   sx={{
-                    overflowY: isMobile ? "visible" : "hidden", // ✅ let page scroll vertically on mobile
-                    overflowX: isMobile ? "hidden" : "auto", // ✅ horizontal scroll only on desktop
-                    flexWrap: isMobile ? "wrap" : "nowrap", // ✅ allow wrapping on mobile
-                    padding: 1,
+                    overflow: "visible", // ✅ remove both horizontal and vertical scrolling
+                    flexWrap: "wrap", // ✅ allow wrapping on mobile
                   }}
                 >
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
-                      onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
+                      onClick={() => setSelectedWorkout(item)}
                       sx={{
-                        width: "300px", // ✅ fixed box width
+                        width: "300px",
                         height: "300px",
                         backgroundColor: "#f9f9f9",
                         borderRadius: "4px",
@@ -350,9 +348,6 @@ export default function Home() {
                         cursor: "pointer",
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                         overflow: "hidden",
-                        ...(isMobile
-                          ? {} // ✅ remove flex for mobile
-                          : { flex: "0 0 auto" }), // ✅ only apply on desktop
                         "&:hover": {
                           transform: "scale(1.05)",
                           boxShadow: 5,
