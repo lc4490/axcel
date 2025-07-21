@@ -23,6 +23,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ReactMarkdown from "react-markdown";
 
 export default function Home() {
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
   const [onboarded, setOnboarded] = useState(false);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
@@ -64,33 +65,15 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  // const [suggestions, setSuggestions] = useState(Array(3).fill(""));
-  useEffect(() => {
-    setSuggestions(Array(3).fill(""));
-  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  // useEffect(() => {
+  //   setSuggestions(Array(3).fill(""));
+  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   const [suggestions, setSuggestions] = useState([
-    `1. 增肌雕塑（Hypertrophy & Definition）
-    目標: 增加 3–5kg 瘦體重，體脂降至 12–14%，打造更清晰的肌肉線條。
-    原因: 你的力量基礎不錯（深蹲/臥推比例佳），但體脂還有下修空間，可結合增肌期與微調飲食，塑造理想身形。
-    重點:
-    每週 4–5 天力量訓練（分化部位訓練 + 核心訓練）
-    高蛋白飲食（每公斤體重 1.8–2.2g 蛋白質）
-    保持輕度有氧（如每週 2 次慢跑/間歇跑 30 分鐘）`,
-    `2. 爆發力與敏捷度提升（Power & Agility）
-    目標: 垂直跳提升至 60cm、T-Test 縮短至 9.5秒、30m/40m衝刺加速更快。
-    原因: 你在垂直跳和衝刺已有不錯成績，但若想進階到高階運動員水準，需要專注於神經適應與爆發力開發。
-    重點:
-    每週 2–3 天進行短距離衝刺、變向跑、折返跑等敏捷性訓練
-    採用負荷跳躍（如負重深蹲跳、箱跳）
-    結合奧林匹克舉（如抓舉、高翻`,
-    `3. 有氧耐力與功能性體能（Conditioning & Endurance）
-    目標: Yo-Yo 測試提升至 Level 19 (~2200m)、仰臥起坐達到 55次/分鐘
-    原因: 你的短時間爆發力優秀，但長時間持續耐力稍弱。這對球類、跑步運動或軍警體能測驗也有幫助。
-    重點:
-    每週 3 天間歇訓練（如 400m 間歇跑）
-    每週 1–2 天長時間 Zone 2 有氧（45–60 分鐘）
-    核心訓練（如藥球擲、反向卷腹`,
+    `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
+    `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
+    `**[體能能量爆發]**- **目標**: 提升體能耐力並壓縮折返跑時間。- **原因**: 你的Yo-Yo Test Level 17.1 (~1800m)和折返跑8.5秒的測試結果顯示，你的耐力與爆發力均有出色的表現，但進一步的提升可以將你的全面體能拉到更高的層次。- **重點**:  - 多元化你的有氧訓練，如游泳、自行車、慢跑等，提高你的心肺功能並提高你的耐力。  - 加強核心肌群訓練，如俯臥撐、仰臥起坐、橋式運動等，進一步提升你的爆發力和速度。  - 飲食上要攝取足夠且均衡`,
   ]);
+  // const [suggestions, setSuggestions] = useState(["", "", ""]);
   const [input, setInput] = useState("");
   // const [workouts, setWorkouts] = useState<string[]>([]);
   const [workouts, setWorkouts] = useState([
@@ -176,7 +159,8 @@ export default function Home() {
   return (
     <Box
       width="100vw"
-      height="90vh"
+      height={isMobile ? "90vh" : "100vh"}
+      bgcolor={"#eb834c"}
       display="flex"
       justifyContent={"center"}
       alignItems={"center"}
@@ -260,10 +244,10 @@ export default function Home() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                bgcolor: "#000", // header background
+                bgcolor: "#c86424", // header background
                 color: "#fff",
                 px: 3,
-                py: 2,
+                py: 1,
                 boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
               }}
             >
@@ -283,16 +267,7 @@ export default function Home() {
               >
                 Edit
               </Button>
-              {/* Logo / Title */}
-              <Box
-                component="img"
-                src="/logo.png"
-                alt="AXCEL Logo"
-                sx={{
-                  height: 40, // adjust height
-                  width: "auto", // maintain aspect ratio
-                }}
-              />
+
               {/* User button */}
               <Button
                 variant="outlined"
@@ -305,11 +280,36 @@ export default function Home() {
                 <AccountCircleIcon />
               </Button>
             </Box>
-            <>
+            <Box
+              width="100%"
+              height="100%"
+              display="flex"
+              justifyContent={"center"}
+              alignItems={"center"}
+              flexDirection={"column"}
+            >
+              {/* Logo / Title */}
+              <Box
+                width="100%"
+                display="flex"
+                justifyContent="center"
+                padding={2}
+              >
+                <Box
+                  component="img"
+                  src="/logo_white.png"
+                  alt="AXCEL Logo"
+                  sx={{
+                    color: "white",
+                    height: 40, // adjust height
+                    width: "auto", // maintain aspect ratio
+                  }}
+                />
+              </Box>
               {workouts.length === 0 ? (
                 <Stack
                   display="flex"
-                  flexDirection="column"
+                  flexDirection={"column"}
                   alignItems="center"
                   justifyContent="center"
                   spacing={2}
@@ -319,35 +319,48 @@ export default function Home() {
                   <CircularProgress />
                 </Stack>
               ) : (
-                <Grid
-                  container
-                  maxHeight="80vh"
-                  sx={{
-                    // marginTop: 16,
-                    p: 2,
-                    overflowY: "scroll",
-                    display: "grid", // ✅ turn into a CSS grid
-                    gridTemplateColumns:
-                      "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
-                    gap: 4, // ✅ space between boxes
-                  }}
+                // <Grid
+                //   container
+                //   maxHeight="400px"
+                //   sx={{
+                //     // marginTop: 16,
+                //     p: 2,
+                //     overflowY: "scroll",
+                //     display: "grid", // ✅ turn into a CSS grid
+                //     gridTemplateColumns:
+                //       "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
+                //     gap: 4, // ✅ space between boxes
+                //   }}
+                // >
+                <Stack
+                  // width={"100%"}
+                  // height={"100%"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  gap={2}
                 >
                   {workouts.map((item, index) => (
                     <Box
                       key={index}
+                      onClick={() => setSelectedWorkout(item)} // ✅ make box clickable
                       sx={{
                         position: "relative",
                         backgroundColor: "#f9f9f9",
-                        borderRadius: "16px",
+                        borderRadius: "4px",
                         boxShadow: 3,
                         padding: 3,
-                        // cursor: "pointer",
-                        // transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                        // "&:hover": {
-                        //   transform: "scale(1.02)",
-                        //   boxShadow: 5,
-                        // },
+                        height: "200px",
+                        width: "200px",
                         aspectRatio: "1 / 1", // ✅ keep square shape
+                        cursor: "pointer", // ✅ indicate clickable
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease", // ✅ smooth hover effect
+                        overflowY: "scroll",
+                        "&:hover": {
+                          transform: "scale(1.05)", // ✅ expand on hover
+                          boxShadow: 5, // ✅ stronger shadow
+                        },
                       }}
                     >
                       <Typography
@@ -358,45 +371,16 @@ export default function Home() {
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           display: "-webkit-box",
-                          WebkitLineClamp: 8, // 👈 limit visible lines
+                          WebkitLineClamp: 8, // ✅ limit visible lines
                           WebkitBoxOrient: "vertical",
                         }}
                       >
                         {item}
                       </Typography>
-                      <Button
-                        onClick={() => setSelectedWorkout(item)}
-                        variant="contained"
-                        size="large"
-                        sx={{
-                          backgroundColor: "black",
-                          color: "#fff",
-                          fontWeight: "bold",
-                          borderRadius: "999px",
-                          paddingX: 4,
-                          paddingY: 1.5,
-                          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-                          textTransform: "none",
-                          fontSize: "1.1rem",
-                          transition: "all 0.3s ease",
-                          position: "absolute",
-                          left: "50%", // ✅ center horizontally
-                          bottom: 16, // ✅ stick to bottom
-                          transform: "translateX(-50%)", // ✅ offset by half width
-                          "&:hover": {
-                            backgroundColor: "#1565c0",
-                            boxShadow: "0px 6px 16px rgba(0,0,0,0.15)",
-                            transform: "translateX(-50%) scale(1.05)", // ✅ maintain centering on hover
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontWeight: 600 }}>
-                          开始训练
-                        </Typography>
-                      </Button>
                     </Box>
                   ))}
-                </Grid>
+                </Stack>
+                // </Grid>
               )}
 
               {/* 🖼️ Modal for Workout Details */}
@@ -469,13 +453,13 @@ export default function Home() {
                   </Button>
                 </DialogActions>
               </Dialog>
-            </>
+            </Box>
           </Box>
         ) : (
           // onboarding page for user to input info
           <Box
             width="600px"
-            height="80%"
+            height="75%"
             display="flex"
             flexDirection="column"
             sx={{
@@ -1407,45 +1391,29 @@ export default function Home() {
                               {suggestion}
                             </ReactMarkdown>
                           </Box>
-
-                          // <Button
-                          //   key={index}
-                          //   variant="outlined"
-                          //   onClick={() => setGoal(suggestion)}
-                          //   sx={{
-                          //     textTransform: "none",
-                          //     backgroundColor: "background.default",
-                          //     color: "text.primary",
-                          //     // borderRadius: "9999px",
-                          //     // paddingX: 3,
-                          //     paddingY: 1.5,
-                          //     // minWidth: 100,
-                          //     height: "auto",
-                          //     display: "flex",
-                          //     justifyContent: "center",
-                          //     alignItems: "center",
-                          //     whiteSpace: "normal",
-                          //     boxShadow: 1,
-                          //     "&:hover": {
-                          //       backgroundColor: "primary.light",
-                          //       boxShadow: 2,
-                          //     },
-                          //   }}
-                          // >
-                          //   {suggestion}
-                          // </Button>
                         ))}
                       </Stack>
                     )}
                     {suggestions[0] === "" && (
                       <Box
                         width="100%"
-                        height="100%"
                         display="flex"
                         justifyContent={"center"}
                         alignItems={"center"}
                       >
-                        <CircularProgress />
+                        <Stack
+                          display="flex"
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="center"
+                          spacing={2}
+                          height={"200px"}
+                        >
+                          <Typography sx={{ color: "black" }}>
+                            正在為您建立目標...
+                          </Typography>
+                          <CircularProgress />
+                        </Stack>
                       </Box>
                     )}
                     <TextField
