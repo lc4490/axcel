@@ -349,13 +349,7 @@ export default function Home() {
                   width="100%"
                   maxHeight={isMobile ? "90vh" : "auto"}
                   direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
-                  justifyContent={
-                    isMobile
-                      ? "flex-start"
-                      : workouts.length < 5
-                      ? "center"
-                      : "flex-start"
-                  }
+                  justifyContent={"center"}
                   alignItems={
                     isMobile
                       ? "flex-start"
@@ -370,6 +364,7 @@ export default function Home() {
                     flexWrap: "nowrap", // ✅ prevent wrapping to new lines
                     padding: 1, // ✅ optional spacing inside scroll area
                     // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
+                    marinBottom: 4,
                   }}
                 >
                   {workouts.map((item, index) => (
