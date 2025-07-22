@@ -74,9 +74,9 @@ export default function Home() {
     "8.5 秒",
     "Level 17.1 (~1800 m)",
   ]);
-  useEffect(() => {
-    setSuggestions(Array(3).fill(""));
-  }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
+  // useEffect(() => {
+  //   setSuggestions(Array(3).fill(""));
+  // }, [values, heightCM, heightFT, heightIN, weightKG, weightLB]);
   const [suggestions, setSuggestions] = useState([
     `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
     `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
@@ -84,13 +84,13 @@ export default function Home() {
   ]);
   // const [suggestions, setSuggestions] = useState(["", "", ""]);
   const [input, setInput] = useState("");
-  const [workouts, setWorkouts] = useState<string[]>([]);
-  // const [workouts, setWorkouts] = useState([
-  //   "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
-  //   "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
-  //   "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
-  //   "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
-  // ]);
+  // const [workouts, setWorkouts] = useState<string[]>([]);
+  const [workouts, setWorkouts] = useState([
+    "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
+    "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
+    "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
+    "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
+  ]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
 
   const [deviceID, setDeviceID] = useState("");
