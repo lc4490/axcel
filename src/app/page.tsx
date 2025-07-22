@@ -21,6 +21,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ReactMarkdown from "react-markdown";
+import SportsIcon from "@mui/icons-material/Sports";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 const boxColors = [
   // "#c0ef6b", // lime green
@@ -33,6 +35,7 @@ const boxColors = [
 
 export default function Home() {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+  const [mode, setMode] = useState("");
   const [onboarded, setOnboarded] = useState(false);
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState(false);
@@ -179,277 +182,319 @@ export default function Home() {
     setDeviceID(temp);
   };
   return (
-    <Box
-      width="100vw"
-      height="100vh"
-      bgcolor={"#eb834c"}
-      display="flex"
-      justifyContent={"center"}
-      alignItems={"center"}
-      sx={{
-        overflow: "hidden", // ✅ disable scrolling
-      }}
-      onKeyDown={(e) => {
-        // enter logic per page to go to next step
-        if (e.key === "Enter") {
-          e.preventDefault();
-
-          if (page === 0) {
-            if (
-              name !== "" &&
-              !(
-                (heightUnit === "cm" && heightCM === "") ||
-                (heightUnit === "ft/in" &&
-                  (heightFT === "" || heightIN === "")) ||
-                (weightUnit === "kg" && weightKG === "") ||
-                (weightUnit === "lbs" && weightLB === "")
-              ) &&
-              birthdate !== null &&
-              birthdate.isValid()
-            ) {
-              setPage(page + 1);
-            }
-          }
-          if (page === 1) {
-            if (
-              !(
-                team === "" ||
-                jersey === "" ||
-                position === "" ||
-                maxHeartRate === "" ||
-                maxVelocity === ""
-              )
-            ) {
-              setPage(page + 1);
-            }
-          }
-          if (page === 2) {
-            const isComplete = values.every((v) => v !== "");
-            if (isComplete) {
-              setPage(page + 1);
-              makeSuggestions();
-            }
-          }
-          if (page === 3) {
-            if (goal) {
-              setOnboarded(true);
-              makePlan();
-            }
-          }
-        }
-        // escape to exit
-        if (e.key === "Escape") {
-          if (editing) {
-            e.preventDefault();
-            setOnboarded(true);
-          }
-        }
-      }}
-      tabIndex={0}
-    >
-      <>
-        {/* after the user inputs information */}
-        {onboarded ? (
-          <Box
-            width={"100%"}
-            height={"100%"}
-            bgcolor={"#eb834c"}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"flex-start"}
-            sx={{ position: "relative" }}
+    <Box>
+      {mode === "" && (
+        <Box width="100vw" height="100vh">
+          <Stack
+            width="100%"
+            height="100%"
+            display="flex"
+            flexDirection={isMobile ? "column" : "row"}
+            // justifyContent={"center"}
+            // alignItems="center"
           >
-            {/* Header */}
             <Box
-              sx={{
-                position: "sticky", // keeps it fixed when scrolling
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 10,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                bgcolor: "#c86424", // header background
-                color: "#fff",
-                px: 3,
-                py: 1,
-                boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
-              }}
-            >
-              {/* Edit button */}
-              <Button
-                onClick={() => {
-                  setOnboarded(false);
-                  setPage(0);
-                  setEditing(true);
-                }}
-                variant="outlined"
-                sx={{
-                  color: "#fff",
-                  borderColor: "#fff",
-                  "&:hover": { bgcolor: "#333", borderColor: "#fff" },
-                }}
-              >
-                Edit
-              </Button>
-
-              {/* User button */}
-              <Button
-                variant="outlined"
-                sx={{
-                  color: "#fff",
-                  borderColor: "#fff",
-                  "&:hover": { bgcolor: "#333", borderColor: "#fff" },
-                }}
-              >
-                <AccountCircleIcon />
-              </Button>
-            </Box>
-            <Box
-              width="100%"
-              height="100%"
-              display="flex"
+              width={isMobile ? "100%" : "50%"}
+              height={isMobile ? "50%" : "100%"}
+              display={"flex"}
+              flexDirection={"column"}
               justifyContent={"center"}
               alignItems={"center"}
-              flexDirection={"column"}
+              onClick={() => setMode("athlete")}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#111",
+                },
+              }}
             >
-              {/* Logo / Title */}
+              <FitnessCenterIcon sx={{ fontSize: "5rem" }} />
+              <Typography sx={{ fontWeight: "500", fontSize: "1.2rem" }}>
+                個人
+              </Typography>
+            </Box>
+            <Box
+              width={isMobile ? "100%" : "50%"}
+              height={isMobile ? "50%" : "100%"}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              onClick={() => setMode("coach")}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#111",
+                },
+              }}
+            >
+              <SportsIcon sx={{ fontSize: "5rem" }} />
+              <Typography sx={{ fontWeight: "500", fontSize: "1.2rem" }}>
+                教練
+              </Typography>
+            </Box>
+          </Stack>
+        </Box>
+      )}
+      {mode === "athlete" && (
+        <Box
+          width="100vw"
+          height="100vh"
+          bgcolor={"#eb834c"}
+          display="flex"
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            overflow: "hidden", // ✅ disable scrolling
+          }}
+          onKeyDown={(e) => {
+            // enter logic per page to go to next step
+            if (e.key === "Enter") {
+              e.preventDefault();
+
+              if (page === 0) {
+                if (
+                  name !== "" &&
+                  !(
+                    (heightUnit === "cm" && heightCM === "") ||
+                    (heightUnit === "ft/in" &&
+                      (heightFT === "" || heightIN === "")) ||
+                    (weightUnit === "kg" && weightKG === "") ||
+                    (weightUnit === "lbs" && weightLB === "")
+                  ) &&
+                  birthdate !== null &&
+                  birthdate.isValid()
+                ) {
+                  setPage(page + 1);
+                }
+              }
+              if (page === 1) {
+                if (
+                  !(
+                    team === "" ||
+                    jersey === "" ||
+                    position === "" ||
+                    maxHeartRate === "" ||
+                    maxVelocity === ""
+                  )
+                ) {
+                  setPage(page + 1);
+                }
+              }
+              if (page === 2) {
+                const isComplete = values.every((v) => v !== "");
+                if (isComplete) {
+                  setPage(page + 1);
+                  makeSuggestions();
+                }
+              }
+              if (page === 3) {
+                if (goal) {
+                  setOnboarded(true);
+                  makePlan();
+                }
+              }
+            }
+            // escape to exit
+            if (e.key === "Escape") {
+              if (editing) {
+                e.preventDefault();
+                setOnboarded(true);
+              }
+            }
+          }}
+          tabIndex={0}
+        >
+          <>
+            {/* after the user inputs information */}
+            {onboarded ? (
               <Box
-                width="100%"
-                display="flex"
-                justifyContent="center"
-                padding={2}
+                width={"100%"}
+                height={"100%"}
+                bgcolor={"#eb834c"}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"flex-start"}
+                sx={{ position: "relative" }}
               >
+                {/* Header */}
                 <Box
-                  component="img"
-                  src="/logo_white.png"
-                  alt="AXCEL Logo"
                   sx={{
-                    color: "white",
-                    height: 40, // adjust height
-                    width: "auto", // maintain aspect ratio
+                    position: "sticky", // keeps it fixed when scrolling
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    bgcolor: "#c86424", // header background
+                    color: "#fff",
+                    px: 3,
+                    py: 1,
+                    boxShadow: "0px 2px 8px rgba(0,0,0,0.2)", // subtle shadow
                   }}
-                />
-              </Box>
-              {workouts.length === 0 ? (
-                <Stack
-                  display="flex"
-                  flexDirection={"column"}
-                  alignItems="center"
-                  justifyContent="center"
-                  spacing={2}
                 >
-                  <Typography>正在為您指定訓練課程規劃...</Typography>
-                  <CircularProgress />
-                </Stack>
-              ) : (
-                // <Grid
-                //   container
-                //   maxHeight="400px"
-                //   sx={{
-                //     // marginTop: 16,
-                //     p: 2,
-                //     overflowY: "scroll",
-                //     display: "grid", // ✅ turn into a CSS grid
-                //     gridTemplateColumns:
-                //       "repeat(auto-fill, minmax(300px, 1fr))", // ✅ dynamic columns
-                //     gap: 4, // ✅ space between boxes
-                //   }}
-                // >
-                <Stack
+                  {/* Edit button */}
+                  <Button
+                    onClick={() => {
+                      setOnboarded(false);
+                      setPage(0);
+                      setEditing(true);
+                    }}
+                    variant="outlined"
+                    sx={{
+                      color: "#fff",
+                      borderColor: "#fff",
+                      "&:hover": { bgcolor: "#333", borderColor: "#fff" },
+                    }}
+                  >
+                    Edit
+                  </Button>
+
+                  {/* User button */}
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      color: "#fff",
+                      borderColor: "#fff",
+                      "&:hover": { bgcolor: "#333", borderColor: "#fff" },
+                    }}
+                  >
+                    <AccountCircleIcon />
+                  </Button>
+                </Box>
+                <Box
                   width="100%"
-                  maxHeight={isMobile ? "90vh" : "auto"}
-                  direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
-                  justifyContent={isMobile ? "flex-start" : "center"}
-                  alignItems={
-                    isMobile
-                      ? "center"
-                      : workouts.length < 5
-                      ? "center"
-                      : "flex-start"
-                  }
-                  gap={2}
-                  sx={{
-                    overflow: "auto",
-                    // overflowY: "auto", // ✅ prevent vertical scroll
-                    flexWrap: "nowrap", // ✅ prevent wrapping to new lines
-                    padding: 1, // ✅ optional spacing inside scroll area
-                    // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
-                    marginBottom: "10vh",
-                  }}
+                  height="100%"
+                  display="flex"
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
                 >
-                  {workouts.map((item, index) => (
+                  {/* Logo / Title */}
+                  <Box
+                    width="100%"
+                    display="flex"
+                    justifyContent="center"
+                    padding={2}
+                  >
                     <Box
-                      key={index}
-                      onClick={() => {
-                        setSelectedWorkout(item), console.log(item);
-                      }} // ✅ make box clickable
+                      component="img"
+                      src="/logo_white.png"
+                      alt="AXCEL Logo"
                       sx={{
-                        width: "300px",
-                        height: "300px",
-                        flex: "0 0 auto",
-                        // backgroundColor: "#f9f9f9",
-                        backgroundColor: boxColors[index % boxColors.length],
-                        borderRadius: "4px", // ✅ softer rounded corners
-                        boxShadow: "0 6px 18px rgba(0,0,0,0.1)", // ✅ modern shadow
-                        padding: 2,
-                        cursor: "pointer",
-                        position: "relative", // ✅ for positioning text inside
-                        overflow: "hidden",
-                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          boxShadow: "0 12px 24px rgba(0,0,0,0.15)", // ✅ stronger hover shadow
-                        },
+                        color: "white",
+                        height: 40, // adjust height
+                        width: "auto", // maintain aspect ratio
+                      }}
+                    />
+                  </Box>
+                  {workouts.length === 0 ? (
+                    <Stack
+                      display="flex"
+                      flexDirection={"column"}
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={2}
+                    >
+                      <Typography>正在為您指定訓練課程規劃...</Typography>
+                      <CircularProgress />
+                    </Stack>
+                  ) : (
+                    <Stack
+                      width="100%"
+                      maxHeight={isMobile ? "90vh" : "auto"}
+                      direction={isMobile ? "column" : "row"} // ✅ enforce horizontal flow
+                      justifyContent={isMobile ? "flex-start" : "center"}
+                      alignItems={
+                        isMobile
+                          ? "center"
+                          : workouts.length < 5
+                          ? "center"
+                          : "flex-start"
+                      }
+                      gap={2}
+                      sx={{
+                        overflow: "auto",
+                        // overflowY: "auto", // ✅ prevent vertical scroll
+                        flexWrap: "nowrap", // ✅ prevent wrapping to new lines
+                        padding: 1, // ✅ optional spacing inside scroll area
+                        // scrollSnapType: "x mandatory", // ✅ optional for snap scrolling
+                        marginBottom: "10vh",
                       }}
                     >
-                      <Typography
-                        variant="body1"
-                        // color="text.primary"
-                        color="white"
-                        sx={{
-                          position: "absolute", // ✅ position relative to Box
-                          bottom: 16, // ✅ offset from bottom
-                          left: 16, // ✅ offset from left
-                          fontWeight: 600, // ✅ make it bolder
-                          padding: "4px 8px", // ✅ little padding for aesthetics
-                          fontSize: "1.5rem",
-                          maxWidth: "90%",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap", // ✅ single line text
-                        }}
-                      >
-                        {item.split("\n")[0]}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Stack>
+                      {workouts.map((item, index) => (
+                        <Box
+                          key={index}
+                          onClick={() => {
+                            setSelectedWorkout(item), console.log(item);
+                          }} // ✅ make box clickable
+                          sx={{
+                            width: "300px",
+                            height: "300px",
+                            flex: "0 0 auto",
+                            // backgroundColor: "#f9f9f9",
+                            backgroundColor:
+                              boxColors[index % boxColors.length],
+                            borderRadius: "4px", // ✅ softer rounded corners
+                            boxShadow: "0 6px 18px rgba(0,0,0,0.1)", // ✅ modern shadow
+                            padding: 2,
+                            cursor: "pointer",
+                            position: "relative", // ✅ for positioning text inside
+                            overflow: "hidden",
+                            transition:
+                              "transform 0.3s ease, box-shadow 0.3s ease",
+                            "&:hover": {
+                              transform: "scale(1.05)",
+                              boxShadow: "0 12px 24px rgba(0,0,0,0.15)", // ✅ stronger hover shadow
+                            },
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            // color="text.primary"
+                            color="white"
+                            sx={{
+                              position: "absolute", // ✅ position relative to Box
+                              bottom: 16, // ✅ offset from bottom
+                              left: 16, // ✅ offset from left
+                              fontWeight: 600, // ✅ make it bolder
+                              padding: "4px 8px", // ✅ little padding for aesthetics
+                              fontSize: "1.5rem",
+                              maxWidth: "90%",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap", // ✅ single line text
+                            }}
+                          >
+                            {item.split("\n")[0]}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                  )}
 
-                // </Grid>
-              )}
-
-              {/* 🖼️ Modal for Workout Details */}
-              <Dialog
-                open={selectedWorkout !== null}
-                onClose={() => setSelectedWorkout(null)}
-                fullScreen // ✅ truly fullscreen dialog
-                slotProps={{
-                  transition: {
-                    timeout: 500, // ✅ half-second cinematic fade
-                  },
-                  paper: {
-                    sx: {
-                      backgroundColor: "#000", // 🖤 black background
-                      color: "#fff", // 🖤 white text
-                      width: "100vw",
-                      height: "100vh",
-                    },
-                  },
-                }}
-              >
-                {/* <DialogTitle
+                  {/* 🖼️ Modal for Workout Details */}
+                  <Dialog
+                    open={selectedWorkout !== null}
+                    onClose={() => setSelectedWorkout(null)}
+                    fullScreen // ✅ truly fullscreen dialog
+                    slotProps={{
+                      transition: {
+                        timeout: 500, // ✅ half-second cinematic fade
+                      },
+                      paper: {
+                        sx: {
+                          backgroundColor: "#000", // 🖤 black background
+                          color: "#fff", // 🖤 white text
+                          width: "100vw",
+                          height: "100vh",
+                        },
+                      },
+                    }}
+                  >
+                    {/* <DialogTitle
                   sx={{
                     fontSize: "1.8rem",
                     fontWeight: 700,
@@ -461,402 +506,803 @@ export default function Home() {
                 >
                   {selectedWorkout?.split("\n")[0]}
                 </DialogTitle> */}
-                {deviceID === "" && (
-                  <DialogContent
-                    sx={{
-                      padding: 4,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 3,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "#121212", // 🖤 sleek dark background
-                      borderRadius: "12px", // ✅ softer edges
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: "1.5rem",
-                        fontWeight: 600,
-                        color: "white",
-                        textAlign: "center",
-                      }}
-                    >
-                      請輸入您的感測器號碼
-                    </Typography>
-                    <Stack display="flex" flexDirection={"row"} gap={2}>
-                      <TextField
-                        // placeholder="Sensor ID"
-                        variant="outlined"
-                        value={tempID}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (parseInt(value)) {
-                            setTempID(String(parseInt(value)));
-                          } else {
-                            setTempID("");
-                          }
-                        }}
-                        // fullWidth
+                    {deviceID === "" && (
+                      <DialogContent
                         sx={{
-                          "& .MuiOutlinedInput-root": {
-                            color: "white", // ✅ input text color
-                            "& fieldset": {
-                              borderColor: "white", // ✅ default border color
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#90caf9", // ✅ subtle hover border color
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#90caf9", // ✅ focus border color
-                            },
-                          },
-                          "& .MuiInputLabel-root": {
-                            color: "white", // ✅ label text color
-                            "&.Mui-focused": {
-                              color: "#90caf9", // ✅ focus label color
-                            },
-                          },
-                          input: {
-                            color: "white", // ✅ placeholder & input color
-                          },
+                          padding: 4,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 3,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          backgroundColor: "#121212", // 🖤 sleek dark background
+                          borderRadius: "12px", // ✅ softer edges
                         }}
-                      />
-                      <Button
-                        variant="contained"
-                        size="large"
-                        onClick={() => handleDeviceID(tempID)}
-                        sx={{
-                          // mt: 2,
-                          // backgroundColor: "white", // ✅ light blue button
-                          // color: "#000", // ✅ black text
-                          fontWeight: "bold",
-                          px: 4,
-                          py: 1.5,
-                          textTransform: "none",
-                          fontSize: "1.1rem",
-                          // "&:hover": {
-                          //   backgroundColor: "gray", // ✅ slightly darker on hover
-                          // },
-                          bgcolor: "#fff",
-                          color: "#000",
-                          "&:hover": { bgcolor: "#333" },
-                          "&.Mui-disabled": {
-                            bgcolor: "#ccc",
-                            color: "#888",
-                          },
-                        }}
-                      >
-                        輸入
-                      </Button>
-                    </Stack>
-                  </DialogContent>
-                )}
-                {deviceID !== "" && (
-                  <DialogContent
-                    sx={{
-                      padding: 3,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 2,
-                    }}
-                  >
-                    <Stack
-                      display="flex"
-                      flexDirection={isMobile ? "column" : "row"}
-                    >
-                      <Box
-                        // bgcolor="red"
-                        width={isMobile ? "100%" : "50%"}
-                        padding={5}
                       >
                         <Typography
                           sx={{
-                            whiteSpace: "pre-wrap",
                             fontSize: "1.5rem",
-                            lineHeight: 2.5,
-                            // color: "#333",
+                            fontWeight: 600,
+                            color: "white",
+                            textAlign: "center",
                           }}
                         >
-                          {selectedWorkout}
+                          請輸入您的感測器號碼
                         </Typography>
-                      </Box>
-                      <Box
-                        // bgcolor="blue"
-                        width={isMobile ? "100%" : "50%"}
-                        padding={5}
+                        <Stack display="flex" flexDirection={"row"} gap={2}>
+                          <TextField
+                            // placeholder="Sensor ID"
+                            variant="outlined"
+                            value={tempID}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (parseInt(value)) {
+                                setTempID(String(parseInt(value)));
+                              } else {
+                                setTempID("");
+                              }
+                            }}
+                            // fullWidth
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                color: "white", // ✅ input text color
+                                "& fieldset": {
+                                  borderColor: "white", // ✅ default border color
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#90caf9", // ✅ subtle hover border color
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#90caf9", // ✅ focus border color
+                                },
+                              },
+                              "& .MuiInputLabel-root": {
+                                color: "white", // ✅ label text color
+                                "&.Mui-focused": {
+                                  color: "#90caf9", // ✅ focus label color
+                                },
+                              },
+                              input: {
+                                color: "white", // ✅ placeholder & input color
+                              },
+                            }}
+                          />
+                          <Button
+                            variant="contained"
+                            size="large"
+                            onClick={() => handleDeviceID(tempID)}
+                            sx={{
+                              // mt: 2,
+                              // backgroundColor: "white", // ✅ light blue button
+                              // color: "#000", // ✅ black text
+                              fontWeight: "bold",
+                              px: 4,
+                              py: 1.5,
+                              textTransform: "none",
+                              fontSize: "1.1rem",
+                              // "&:hover": {
+                              //   backgroundColor: "gray", // ✅ slightly darker on hover
+                              // },
+                              bgcolor: "#fff",
+                              color: "#000",
+                              "&:hover": { bgcolor: "#333" },
+                              "&.Mui-disabled": {
+                                bgcolor: "#ccc",
+                                color: "#888",
+                              },
+                            }}
+                          >
+                            輸入
+                          </Button>
+                        </Stack>
+                      </DialogContent>
+                    )}
+                    {deviceID !== "" && (
+                      <DialogContent
+                        sx={{
+                          padding: 3,
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 2,
+                        }}
                       >
-                        <Typography
-                          sx={{ fontSize: "1.5rem", lineHeight: 2.5 }}
+                        <Stack
+                          display="flex"
+                          flexDirection={isMobile ? "column" : "row"}
                         >
-                          感測器資料
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </DialogContent>
-                )}
+                          <Box
+                            // bgcolor="red"
+                            width={isMobile ? "100%" : "50%"}
+                            padding={5}
+                          >
+                            <Typography
+                              sx={{
+                                whiteSpace: "pre-wrap",
+                                fontSize: "1.5rem",
+                                lineHeight: 2.5,
+                                // color: "#333",
+                              }}
+                            >
+                              {selectedWorkout}
+                            </Typography>
+                          </Box>
+                          <Box
+                            // bgcolor="blue"
+                            width={isMobile ? "100%" : "50%"}
+                            padding={5}
+                          >
+                            <Typography
+                              sx={{ fontSize: "1.5rem", lineHeight: 2.5 }}
+                            >
+                              感測器資料
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </DialogContent>
+                    )}
 
-                <DialogActions
-                  sx={{
-                    justifyContent: "center",
-                    paddingBottom: 2,
-                  }}
-                >
-                  <Button
-                    onClick={() => setSelectedWorkout(null)}
-                    variant="contained"
-                    size="large"
-                    sx={{
-                      borderRadius: "999px",
-                      px: 5,
-                      py: 1,
-                      textTransform: "none",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    结束
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </Box>
-          </Box>
-        ) : (
-          // onboarding page for user to input info
-          <Box
-            width="600px"
-            height="75%"
-            display="flex"
-            flexDirection="column"
-            sx={{
-              bgcolor: "white",
-              borderRadius: "16px",
-              p: 3,
-              boxShadow: 3,
-              position: "relative",
-            }}
-          >
-            {/* Logo  */}
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ mb: 2 }}
-            >
+                    <DialogActions
+                      sx={{
+                        justifyContent: "center",
+                        paddingBottom: 2,
+                      }}
+                    >
+                      <Button
+                        onClick={() => setSelectedWorkout(null)}
+                        variant="contained"
+                        size="large"
+                        sx={{
+                          borderRadius: "999px",
+                          px: 5,
+                          py: 1,
+                          textTransform: "none",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        结束
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </Box>
+              </Box>
+            ) : (
+              // onboarding page for user to input info
               <Box
-                component="img"
-                src="/logo.png"
-                alt="AXCEL Logo"
+                width="600px"
+                height="75%"
+                display="flex"
+                flexDirection="column"
                 sx={{
-                  height: 50,
-                  width: "auto",
-                  // cursor: "pointer",
-                }}
-              />
-            </Box>
-            {/* X button to close */}
-            {editing && (
-              <Button
-                onClick={() => {
-                  setOnboarded(true);
-                }}
-                sx={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  minWidth: "32px",
-                  height: "32px",
-                  padding: 0,
-                  borderRadius: "50%",
-                  // border: "1px solid #ccc", // subtle border
-                  // backgroundColor: "#f5f5f5", // light gray background
-                  color: "#333",
-                  fontWeight: "bold",
-                  fontSize: "1.1rem",
-                  lineHeight: 1,
-                  "&:hover": {
-                    backgroundColor: "#e0e0e0",
-                    borderColor: "#999",
-                  },
-                  zIndex: 10,
+                  bgcolor: "white",
+                  borderRadius: "16px",
+                  p: 3,
+                  boxShadow: 3,
+                  position: "relative",
                 }}
               >
-                ×
-              </Button>
-            )}
-            {page === 0 && (
-              <>
+                {/* Logo  */}
                 <Box
-                  width="100%"
-                  height="80%"
-                  sx={{
-                    overflowY: "auto",
-                    pr: 1,
-                    position: "relative",
-                  }}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ mb: 2 }}
                 >
-                  <Typography
+                  <Box
+                    component="img"
+                    src="/logo.png"
+                    alt="AXCEL Logo"
                     sx={{
-                      color: "black",
-                      fontWeight: "500",
-                      fontSize: "1.4rem",
-                      // marginBottom: 2,
+                      height: 50,
+                      width: "auto",
+                      // cursor: "pointer",
+                    }}
+                  />
+                </Box>
+                {/* X button to close */}
+                {editing && (
+                  <Button
+                    onClick={() => {
+                      setOnboarded(true);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      top: 12,
+                      right: 12,
+                      minWidth: "32px",
+                      height: "32px",
+                      padding: 0,
+                      borderRadius: "50%",
+                      // border: "1px solid #ccc", // subtle border
+                      // backgroundColor: "#f5f5f5", // light gray background
+                      color: "#333",
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      lineHeight: 1,
+                      "&:hover": {
+                        backgroundColor: "#e0e0e0",
+                        borderColor: "#999",
+                      },
+                      zIndex: 10,
                     }}
                   >
-                    你好！讓我們先了解你，以便為你量身定制專屬體驗
-                  </Typography>
-                  {/* name */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
-                    >
-                      名字
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入名字"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                    ×
+                  </Button>
+                )}
+                {page === 0 && (
+                  <>
+                    <Box
+                      width="100%"
+                      height="80%"
                       sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
-                        },
+                        overflowY: "auto",
+                        pr: 1,
+                        position: "relative",
                       }}
-                    />
-                  </Box>
-                  {/* height */}
-                  <Box sx={{ p: 1 }}>
-                    <Stack
-                      display={"flex"}
-                      flexDirection={"row"}
-                      sx={{ gap: 0.5, marginBottom: 1 }}
-                      alignItems={"center"}
                     >
                       <Typography
                         sx={{
                           color: "black",
-                          fontWeight: "600",
-                          fontSize: "1",
+                          fontWeight: "500",
+                          fontSize: "1.4rem",
+                          // marginBottom: 2,
                         }}
                       >
-                        身高
+                        你好！讓我們先了解你，以便為你量身定制專屬體驗
                       </Typography>
-                      {/* height unit */}
-                      <ToggleButtonGroup
-                        size="small"
-                        exclusive
-                        value={heightUnit}
-                        onChange={(_, newValue) => {
-                          if (newValue !== null) {
-                            if (newValue == "ft/in") {
-                              setHeightFT(
-                                heightCM
-                                  ? String(
-                                      Math.floor(
-                                        parseFloat(heightCM) / 2.54 / 12
-                                      )
-                                    )
-                                  : ""
-                              );
-                              setHeightIN(
-                                heightCM
-                                  ? String(
-                                      (
-                                        (parseFloat(heightCM) / 2.54) %
-                                        12
-                                      ).toFixed(2)
-                                    )
-                                  : ""
-                              );
-                            } else {
-                              setHeightCM(
-                                heightIN && heightFT
-                                  ? String(
-                                      (
-                                        (parseInt(heightFT) * 12 +
-                                          parseFloat(heightIN)) *
-                                        2.54
-                                      ).toFixed(2)
-                                    )
-                                  : ""
-                              );
-                            }
-                            setHeightUnit(newValue);
-                          }
-                        }}
-                        sx={{
-                          "& .MuiToggleButton-root": {
-                            padding: "4px 8px", // reduce vertical & horizontal padding
-                            fontSize: "0.75rem", // smaller text
-                            minWidth: "40px", // optional: reduce minimum width
-                          },
-                        }}
-                      >
-                        <ToggleButton value="cm">cm</ToggleButton>
-                        <ToggleButton value="ft/in">ft/in</ToggleButton>
-                      </ToggleButtonGroup>
-                    </Stack>
-                    {heightUnit === "cm" && (
-                      <TextField
-                        variant="outlined"
-                        placeholder="輸入身高（cm）"
-                        value={heightCM || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (
-                            value.slice(-1) === "." &&
-                            !isNaN(parseFloat(value.slice(0, -1))) &&
-                            !value.slice(0, -1).includes(".")
-                          ) {
-                            setHeightCM(
-                              String(parseFloat(value.slice(0, -1)) + ".")
-                            );
-                          } else if (parseFloat(value)) {
-                            setHeightCM(String(parseFloat(value)));
-                          } else {
-                            setHeightCM("");
-                          }
-                        }}
-                        sx={{
-                          width: "100%",
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px", // rounded corners
-                            backgroundColor: "#fafafa", // subtle background
-                            "& fieldset": {
-                              borderColor: "#ddd", // lighter border
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#aaa", // darker border on hover
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#1976d2", // strong border on focus
-                            },
-                          },
-                        }}
-                      />
-                    )}
-                    {heightUnit === "ft/in" && (
-                      <Stack display={"flex"} flexDirection={"row"}>
+                      {/* name */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          名字
+                        </Typography>
                         <TextField
                           variant="outlined"
-                          placeholder="輸入身高（ft）"
-                          value={heightFT || ""}
+                          placeholder="輸入名字"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px", // rounded corners
+                              backgroundColor: "#fafafa", // subtle background
+                              "& fieldset": {
+                                borderColor: "#ddd", // lighter border
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#aaa", // darker border on hover
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2", // strong border on focus
+                              },
+                            },
+                          }}
+                        />
+                      </Box>
+                      {/* height */}
+                      <Box sx={{ p: 1 }}>
+                        <Stack
+                          display={"flex"}
+                          flexDirection={"row"}
+                          sx={{ gap: 0.5, marginBottom: 1 }}
+                          alignItems={"center"}
+                        >
+                          <Typography
+                            sx={{
+                              color: "black",
+                              fontWeight: "600",
+                              fontSize: "1",
+                            }}
+                          >
+                            身高
+                          </Typography>
+                          {/* height unit */}
+                          <ToggleButtonGroup
+                            size="small"
+                            exclusive
+                            value={heightUnit}
+                            onChange={(_, newValue) => {
+                              if (newValue !== null) {
+                                if (newValue == "ft/in") {
+                                  setHeightFT(
+                                    heightCM
+                                      ? String(
+                                          Math.floor(
+                                            parseFloat(heightCM) / 2.54 / 12
+                                          )
+                                        )
+                                      : ""
+                                  );
+                                  setHeightIN(
+                                    heightCM
+                                      ? String(
+                                          (
+                                            (parseFloat(heightCM) / 2.54) %
+                                            12
+                                          ).toFixed(2)
+                                        )
+                                      : ""
+                                  );
+                                } else {
+                                  setHeightCM(
+                                    heightIN && heightFT
+                                      ? String(
+                                          (
+                                            (parseInt(heightFT) * 12 +
+                                              parseFloat(heightIN)) *
+                                            2.54
+                                          ).toFixed(2)
+                                        )
+                                      : ""
+                                  );
+                                }
+                                setHeightUnit(newValue);
+                              }
+                            }}
+                            sx={{
+                              "& .MuiToggleButton-root": {
+                                padding: "4px 8px", // reduce vertical & horizontal padding
+                                fontSize: "0.75rem", // smaller text
+                                minWidth: "40px", // optional: reduce minimum width
+                              },
+                            }}
+                          >
+                            <ToggleButton value="cm">cm</ToggleButton>
+                            <ToggleButton value="ft/in">ft/in</ToggleButton>
+                          </ToggleButtonGroup>
+                        </Stack>
+                        {heightUnit === "cm" && (
+                          <TextField
+                            variant="outlined"
+                            placeholder="輸入身高（cm）"
+                            value={heightCM || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (
+                                value.slice(-1) === "." &&
+                                !isNaN(parseFloat(value.slice(0, -1))) &&
+                                !value.slice(0, -1).includes(".")
+                              ) {
+                                setHeightCM(
+                                  String(parseFloat(value.slice(0, -1)) + ".")
+                                );
+                              } else if (parseFloat(value)) {
+                                setHeightCM(String(parseFloat(value)));
+                              } else {
+                                setHeightCM("");
+                              }
+                            }}
+                            sx={{
+                              width: "100%",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px", // rounded corners
+                                backgroundColor: "#fafafa", // subtle background
+                                "& fieldset": {
+                                  borderColor: "#ddd", // lighter border
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#aaa", // darker border on hover
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#1976d2", // strong border on focus
+                                },
+                              },
+                            }}
+                          />
+                        )}
+                        {heightUnit === "ft/in" && (
+                          <Stack display={"flex"} flexDirection={"row"}>
+                            <TextField
+                              variant="outlined"
+                              placeholder="輸入身高（ft）"
+                              value={heightFT || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (parseInt(value)) {
+                                  setHeightFT(String(parseInt(value)));
+                                } else {
+                                  setHeightFT("");
+                                }
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: "12px", // rounded corners
+                                  backgroundColor: "#fafafa", // subtle background
+                                  "& fieldset": {
+                                    borderColor: "#ddd", // lighter border
+                                  },
+                                  "&:hover fieldset": {
+                                    borderColor: "#aaa", // darker border on hover
+                                  },
+                                  "&.Mui-focused fieldset": {
+                                    borderColor: "#1976d2", // strong border on focus
+                                  },
+                                },
+                              }}
+                            />
+                            <TextField
+                              variant="outlined"
+                              placeholder="輸入身高（in）"
+                              value={heightIN || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (
+                                  value.slice(-1) === "." &&
+                                  !isNaN(parseFloat(value.slice(0, -1))) &&
+                                  !value.slice(0, -1).includes(".")
+                                ) {
+                                  setHeightIN(
+                                    String(parseFloat(value.slice(0, -1)) + ".")
+                                  );
+                                } else if (parseFloat(value)) {
+                                  setHeightIN(String(parseFloat(value)));
+                                } else {
+                                  setHeightIN("");
+                                }
+                              }}
+                              sx={{
+                                width: "100%",
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: "12px", // rounded corners
+                                  backgroundColor: "#fafafa", // subtle background
+                                  "& fieldset": {
+                                    borderColor: "#ddd", // lighter border
+                                  },
+                                  "&:hover fieldset": {
+                                    borderColor: "#aaa", // darker border on hover
+                                  },
+                                  "&.Mui-focused fieldset": {
+                                    borderColor: "#1976d2", // strong border on focus
+                                  },
+                                },
+                              }}
+                            />
+                          </Stack>
+                        )}
+                      </Box>
+                      {/* weight */}
+                      <Box sx={{ p: 1 }}>
+                        <Stack
+                          display={"flex"}
+                          flexDirection={"row"}
+                          sx={{ gap: 0.5, marginBottom: 1 }}
+                          alignItems={"center"}
+                        >
+                          <Typography
+                            sx={{
+                              color: "black",
+                              fontWeight: "600",
+                              fontSize: "1",
+                            }}
+                          >
+                            重量
+                          </Typography>
+                          {/* height unit */}
+                          <ToggleButtonGroup
+                            size="small"
+                            exclusive
+                            value={weightUnit}
+                            onChange={(_, newValue) => {
+                              if (newValue !== null) {
+                                if (newValue == "lbs") {
+                                  setWeightLB(
+                                    weightKG
+                                      ? String(
+                                          (parseFloat(weightKG) * 2.2).toFixed(
+                                            2
+                                          )
+                                        )
+                                      : ""
+                                  );
+                                } else {
+                                  setWeightKG(
+                                    weightLB
+                                      ? String(
+                                          (parseFloat(weightLB) / 2.2).toFixed(
+                                            2
+                                          )
+                                        )
+                                      : ""
+                                  );
+                                }
+                                setWeightUnit(newValue);
+                              }
+                            }}
+                            sx={{
+                              "& .MuiToggleButton-root": {
+                                padding: "4px 8px", // reduce vertical & horizontal padding
+                                fontSize: "0.75rem", // smaller text
+                                minWidth: "40px", // optional: reduce minimum width
+                              },
+                            }}
+                          >
+                            <ToggleButton value="kg">kg</ToggleButton>
+                            <ToggleButton value="lbs">lbs</ToggleButton>
+                          </ToggleButtonGroup>
+                        </Stack>
+                        {weightUnit === "kg" && (
+                          <TextField
+                            variant="outlined"
+                            placeholder="輸入重量（kg）"
+                            value={weightKG || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (
+                                value.slice(-1) === "." &&
+                                !isNaN(parseFloat(value.slice(0, -1))) &&
+                                !value.slice(0, -1).includes(".")
+                              ) {
+                                setWeightKG(
+                                  String(parseFloat(value.slice(0, -1)) + ".")
+                                );
+                              } else if (parseFloat(value)) {
+                                setWeightKG(String(parseFloat(value)));
+                              } else {
+                                setWeightKG("");
+                              }
+                            }}
+                            sx={{
+                              width: "100%",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px", // rounded corners
+                                backgroundColor: "#fafafa", // subtle background
+                                "& fieldset": {
+                                  borderColor: "#ddd", // lighter border
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#aaa", // darker border on hover
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#1976d2", // strong border on focus
+                                },
+                              },
+                            }}
+                          />
+                        )}
+                        {weightUnit === "lbs" && (
+                          <TextField
+                            variant="outlined"
+                            placeholder="輸入重量（lbs）"
+                            value={weightLB || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (
+                                value.slice(-1) === "." &&
+                                !isNaN(parseFloat(value.slice(0, -1))) &&
+                                !value.slice(0, -1).includes(".")
+                              ) {
+                                setWeightLB(
+                                  String(parseFloat(value.slice(0, -1)) + ".")
+                                );
+                              } else if (parseFloat(value)) {
+                                setWeightLB(String(parseFloat(value)));
+                              } else {
+                                setWeightLB("");
+                              }
+                            }}
+                            sx={{
+                              width: "100%",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px", // rounded corners
+                                backgroundColor: "#fafafa", // subtle background
+                                "& fieldset": {
+                                  borderColor: "#ddd", // lighter border
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#aaa", // darker border on hover
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#1976d2", // strong border on focus
+                                },
+                              },
+                            }}
+                          />
+                        )}
+                      </Box>
+                      {/* birthdate */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          出生日期
+                        </Typography>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            // label="出生日期"
+                            value={birthdate}
+                            onChange={setBirthdate}
+                            maxDate={dayjs()}
+                            disableFuture
+                            sx={{
+                              width: "100%",
+                            }}
+                            slotProps={{
+                              textField: {
+                                // size: "small",
+                                InputProps: {
+                                  sx: {
+                                    borderRadius: "12px",
+                                    backgroundColor: "#fafafa",
+                                  },
+                                },
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
+                      </Box>
+                    </Box>
+                    <Button
+                      onClick={() => setPage(page + 1)}
+                      disabled={
+                        name === "" ||
+                        (heightUnit === "cm" && heightCM === "") ||
+                        (heightUnit === "ft/in" &&
+                          (heightFT === "" || heightIN === "")) ||
+                        (weightUnit === "kg" && weightKG === "") ||
+                        (weightUnit === "lbs" && weightLB === "") ||
+                        birthdate === null ||
+                        (birthdate !== null && !birthdate.isValid())
+                      }
+                      sx={{
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
+                        },
+                      }}
+                    >
+                      下一步
+                    </Button>
+                  </>
+                )}
+                {page === 1 && (
+                  <>
+                    <Box
+                      width="100%"
+                      height="80%"
+                      sx={{
+                        overflowY: "auto",
+                        pr: 1,
+                        position: "relative",
+                      }}
+                    >
+                      {/* team */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          球队
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="輸入球队"
+                          value={team}
+                          onChange={(e) => setTeam(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px", // rounded corners
+                              backgroundColor: "#fafafa", // subtle background
+                              "& fieldset": {
+                                borderColor: "#ddd", // lighter border
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#aaa", // darker border on hover
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2", // strong border on focus
+                              },
+                            },
+                          }}
+                        />
+                      </Box>
+                      {/* jersey */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          球号
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="輸入球号"
+                          value={jersey}
+                          onChange={(e) => setJersey(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px", // rounded corners
+                              backgroundColor: "#fafafa", // subtle background
+                              "& fieldset": {
+                                borderColor: "#ddd", // lighter border
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#aaa", // darker border on hover
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2", // strong border on focus
+                              },
+                            },
+                          }}
+                        />
+                      </Box>
+                      {/* position */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          球位
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="輸入球位"
+                          value={position}
+                          onChange={(e) => setPosition(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px", // rounded corners
+                              backgroundColor: "#fafafa", // subtle background
+                              "& fieldset": {
+                                borderColor: "#ddd", // lighter border
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#aaa", // darker border on hover
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2", // strong border on focus
+                              },
+                            },
+                          }}
+                        />
+                      </Box>
+                      {/* max hr */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          最高心跳
+                        </Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="輸入最高心跳"
+                          value={maxHeartRate || ""}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (parseInt(value)) {
-                              setHeightFT(String(parseInt(value)));
+                            if (parseFloat(value)) {
+                              setMaxHeartRate(String(parseFloat(value)));
                             } else {
-                              setHeightFT("");
+                              setMaxHeartRate("");
                             }
                           }}
                           sx={{
@@ -876,10 +1322,22 @@ export default function Home() {
                             },
                           }}
                         />
+                      </Box>
+                      {/* max vel */}
+                      <Box sx={{ p: 1 }}>
+                        <Typography
+                          sx={{
+                            color: "black",
+                            fontWeight: "600",
+                            fontSize: "1",
+                          }}
+                        >
+                          最快速度
+                        </Typography>
                         <TextField
                           variant="outlined"
-                          placeholder="輸入身高（in）"
-                          value={heightIN || ""}
+                          placeholder="輸入最快速度"
+                          value={maxVelocity}
                           onChange={(e) => {
                             const value = e.target.value;
                             if (
@@ -887,13 +1345,13 @@ export default function Home() {
                               !isNaN(parseFloat(value.slice(0, -1))) &&
                               !value.slice(0, -1).includes(".")
                             ) {
-                              setHeightIN(
+                              setMaxVelocity(
                                 String(parseFloat(value.slice(0, -1)) + ".")
                               );
                             } else if (parseFloat(value)) {
-                              setHeightIN(String(parseFloat(value)));
+                              setMaxVelocity(String(parseFloat(value)));
                             } else {
-                              setHeightIN("");
+                              setMaxVelocity("");
                             }
                           }}
                           sx={{
@@ -913,742 +1371,367 @@ export default function Home() {
                             },
                           }}
                         />
-                      </Stack>
-                    )}
-                  </Box>
-                  {/* weight */}
-                  <Box sx={{ p: 1 }}>
-                    <Stack
-                      display={"flex"}
-                      flexDirection={"row"}
-                      sx={{ gap: 0.5, marginBottom: 1 }}
-                      alignItems={"center"}
-                    >
-                      <Typography
-                        sx={{
-                          color: "black",
-                          fontWeight: "600",
-                          fontSize: "1",
-                        }}
-                      >
-                        重量
-                      </Typography>
-                      {/* height unit */}
-                      <ToggleButtonGroup
-                        size="small"
-                        exclusive
-                        value={weightUnit}
-                        onChange={(_, newValue) => {
-                          if (newValue !== null) {
-                            if (newValue == "lbs") {
-                              setWeightLB(
-                                weightKG
-                                  ? String(
-                                      (parseFloat(weightKG) * 2.2).toFixed(2)
-                                    )
-                                  : ""
-                              );
-                            } else {
-                              setWeightKG(
-                                weightLB
-                                  ? String(
-                                      (parseFloat(weightLB) / 2.2).toFixed(2)
-                                    )
-                                  : ""
-                              );
-                            }
-                            setWeightUnit(newValue);
-                          }
-                        }}
-                        sx={{
-                          "& .MuiToggleButton-root": {
-                            padding: "4px 8px", // reduce vertical & horizontal padding
-                            fontSize: "0.75rem", // smaller text
-                            minWidth: "40px", // optional: reduce minimum width
-                          },
-                        }}
-                      >
-                        <ToggleButton value="kg">kg</ToggleButton>
-                        <ToggleButton value="lbs">lbs</ToggleButton>
-                      </ToggleButtonGroup>
-                    </Stack>
-                    {weightUnit === "kg" && (
-                      <TextField
-                        variant="outlined"
-                        placeholder="輸入重量（kg）"
-                        value={weightKG || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (
-                            value.slice(-1) === "." &&
-                            !isNaN(parseFloat(value.slice(0, -1))) &&
-                            !value.slice(0, -1).includes(".")
-                          ) {
-                            setWeightKG(
-                              String(parseFloat(value.slice(0, -1)) + ".")
-                            );
-                          } else if (parseFloat(value)) {
-                            setWeightKG(String(parseFloat(value)));
-                          } else {
-                            setWeightKG("");
-                          }
-                        }}
-                        sx={{
-                          width: "100%",
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px", // rounded corners
-                            backgroundColor: "#fafafa", // subtle background
-                            "& fieldset": {
-                              borderColor: "#ddd", // lighter border
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#aaa", // darker border on hover
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#1976d2", // strong border on focus
-                            },
-                          },
-                        }}
-                      />
-                    )}
-                    {weightUnit === "lbs" && (
-                      <TextField
-                        variant="outlined"
-                        placeholder="輸入重量（lbs）"
-                        value={weightLB || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (
-                            value.slice(-1) === "." &&
-                            !isNaN(parseFloat(value.slice(0, -1))) &&
-                            !value.slice(0, -1).includes(".")
-                          ) {
-                            setWeightLB(
-                              String(parseFloat(value.slice(0, -1)) + ".")
-                            );
-                          } else if (parseFloat(value)) {
-                            setWeightLB(String(parseFloat(value)));
-                          } else {
-                            setWeightLB("");
-                          }
-                        }}
-                        sx={{
-                          width: "100%",
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px", // rounded corners
-                            backgroundColor: "#fafafa", // subtle background
-                            "& fieldset": {
-                              borderColor: "#ddd", // lighter border
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#aaa", // darker border on hover
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#1976d2", // strong border on focus
-                            },
-                          },
-                        }}
-                      />
-                    )}
-                  </Box>
-                  {/* birthdate */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
-                    >
-                      出生日期
-                    </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        // label="出生日期"
-                        value={birthdate}
-                        onChange={setBirthdate}
-                        maxDate={dayjs()}
-                        disableFuture
-                        sx={{
-                          width: "100%",
-                        }}
-                        slotProps={{
-                          textField: {
-                            // size: "small",
-                            InputProps: {
-                              sx: {
-                                borderRadius: "12px",
-                                backgroundColor: "#fafafa",
-                              },
-                            },
-                          },
-                        }}
-                      />
-                    </LocalizationProvider>
-                  </Box>
-                </Box>
-                <Button
-                  onClick={() => setPage(page + 1)}
-                  disabled={
-                    name === "" ||
-                    (heightUnit === "cm" && heightCM === "") ||
-                    (heightUnit === "ft/in" &&
-                      (heightFT === "" || heightIN === "")) ||
-                    (weightUnit === "kg" && weightKG === "") ||
-                    (weightUnit === "lbs" && weightLB === "") ||
-                    birthdate === null ||
-                    (birthdate !== null && !birthdate.isValid())
-                  }
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    right: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  下一步
-                </Button>
-              </>
-            )}
-            {page === 1 && (
-              <>
-                <Box
-                  width="100%"
-                  height="80%"
-                  sx={{
-                    overflowY: "auto",
-                    pr: 1,
-                    position: "relative",
-                  }}
-                >
-                  {/* team */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
-                    >
-                      球队
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入球队"
-                      value={team}
-                      onChange={(e) => setTeam(e.target.value)}
+                      </Box>
+                    </Box>
+                    <Button
+                      onClick={() => setPage(page - 1)}
                       sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
+                        position: "absolute",
+                        bottom: 16,
+                        left: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
                         },
                       }}
-                    />
-                  </Box>
-                  {/* jersey */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
                     >
-                      球号
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入球号"
-                      value={jersey}
-                      onChange={(e) => setJersey(e.target.value)}
+                      上一步
+                    </Button>
+                    <Button
+                      onClick={() => setPage(page + 1)}
+                      disabled={
+                        team === "" ||
+                        jersey === "" ||
+                        position === "" ||
+                        maxHeartRate === "" ||
+                        maxVelocity === ""
+                      }
                       sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
                         },
                       }}
-                    />
-                  </Box>
-                  {/* position */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
                     >
-                      球位
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入球位"
-                      value={position}
-                      onChange={(e) => setPosition(e.target.value)}
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
-                        },
-                      }}
-                    />
-                  </Box>
-                  {/* max hr */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
-                    >
-                      最高心跳
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入最高心跳"
-                      value={maxHeartRate || ""}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (parseFloat(value)) {
-                          setMaxHeartRate(String(parseFloat(value)));
-                        } else {
-                          setMaxHeartRate("");
-                        }
-                      }}
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
-                        },
-                      }}
-                    />
-                  </Box>
-                  {/* max vel */}
-                  <Box sx={{ p: 1 }}>
-                    <Typography
-                      sx={{ color: "black", fontWeight: "600", fontSize: "1" }}
-                    >
-                      最快速度
-                    </Typography>
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入最快速度"
-                      value={maxVelocity}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (
-                          value.slice(-1) === "." &&
-                          !isNaN(parseFloat(value.slice(0, -1))) &&
-                          !value.slice(0, -1).includes(".")
-                        ) {
-                          setMaxVelocity(
-                            String(parseFloat(value.slice(0, -1)) + ".")
-                          );
-                        } else if (parseFloat(value)) {
-                          setMaxVelocity(String(parseFloat(value)));
-                        } else {
-                          setMaxVelocity("");
-                        }
-                      }}
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
-                        },
-                      }}
-                    />
-                  </Box>
-                </Box>
-                <Button
-                  onClick={() => setPage(page - 1)}
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    left: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  上一步
-                </Button>
-                <Button
-                  onClick={() => setPage(page + 1)}
-                  disabled={
-                    team === "" ||
-                    jersey === "" ||
-                    position === "" ||
-                    maxHeartRate === "" ||
-                    maxVelocity === ""
-                  }
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    right: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  下一步
-                </Button>
-              </>
-            )}
-            {page === 2 && (
-              <>
-                <Box
-                  width="100%"
-                  height="80%"
-                  sx={{
-                    overflowY: "auto",
-                    pr: 1,
-                    position: "relative",
-                  }}
-                >
-                  {labels.map((label, index) => (
-                    <Stack
-                      key={index}
+                      下一步
+                    </Button>
+                  </>
+                )}
+                {page === 2 && (
+                  <>
+                    <Box
                       width="100%"
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      sx={{ p: 1, gap: 1 }}
+                      height="80%"
+                      sx={{
+                        overflowY: "auto",
+                        pr: 1,
+                        position: "relative",
+                      }}
                     >
-                      <Typography
-                        sx={{
-                          color: "black",
-                          fontWeight: "600",
-                          fontSize: "1rem",
-                          whiteSpace: "nowrap",
-                          minWidth: "120px", // ✅ fix label width
-                        }}
-                      >
-                        {label}
-                      </Typography>
-                      <TextField
-                        variant="outlined"
-                        placeholder={`輸入${label.replace(/^\d+\./, "")}`}
-                        value={values[index] || ""}
-                        onChange={(e) => {
-                          const updatedValues = [...values];
-                          updatedValues[index] = e.target.value;
-                          setValues(updatedValues);
-                        }}
-                        sx={{
-                          flex: 1, // ✅ makes all text fields fill the remaining space equally
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px",
-                            backgroundColor: "#fafafa",
-                            "& fieldset": {
-                              borderColor: "#ddd",
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#aaa",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#1976d2",
-                            },
-                          },
-                        }}
-                      />
-                    </Stack>
-                  ))}
-                </Box>
-
-                <Button
-                  onClick={() => setPage(page - 1)}
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    left: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  上一步
-                </Button>
-                <Button
-                  onClick={() => {
-                    const isComplete = values.every((v) => v !== "");
-                    if (isComplete) {
-                      setPage(page + 1);
-                      makeSuggestions();
-                    }
-                  }}
-                  disabled={values.every((v) => v === "")}
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    right: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  下一步
-                </Button>
-              </>
-            )}
-            {page === 3 && (
-              <>
-                <Box
-                  width="100%"
-                  height="75%"
-                  display="flex"
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                  flexDirection={"column"}
-                  // gap={2}
-                  sx={{
-                    overflowY: "auto",
-                    pr: 1,
-                    position: "relative",
-                  }}
-                >
-                  <Typography
-                    sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
-                  >
-                    目標設定
-                  </Typography>
-                  <Stack width="100%" height="100%">
-                    {suggestions[0] !== "" && (
-                      <Stack
-                        width="100%" // ✅ make it responsive
-                        // maxWidth="500px" // ✅ optional: cap width on larger screens
-                        direction="row"
-                        // spacing={1}
-                        paddingY={2}
-                        justifyContent="space-between" // Align items to the start for horizontal scroll
-                        alignItems="center"
-                        flexWrap="nowrap" // Prevent wrapping
-                        sx={{
-                          // width: isMobile ? '100%' : '92.5%',
-                          backgroundColor: "background.paper",
-                          gap: 2,
-                          // overflowX: "auto", // Enable horizontal scrolling
-                          whiteSpace: "nowrap", // Prevent items from breaking to the next line
-                          "&::-webkit-scrollbar": {
-                            height: "6px",
-                          },
-                          "&::-webkit-scrollbar-thumb": {
-                            backgroundColor: "rgba(0, 0, 0, 0.2)",
-                            borderRadius: "3px",
-                          },
-                        }}
-                      >
-                        {suggestions.map((suggestion, index) => (
-                          <Box
-                            key={index}
-                            onClick={() => {
-                              setGoal(suggestion);
-                            }}
+                      {labels.map((label, index) => (
+                        <Stack
+                          key={index}
+                          width="100%"
+                          display="flex"
+                          flexDirection="row"
+                          alignItems="center"
+                          sx={{ p: 1, gap: 1 }}
+                        >
+                          <Typography
                             sx={{
-                              backgroundColor: "#f5f5f5", // light background
-                              width: "100%",
-                              height: "200px",
-                              cursor: "pointer",
-                              borderRadius: "12px", // smoother rounded corners
-                              overflow: "auto", // auto-scroll if content overflows
-                              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // subtle shadow
-                              transition: "all 0.3s ease", // smooth hover effects
-                              "&:hover": {
-                                backgroundColor: "#e0e0e0", // light hover effect
-                                boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)", // stronger shadow on hover
-                                transform: "scale(1.02)", // slight grow
-                              },
-                              p: 2, // consistent inner padding
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "flex-start",
+                              color: "black",
+                              fontWeight: "600",
+                              fontSize: "1rem",
+                              whiteSpace: "nowrap",
+                              minWidth: "120px", // ✅ fix label width
                             }}
                           >
-                            <ReactMarkdown
-                              components={{
-                                p: ({ node, ...props }) => (
-                                  <Typography
-                                    sx={{
-                                      color: "#444", // body text color
-                                      fontSize: "0.95rem",
-                                      lineHeight: 1.6,
-                                      mb: 1,
-                                      whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
-                                    }}
-                                    {...props}
-                                  />
-                                ),
-                                li: ({ node, ...props }) => (
-                                  <li
-                                    style={{
-                                      marginBottom: "0.5rem",
-                                      color: "#555", // muted list color
-                                      whiteSpace: "pre-wrap", // ✅ preserve line breaks
-                                    }}
-                                    {...props}
-                                  />
-                                ),
-                                strong: ({ node, ...props }) => (
-                                  <Typography
-                                    component="span"
-                                    sx={{
-                                      color: "#111", // darker bold text
-                                      fontWeight: "bold",
-                                      whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
-                                    }}
-                                    {...props}
-                                  />
-                                ),
-                              }}
-                            >
-                              {suggestion}
-                            </ReactMarkdown>
-                          </Box>
-                        ))}
-                      </Stack>
-                    )}
-                    {suggestions[0] === "" && (
-                      <Box
-                        width="100%"
-                        display="flex"
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        <Stack
-                          display="flex"
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          spacing={2}
-                          height={"200px"}
-                        >
-                          <Typography sx={{ color: "black" }}>
-                            正在為您建立目標...
+                            {label}
                           </Typography>
-                          <CircularProgress />
+                          <TextField
+                            variant="outlined"
+                            placeholder={`輸入${label.replace(/^\d+\./, "")}`}
+                            value={values[index] || ""}
+                            onChange={(e) => {
+                              const updatedValues = [...values];
+                              updatedValues[index] = e.target.value;
+                              setValues(updatedValues);
+                            }}
+                            sx={{
+                              flex: 1, // ✅ makes all text fields fill the remaining space equally
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px",
+                                backgroundColor: "#fafafa",
+                                "& fieldset": {
+                                  borderColor: "#ddd",
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#aaa",
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#1976d2",
+                                },
+                              },
+                            }}
+                          />
                         </Stack>
-                      </Box>
-                    )}
-                    <TextField
-                      variant="outlined"
-                      placeholder="輸入目標"
-                      value={goal}
-                      onChange={(e) => setGoal(e.target.value)}
+                      ))}
+                    </Box>
+
+                    <Button
+                      onClick={() => setPage(page - 1)}
                       sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "12px", // rounded corners
-                          backgroundColor: "#fafafa", // subtle background
-                          "& fieldset": {
-                            borderColor: "#ddd", // lighter border
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#aaa", // darker border on hover
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#1976d2", // strong border on focus
-                          },
+                        position: "absolute",
+                        bottom: 16,
+                        left: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
                         },
                       }}
-                    />
-                  </Stack>
-                </Box>
-                <Button
-                  onClick={() => setPage(page - 1)}
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    left: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  上一步
-                </Button>
-                <Button
-                  onClick={() => {
-                    setOnboarded(true),
-                      makePlan(),
-                      window.scrollTo({ top: 0, behavior: "auto" });
-                  }}
-                  disabled={goal === ""}
-                  sx={{
-                    position: "absolute",
-                    bottom: 16,
-                    right: 16,
-                    bgcolor: "#000",
-                    color: "#fff",
-                    "&:hover": { bgcolor: "#333" },
-                    "&.Mui-disabled": {
-                      bgcolor: "#ccc",
-                      color: "#888",
-                    },
-                  }}
-                >
-                  完成
-                </Button>
-              </>
+                    >
+                      上一步
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        const isComplete = values.every((v) => v !== "");
+                        if (isComplete) {
+                          setPage(page + 1);
+                          makeSuggestions();
+                        }
+                      }}
+                      disabled={values.every((v) => v === "")}
+                      sx={{
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
+                        },
+                      }}
+                    >
+                      下一步
+                    </Button>
+                  </>
+                )}
+                {page === 3 && (
+                  <>
+                    <Box
+                      width="100%"
+                      height="75%"
+                      display="flex"
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                      flexDirection={"column"}
+                      // gap={2}
+                      sx={{
+                        overflowY: "auto",
+                        pr: 1,
+                        position: "relative",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "2.5rem",
+                          fontWeight: 700,
+                          color: "black",
+                        }}
+                      >
+                        目標設定
+                      </Typography>
+                      <Stack width="100%" height="100%">
+                        {suggestions[0] !== "" && (
+                          <Stack
+                            width="100%" // ✅ make it responsive
+                            // maxWidth="500px" // ✅ optional: cap width on larger screens
+                            direction="row"
+                            // spacing={1}
+                            paddingY={2}
+                            justifyContent="space-between" // Align items to the start for horizontal scroll
+                            alignItems="center"
+                            flexWrap="nowrap" // Prevent wrapping
+                            sx={{
+                              // width: isMobile ? '100%' : '92.5%',
+                              backgroundColor: "background.paper",
+                              gap: 2,
+                              // overflowX: "auto", // Enable horizontal scrolling
+                              whiteSpace: "nowrap", // Prevent items from breaking to the next line
+                              "&::-webkit-scrollbar": {
+                                height: "6px",
+                              },
+                              "&::-webkit-scrollbar-thumb": {
+                                backgroundColor: "rgba(0, 0, 0, 0.2)",
+                                borderRadius: "3px",
+                              },
+                            }}
+                          >
+                            {suggestions.map((suggestion, index) => (
+                              <Box
+                                key={index}
+                                onClick={() => {
+                                  setGoal(suggestion);
+                                }}
+                                sx={{
+                                  backgroundColor: "#f5f5f5", // light background
+                                  width: "100%",
+                                  height: "200px",
+                                  cursor: "pointer",
+                                  borderRadius: "12px", // smoother rounded corners
+                                  overflow: "auto", // auto-scroll if content overflows
+                                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // subtle shadow
+                                  transition: "all 0.3s ease", // smooth hover effects
+                                  "&:hover": {
+                                    backgroundColor: "#e0e0e0", // light hover effect
+                                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)", // stronger shadow on hover
+                                    transform: "scale(1.02)", // slight grow
+                                  },
+                                  p: 2, // consistent inner padding
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  justifyContent: "flex-start",
+                                }}
+                              >
+                                <ReactMarkdown
+                                  components={{
+                                    p: ({ node, ...props }) => (
+                                      <Typography
+                                        sx={{
+                                          color: "#444", // body text color
+                                          fontSize: "0.95rem",
+                                          lineHeight: 1.6,
+                                          mb: 1,
+                                          whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
+                                        }}
+                                        {...props}
+                                      />
+                                    ),
+                                    li: ({ node, ...props }) => (
+                                      <li
+                                        style={{
+                                          marginBottom: "0.5rem",
+                                          color: "#555", // muted list color
+                                          whiteSpace: "pre-wrap", // ✅ preserve line breaks
+                                        }}
+                                        {...props}
+                                      />
+                                    ),
+                                    strong: ({ node, ...props }) => (
+                                      <Typography
+                                        component="span"
+                                        sx={{
+                                          color: "#111", // darker bold text
+                                          fontWeight: "bold",
+                                          whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
+                                        }}
+                                        {...props}
+                                      />
+                                    ),
+                                  }}
+                                >
+                                  {suggestion}
+                                </ReactMarkdown>
+                              </Box>
+                            ))}
+                          </Stack>
+                        )}
+                        {suggestions[0] === "" && (
+                          <Box
+                            width="100%"
+                            display="flex"
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                          >
+                            <Stack
+                              display="flex"
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="center"
+                              spacing={2}
+                              height={"200px"}
+                            >
+                              <Typography sx={{ color: "black" }}>
+                                正在為您建立目標...
+                              </Typography>
+                              <CircularProgress />
+                            </Stack>
+                          </Box>
+                        )}
+                        <TextField
+                          variant="outlined"
+                          placeholder="輸入目標"
+                          value={goal}
+                          onChange={(e) => setGoal(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "12px", // rounded corners
+                              backgroundColor: "#fafafa", // subtle background
+                              "& fieldset": {
+                                borderColor: "#ddd", // lighter border
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#aaa", // darker border on hover
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#1976d2", // strong border on focus
+                              },
+                            },
+                          }}
+                        />
+                      </Stack>
+                    </Box>
+                    <Button
+                      onClick={() => setPage(page - 1)}
+                      sx={{
+                        position: "absolute",
+                        bottom: 16,
+                        left: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
+                        },
+                      }}
+                    >
+                      上一步
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setOnboarded(true),
+                          makePlan(),
+                          window.scrollTo({ top: 0, behavior: "auto" });
+                      }}
+                      disabled={goal === ""}
+                      sx={{
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                        bgcolor: "#000",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "#333" },
+                        "&.Mui-disabled": {
+                          bgcolor: "#ccc",
+                          color: "#888",
+                        },
+                      }}
+                    >
+                      完成
+                    </Button>
+                  </>
+                )}
+              </Box>
             )}
-          </Box>
-        )}
-      </>
+          </>
+        </Box>
+      )}
     </Box>
   );
 }
