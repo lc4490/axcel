@@ -18,7 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import FlagIcon from "@mui/icons-material/Flag";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 type Athlete = {
@@ -51,13 +51,30 @@ const labels = [
   "9. Beep Test",
 ];
 
+const defaultValues = [
+  "體脂 16%、瘦體重 58.8 kg",
+  "52 cm",
+  "4.3 秒",
+  "10.2 秒",
+  "臥推: 85 kg、深蹲: 110 kg",
+  "5.8 秒",
+  "45 次/分鐘、伏地挺身: 35 次",
+  "8.5 秒",
+  "Level 17.1 (~1800 m)",
+];
+
+const defaultSuggestions = [
+  `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
+  `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
+  `**[體能能量爆發]**- **目標**: 提升體能耐力並壓縮折返跑時間。- **原因**: 你的Yo-Yo Test Level 17.1 (~1800m)和折返跑8.5秒的測試結果顯示，你的耐力與爆發力均有出色的表現，但進一步的提升可以將你的全面體能拉到更高的層次。- **重點**:  - 多元化你的有氧訓練，如游泳、自行車、慢跑等，提高你的心肺功能並提高你的耐力。  - 加強核心肌群訓練，如俯臥撐、仰臥起坐、橋式運動等，進一步提升你的爆發力和速度。  - 飲食上要攝取足夠且均衡`,
+];
+
 const defaultWorkouts = [
   "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
   "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
   "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
   "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
 ];
-
 export default function AthleteTable() {
   const [rows, setRows] = useState<Athlete[]>([
     {
@@ -72,12 +89,8 @@ export default function AthleteTable() {
       height: 155.0,
       maxHR: 200,
       maxVel: 10.0,
-      values: Array(9).fill(""),
-      suggestions: [
-        `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
-        `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
-        `**[體能能量爆發]**- **目標**: 提升體能耐力並壓縮折返跑時間。- **原因**: 你的Yo-Yo Test Level 17.1 (~1800m)和折返跑8.5秒的測試結果顯示，你的耐力與爆發力均有出色的表現，但進一步的提升可以將你的全面體能拉到更高的層次。- **重點**:  - 多元化你的有氧訓練，如游泳、自行車、慢跑等，提高你的心肺功能並提高你的耐力。  - 加強核心肌群訓練，如俯臥撐、仰臥起坐、橋式運動等，進一步提升你的爆發力和速度。  - 飲食上要攝取足夠且均衡`,
-      ],
+      values: defaultValues,
+      suggestions: defaultSuggestions,
       goal: "",
       workouts: defaultWorkouts,
     },
@@ -93,10 +106,27 @@ export default function AthleteTable() {
       height: 150.0,
       maxHR: 200,
       maxVel: 10.0,
-      values: Array(9).fill(""),
+      values: defaultValues,
+      suggestions: defaultSuggestions,
+      goal: "",
+      workouts: [],
+    },
+    {
+      id: 3,
+      team: "Chinese Taipei Ice Hockey Team",
+      firstName: "翔",
+      lastName: "吳",
+      birthdate: "03/12/2010",
+      jersey: "F10",
+      position: "C",
+      weight: 40.0,
+      height: 155.0,
+      maxHR: 200,
+      maxVel: 10.0,
+      values: defaultValues,
       suggestions: Array(3).fill(""),
       goal: "",
-      workouts: defaultWorkouts,
+      workouts: [],
     },
   ]);
 
@@ -104,34 +134,121 @@ export default function AthleteTable() {
   const [goalAthlete, setGoalAthlete] = useState<Athlete | null>(null);
   const [workoutAthlete, setWorkoutAthlete] = useState<Athlete | null>(null);
   const [goal, setGoal] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([
-    "🏋️‍♂️ 提升肌力：每週訓練3次，增加深蹲重量到120kg。",
-    "💨 提高速度：10M衝刺時間縮短到4秒內。",
-    "💪 體脂減少到12%並維持肌肉量。",
-    "🏃‍♂️ 提高耐力：Beep Test達到 Level 18。",
-    "🎯 核心穩定：平板支撐持續時間提升到3分鐘。",
-  ]);
+  const [loadingSuggestionsID, setLoadingSuggestionsID] = useState<
+    number | null
+  >(null);
+  const [loadingWorkoutsID, setLoadingWorkoutsID] = useState<number | null>(
+    null
+  );
 
   const handleSaveAthlete = () => {
     if (editingAthlete) {
+      setLoadingSuggestionsID(editingAthlete.id);
       setRows((prevRows) =>
         prevRows.map((row) =>
           row.id === editingAthlete.id ? editingAthlete : row
         )
       );
+      makeSuggestions(editingAthlete);
       setEditingAthlete(null);
     }
   };
+  const makeSuggestions = async (athlete: Athlete) => {
+    console.log("make suggestions running");
+    if (athlete.suggestions[0] === "") {
+      let input = "";
+      input += "身高：" + athlete.height + "cm\n";
+      input += "體重：" + athlete.weight + "kg\n";
+      for (let i = 0; i < labels.length; i++) {
+        input += labels[i] + athlete.values[i] + "\n";
+      }
+      console.log(input);
+      const res = await fetch("/api/goal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input }),
+      });
+      const data = await res.json();
+      const suggestions = data.result
+        .split(/\*\*\d+\.\s*/) // split by "1.", "2.", etc.
+        .filter(Boolean) // remove any empty strings
+        .map((str: string) => `**${str}`); // add **
+
+      console.log(suggestions);
+      setRows((prevRows) =>
+        prevRows.map((row) =>
+          row.id === athlete.id ? { ...row, suggestions } : row
+        )
+      );
+    }
+    setLoadingSuggestionsID(null);
+  };
 
   const handleSaveGoal = () => {
+    console.log(goalAthlete?.goal);
     if (goalAthlete) {
+      setLoadingWorkoutsID(goalAthlete.id);
       setRows((prevRows) =>
         prevRows.map((row) =>
           row.id === goalAthlete.id ? { ...row, goal } : row
         )
       );
+      makePlan(goalAthlete);
       setGoalAthlete(null);
       setGoal("");
+    }
+  };
+
+  const makePlan = async (athlete: Athlete) => {
+    console.log("make plan running");
+    if (athlete.workouts.length < 1) {
+      console.log(athlete.workouts.length);
+      let input = "";
+      input += "身高：" + athlete.height + "cm\n";
+      input += "體重：" + athlete.weight + "kg\n";
+      for (let i = 0; i < labels.length; i++) {
+        input += labels[i] + athlete.values[i] + "\n";
+      }
+      console.log(input);
+      console.log(goal);
+      try {
+        // setLoading(true); // show spinner
+        const res = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, goal }),
+        });
+        const data = await res.json();
+        console.log("Generated Plan:", data.plan);
+        const workouts = data.plan
+          .split("天")
+          .slice(2)
+          .map((w: string, index: number) => {
+            let text = "第" + (index + 1) + "天" + w;
+            // Trim everything after ### or ---
+            if (text.includes("###")) {
+              text = text.split("###")[0].trim();
+            }
+            if (text.includes("---")) {
+              text = text.split("---")[0].trim();
+            }
+            if (text.includes("\n\n")) {
+              text = text.split("\n\n")[0].trim();
+            }
+            return text.trim();
+          });
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === athlete.id ? { ...row, workouts } : row
+          )
+        );
+      } catch (err) {
+        console.error("Failed to generate workout plan", err);
+      } finally {
+        setLoadingWorkoutsID(null);
+      }
+    } else {
+      setLoadingWorkoutsID(null);
     }
   };
 
@@ -152,8 +269,8 @@ export default function AthleteTable() {
     },
     { field: "jersey", headerName: "Jersey", width: 100, editable: true },
     { field: "position", headerName: "Position", width: 100, editable: true },
-    { field: "weight", headerName: "Weight", width: 100, editable: true },
-    { field: "height", headerName: "Height", width: 100, editable: true },
+    { field: "weight", headerName: "Weight (kg)", width: 100, editable: true },
+    { field: "height", headerName: "Height (cm)", width: 100, editable: true },
     { field: "maxHR", headerName: "Max HR", width: 100, editable: true },
     { field: "maxVel", headerName: "Max Vel", width: 100, editable: true },
     {
@@ -167,36 +284,124 @@ export default function AthleteTable() {
           <IconButton
             onClick={() => setEditingAthlete(params.row)}
             sx={{
-              backgroundColor: "#f0f0f0",
-              "&:hover": { backgroundColor: "#e0e0e0" },
+              backgroundColor: Object.entries(params.row).some(
+                ([key, value]) =>
+                  key !== "id" &&
+                  key !== "workouts" &&
+                  key !== "values" &&
+                  key !== "goal" &&
+                  key !== "workouts" &&
+                  (value === "" ||
+                    value === null ||
+                    value === undefined ||
+                    value === 0)
+              )
+                ? "#ddd" // disabled bg color
+                : "#e3f2fd", // normal bg color
+              color: Object.entries(params.row).some(
+                ([key, value]) =>
+                  key !== "id" &&
+                  key !== "workouts" &&
+                  key !== "values" &&
+                  key !== "goal" &&
+                  key !== "workouts" &&
+                  (value === "" ||
+                    value === null ||
+                    value === undefined ||
+                    value === 0)
+              )
+                ? "#888" // disabled text/icon color
+                : "#1976d2", // normal icon color
+              "&:hover": {
+                backgroundColor: Object.entries(params.row).some(
+                  ([key, value]) =>
+                    key !== "id" &&
+                    key !== "workouts" &&
+                    key !== "values" &&
+                    key !== "goal" &&
+                    key !== "workouts" &&
+                    (value === "" ||
+                      value === null ||
+                      value === undefined ||
+                      value === 0)
+                )
+                  ? "#ddd" // stay same if disabled
+                  : "#bbdefb", // hover bg color
+              },
             }}
+            disabled={Object.entries(params.row).some(
+              ([key, value]) =>
+                key !== "id" &&
+                key !== "workouts" &&
+                key !== "values" &&
+                key !== "goal" &&
+                key !== "workouts" &&
+                (value === "" ||
+                  value === null ||
+                  value === undefined ||
+                  value === 0)
+            )}
           >
-            <EditIcon color="primary" />
+            <EditIcon />
           </IconButton>
 
-          {/* Goal Setting */}
+          {/* goal */}
           <IconButton
             onClick={() => {
               setGoalAthlete(params.row);
               setGoal(params.row.goal); // prefill goal
             }}
             sx={{
-              backgroundColor: "#f0f0f0",
-              "&:hover": { backgroundColor: "#e0e0e0" },
+              backgroundColor:
+                params.row.suggestions[0] === ""
+                  ? "#ddd" // disabled bg color
+                  : "#e3f2fd", // normal bg color
+              color:
+                params.row.suggestions[0] === ""
+                  ? "#888" // disabled text/icon color
+                  : "#1976d2", // normal icon color
+              "&:hover": {
+                backgroundColor:
+                  params.row.suggestions[0] === ""
+                    ? "#ddd" // stay same if disabled
+                    : "#bbdefb", // hover bg color
+              },
             }}
+            disabled={params.row.suggestions[0] === ""}
           >
-            <FlagIcon color="primary" />
+            {params.row.id === loadingSuggestionsID ? (
+              <CircularProgress size={20} thickness={5} />
+            ) : (
+              <FlagIcon />
+            )}
           </IconButton>
 
           {/* Workouts */}
           <IconButton
             onClick={() => setWorkoutAthlete(params.row)}
             sx={{
-              backgroundColor: "#f0f0f0",
-              "&:hover": { backgroundColor: "#e0e0e0" },
+              backgroundColor:
+                params.row.workouts.length < 1
+                  ? "#ddd" // disabled bg color
+                  : "#e3f2fd", // normal bg color
+              color:
+                params.row.workouts.length < 1
+                  ? "#888" // disabled text/icon color
+                  : "#1976d2", // normal icon color
+              "&:hover": {
+                backgroundColor:
+                  params.row.workouts.length < 1
+                    ? "#ddd" // stay same if disabled
+                    : "#bbdefb", // hover bg color
+              },
             }}
+            disabled={params.row.workouts.length < 1}
           >
-            <FitnessCenterIcon color="primary" />
+            {params.row.id === loadingWorkoutsID ? (
+              <CircularProgress size={20} thickness={5} />
+            ) : (
+              <FitnessCenterIcon />
+            )}
           </IconButton>
         </Box>
       ),
@@ -234,7 +439,7 @@ export default function AthleteTable() {
               values: Array(9).fill(""),
               suggestions: Array(3).fill(""),
               goal: "",
-              workouts: defaultWorkouts,
+              workouts: [],
             };
             setRows((prev) => [...prev, newAthlete]);
           }}
@@ -317,7 +522,11 @@ export default function AthleteTable() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditingAthlete(null)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveAthlete}>
+          <Button
+            variant="contained"
+            onClick={handleSaveAthlete}
+            disabled={!editingAthlete?.values.every((v: string) => v !== "")}
+          >
             Save
           </Button>
         </DialogActions>
@@ -347,112 +556,89 @@ export default function AthleteTable() {
               目標設定
             </Typography>
             <Stack width="100%" height="100%">
-              {goalAthlete?.suggestions[0] === "" ? (
-                <Box
-                  width="100%"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Stack
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    spacing={2}
-                    height={"200px"}
+              <Stack
+                width="100%"
+                direction="row"
+                paddingY={2}
+                justifyContent="space-between"
+                alignItems="center"
+                flexWrap="nowrap"
+                sx={{
+                  gap: 2,
+                  whiteSpace: "nowrap",
+                  "&::-webkit-scrollbar": { height: "6px" },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderRadius: "3px",
+                  },
+                }}
+              >
+                {goalAthlete?.suggestions.map((suggestion, index) => (
+                  <Box
+                    key={index}
+                    onClick={() => setGoal(suggestion)}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                      width: "100%",
+                      height: "200px",
+                      cursor: "pointer",
+                      borderRadius: "12px",
+                      overflow: "auto",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "#e0e0e0",
+                        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)",
+                        transform: "scale(1.02)",
+                      },
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                    }}
                   >
-                    <Typography sx={{ color: "black" }}>
-                      正在為您建立目標...
-                    </Typography>
-                    <CircularProgress />
-                  </Stack>
-                </Box>
-              ) : (
-                <Stack
-                  width="100%"
-                  direction="row"
-                  paddingY={2}
-                  justifyContent="space-between"
-                  alignItems="center"
-                  flexWrap="nowrap"
-                  sx={{
-                    gap: 2,
-                    whiteSpace: "nowrap",
-                    "&::-webkit-scrollbar": { height: "6px" },
-                    "&::-webkit-scrollbar-thumb": {
-                      backgroundColor: "rgba(0, 0, 0, 0.2)",
-                      borderRadius: "3px",
-                    },
-                  }}
-                >
-                  {goalAthlete?.suggestions.map((suggestion, index) => (
-                    <Box
-                      key={index}
-                      onClick={() => setGoal(suggestion)}
-                      sx={{
-                        backgroundColor: "#f5f5f5",
-                        width: "100%",
-                        height: "200px",
-                        cursor: "pointer",
-                        borderRadius: "12px",
-                        overflow: "auto",
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          backgroundColor: "#e0e0e0",
-                          boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)",
-                          transform: "scale(1.02)",
-                        },
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-start",
+                    <ReactMarkdown
+                      components={{
+                        p: ({ node, ...props }) => (
+                          <Typography
+                            sx={{
+                              color: "#444", // body text color
+                              fontSize: "0.95rem",
+                              lineHeight: 1.6,
+                              mb: 1,
+                              whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
+                            }}
+                            {...props}
+                          />
+                        ),
+                        li: ({ node, ...props }) => (
+                          <li
+                            style={{
+                              marginBottom: "0.5rem",
+                              color: "#555", // muted list color
+                              whiteSpace: "pre-wrap", // ✅ preserve line breaks
+                            }}
+                            {...props}
+                          />
+                        ),
+                        strong: ({ node, ...props }) => (
+                          <Typography
+                            component="span"
+                            sx={{
+                              color: "#111", // darker bold text
+                              fontWeight: "bold",
+                              whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
+                            }}
+                            {...props}
+                          />
+                        ),
                       }}
                     >
-                      <ReactMarkdown
-                        components={{
-                          p: ({ node, ...props }) => (
-                            <Typography
-                              sx={{
-                                color: "#444", // body text color
-                                fontSize: "0.95rem",
-                                lineHeight: 1.6,
-                                mb: 1,
-                                whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
-                              }}
-                              {...props}
-                            />
-                          ),
-                          li: ({ node, ...props }) => (
-                            <li
-                              style={{
-                                marginBottom: "0.5rem",
-                                color: "#555", // muted list color
-                                whiteSpace: "pre-wrap", // ✅ preserve line breaks
-                              }}
-                              {...props}
-                            />
-                          ),
-                          strong: ({ node, ...props }) => (
-                            <Typography
-                              component="span"
-                              sx={{
-                                color: "#111", // darker bold text
-                                fontWeight: "bold",
-                                whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
-                              }}
-                              {...props}
-                            />
-                          ),
-                        }}
-                      >
-                        {suggestion}
-                      </ReactMarkdown>
-                    </Box>
-                  ))}
-                </Stack>
-              )}
+                      {suggestion}
+                    </ReactMarkdown>
+                  </Box>
+                ))}
+              </Stack>
               <TextField
                 variant="outlined"
                 placeholder="輸入目標"
@@ -475,7 +661,11 @@ export default function AthleteTable() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setGoalAthlete(null)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveGoal}>
+          <Button
+            variant="contained"
+            onClick={handleSaveGoal}
+            disabled={goal === ""}
+          >
             Save Goal
           </Button>
         </DialogActions>
