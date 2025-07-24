@@ -1170,7 +1170,7 @@ export default function Athlete() {
                           fontSize: "1",
                         }}
                       >
-                        球队
+                        球隊
                       </Typography>
                       <TextField
                         variant="outlined"
@@ -1204,7 +1204,7 @@ export default function Athlete() {
                           fontSize: "1",
                         }}
                       >
-                        球号
+                        球號
                       </Typography>
                       <TextField
                         variant="outlined"

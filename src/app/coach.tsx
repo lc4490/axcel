@@ -253,34 +253,34 @@ export default function AthleteTable() {
   };
 
   const columns: GridColDef[] = [
-    { field: "team", headerName: "Team", width: 220, editable: true },
+    { field: "team", headerName: "球隊", width: 200, editable: true },
     {
       field: "firstName",
-      headerName: "First Name",
+      headerName: "名",
       width: 130,
       editable: true,
     },
-    { field: "lastName", headerName: "Last Name", width: 130, editable: true },
+    { field: "lastName", headerName: "姓", width: 130, editable: true },
     {
       field: "birthdate",
-      headerName: "Date of Birth",
+      headerName: "出生日期",
       width: 130,
       editable: true,
     },
-    { field: "jersey", headerName: "Jersey", width: 100, editable: true },
-    { field: "position", headerName: "Position", width: 100, editable: true },
-    { field: "weight", headerName: "Weight (kg)", width: 100, editable: true },
-    { field: "height", headerName: "Height (cm)", width: 100, editable: true },
-    { field: "maxHR", headerName: "Max HR", width: 100, editable: true },
-    { field: "maxVel", headerName: "Max Vel", width: 100, editable: true },
+    { field: "jersey", headerName: "球號", width: 100, editable: true },
+    { field: "position", headerName: "球位", width: 100, editable: true },
+    { field: "weight", headerName: "重量 (kg)", width: 100, editable: true },
+    { field: "height", headerName: "身高 (cm)", width: 100, editable: true },
+    { field: "maxHR", headerName: "最高心跳", width: 100, editable: true },
+    { field: "maxVel", headerName: "最高速度", width: 100, editable: true },
     {
       field: "actions",
-      headerName: "Actions",
-      width: 200,
+      headerName: "功能",
+      width: 150,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <Box display="flex" gap={0.5} padding={0.5}>
-          {/* Edit Info */}
+          {/* Test button */}
           <IconButton
             onClick={() => setEditingAthlete(params.row)}
             sx={{
@@ -345,7 +345,7 @@ export default function AthleteTable() {
             <EditIcon />
           </IconButton>
 
-          {/* goal */}
+          {/* Goal button */}
           <IconButton
             onClick={() => {
               setGoalAthlete(params.row);
@@ -376,7 +376,7 @@ export default function AthleteTable() {
             )}
           </IconButton>
 
-          {/* Workouts */}
+          {/* Workout button */}
           <IconButton
             onClick={() => setWorkoutAthlete(params.row)}
             sx={{
@@ -419,7 +419,7 @@ export default function AthleteTable() {
           mb: 2,
         }}
       >
-        <Typography variant="h5">Athletes</Typography>
+        <Typography variant="h5">球員</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -444,7 +444,7 @@ export default function AthleteTable() {
             setRows((prev) => [...prev, newAthlete]);
           }}
         >
-          Add Athlete
+          加球員
         </Button>
       </Box>
 
@@ -453,7 +453,7 @@ export default function AthleteTable() {
         rows={rows}
         columns={columns}
         paginationModel={{ pageSize: 10, page: 0 }}
-        pageSizeOptions={[5, 10, 20]}
+        // pageSizeOptions={[5, 10, 20]}
         checkboxSelection
         disableRowSelectionOnClick
         sx={{
