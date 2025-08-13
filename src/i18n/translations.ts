@@ -98,6 +98,49 @@ export const messages: Record<Lang, Record<string, string>> = {
 
     // Workout modal
     "workout.planFor": "{name} 的訓練計劃",
+
+    // HomePage
+    "home.subtitle": "點任何項目進入對應頁面（頁面將陸續補上）。",
+    "nav.viewData": "查看數據",
+    "nav.viewData.playerSummary": "球員長期總結報告",
+    "nav.viewData.playerTracking": "球員個人追蹤報告",
+    "nav.viewData.playerLongTracking": "球員長期追蹤報告",
+    "nav.viewData.teamReport": "球隊報告",
+    "nav.viewData.goalieReport": "Goalie Report",
+    "nav.viewData.dailyReport": "每日報告",
+
+    "nav.reload": "軟件下載",
+
+    "nav.setup": "設置",
+    "nav.setup.players": "球員",
+    "nav.setup.ipad": "iPad實時監測參考值",
+    "nav.setup.eventManagement": "活動管理",
+    "nav.setup.cloudReference": "雲端參考值",
+    "nav.setup.intervals": "區間",
+    "nav.setup.parameter": "參數",
+    "nav.setup.fieldPosition": "場上位置",
+    "nav.setup.fileManagement": "管理原始文件",
+    "nav.setup.labels": "標籤",
+    "nav.setup.teams": "球隊",
+    "nav.setup.users": "用戶和權限",
+    "nav.setup.site": "場地",
+    "nav.setup.account": "我的帳戶",
+
+    "nav.productNews": "產品新動態",
+
+    "nav.notifications": "通知",
+    "nav.notifications.all": "所有通知",
+    "nav.notifications.account": "帳戶通知",
+    "nav.notifications.event": "活動通知",
+
+    "nav.faq": "FAQ",
+    "nav.faq.manual": "用戶手冊",
+    "nav.faq.support": "Support",
+
+    "nav.account": "帳戶設定",
+    "nav.account.my": "我的帳戶",
+    "nav.account.lang": "語言",
+    "nav.account.logout": "註銷",
   },
 
   // ------------------- ENGLISH -------------------
@@ -199,6 +242,49 @@ export const messages: Record<Lang, Record<string, string>> = {
 
     // Workout modal
     "workout.planFor": "Training Plan for {name}",
+
+    // HomePage
+    "home.subtitle": "Click any item to navigate. Pages will be added later.",
+    "nav.viewData": "View Data",
+    "nav.viewData.playerSummary": "Player Summary",
+    "nav.viewData.playerTracking": "Player Tracking",
+    "nav.viewData.playerLongTracking": "Player Long-Term Tracking",
+    "nav.viewData.teamReport": "Team Report",
+    "nav.viewData.goalieReport": "Goalie Report",
+    "nav.viewData.dailyReport": "Daily Report",
+
+    "nav.reload": "Reload",
+
+    "nav.setup": "Set Up",
+    "nav.setup.players": "Players",
+    "nav.setup.ipad": "iPad Real-Time Monitoring",
+    "nav.setup.eventManagement": "Event Management",
+    "nav.setup.cloudReference": "Cloud Reference Value",
+    "nav.setup.intervals": "Intervals",
+    "nav.setup.parameter": "Parameter",
+    "nav.setup.fieldPosition": "Field Positions",
+    "nav.setup.fileManagement": "File Management",
+    "nav.setup.labels": "Labels",
+    "nav.setup.teams": "Teams",
+    "nav.setup.users": "Users and Permissions",
+    "nav.setup.site": "Site",
+    "nav.setup.account": "My Account",
+
+    "nav.productNews": "Product News",
+
+    "nav.notifications": "Notifications",
+    "nav.notifications.all": "All Notifications",
+    "nav.notifications.account": "Account Notifications",
+    "nav.notifications.event": "Event Notifications",
+
+    "nav.faq": "FAQ",
+    "nav.faq.manual": "User Manual",
+    "nav.faq.support": "Support",
+
+    "nav.account": "Account Settings",
+    "nav.account.my": "My Account",
+    "nav.account.lang": "Language",
+    "nav.account.logout": "Log Out",
   },
 };
 
