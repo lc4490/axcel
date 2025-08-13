@@ -18,8 +18,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import FlagIcon from "@mui/icons-material/Flag";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AddIcon from "@mui/icons-material/Add";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { t, type Lang } from "@/i18n/translations";
 
 type Athlete = {
   id: number;
@@ -36,20 +37,8 @@ type Athlete = {
   values: string[];
   suggestions: string[];
   goal: string;
-  workouts: string[]; // 👈 workouts array
+  workouts: string[];
 };
-
-const labels = [
-  "1. 體脂/瘦體重",
-  "2. 垂直跳",
-  "3. 10M衝刺",
-  "4. 20M衝刺",
-  "5. 臥推/深蹲",
-  "6. 折返跑",
-  "7. 核心測試",
-  "8. 敏捷測試",
-  "9. Beep Test",
-];
 
 const defaultValues = [
   "體脂 16%、瘦體重 58.8 kg",
@@ -75,7 +64,31 @@ const defaultWorkouts = [
   "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
   "第4天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
 ];
-export default function AthleteTable() {
+
+type AthleteTableProps = {
+  lang: Lang; // pass down from parent: <AthleteTable lang={lang} />
+  onToggleLang?: () => void; // optional toggle button (global toggle if you want)
+};
+
+export default function AthleteTable({
+  lang,
+  onToggleLang,
+}: AthleteTableProps) {
+  const tr = t(lang);
+
+  // localized metric labels (used for UI and for prompt-building)
+  const labels = [
+    tr("table.labels.bodyComp"), // 1
+    tr("table.labels.verticalJump"), // 2
+    tr("table.labels.sprint10m"), // 3
+    tr("table.labels.sprint20m"), // 4
+    tr("table.labels.bpSqRM"), // 5
+    tr("table.labels.shuttleRun"), // 6
+    tr("table.labels.coreTest"), // 7
+    tr("table.labels.agilityTest"), // 8
+    tr("table.labels.beepTest"), // 9
+  ];
+
   const [rows, setRows] = useState<Athlete[]>([
     {
       id: 1,
@@ -153,39 +166,40 @@ export default function AthleteTable() {
       setEditingAthlete(null);
     }
   };
+
   const makeSuggestions = async (athlete: Athlete) => {
-    console.log("make suggestions running");
     if (athlete.suggestions[0] === "") {
       let input = "";
-      input += "身高：" + athlete.height + "cm\n";
-      input += "體重：" + athlete.weight + "kg\n";
+      input += `${tr("common.height")}：${athlete.height}cm\n`;
+      input += `${tr("common.weight")}：${athlete.weight}kg\n`;
       for (let i = 0; i < labels.length; i++) {
-        input += labels[i] + athlete.values[i] + "\n";
+        input += `${i + 1}. ${labels[i]}: ${athlete.values[i]}\n`;
       }
-      console.log(input);
-      const res = await fetch("/api/goal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input }),
-      });
-      const data = await res.json();
-      const suggestions = data.result
-        .split(/\*\*\d+\.\s*/) // split by "1.", "2.", etc.
-        .filter(Boolean) // remove any empty strings
-        .map((str: string) => `**${str}`); // add **
-
-      console.log(suggestions);
-      setRows((prevRows) =>
-        prevRows.map((row) =>
-          row.id === athlete.id ? { ...row, suggestions } : row
-        )
-      );
+      try {
+        const res = await fetch("/api/goal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input }),
+        });
+        const data = await res.json();
+        const suggestions = data.result
+          .split(/\*\*\d+\.\s*/)
+          .filter(Boolean)
+          .map((str: string) => `**${str}`);
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === athlete.id ? { ...row, suggestions } : row
+          )
+        );
+      } finally {
+        setLoadingSuggestionsID(null);
+      }
+    } else {
+      setLoadingSuggestionsID(null);
     }
-    setLoadingSuggestionsID(null);
   };
 
   const handleSaveGoal = () => {
-    console.log(goalAthlete?.goal);
     if (goalAthlete) {
       setLoadingWorkoutsID(goalAthlete.id);
       setRows((prevRows) =>
@@ -200,41 +214,29 @@ export default function AthleteTable() {
   };
 
   const makePlan = async (athlete: Athlete) => {
-    console.log("make plan running");
     if (athlete.workouts.length < 1) {
-      console.log(athlete.workouts.length);
       let input = "";
-      input += "身高：" + athlete.height + "cm\n";
-      input += "體重：" + athlete.weight + "kg\n";
+      input += `${tr("common.height")}：${athlete.height}cm\n`;
+      input += `${tr("common.weight")}：${athlete.weight}kg\n`;
       for (let i = 0; i < labels.length; i++) {
-        input += labels[i] + athlete.values[i] + "\n";
+        input += `${i + 1}. ${labels[i]}: ${athlete.values[i]}\n`;
       }
-      console.log(input);
-      console.log(goal);
       try {
-        // setLoading(true); // show spinner
         const res = await fetch("/api/plan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ input, goal }),
         });
         const data = await res.json();
-        console.log("Generated Plan:", data.plan);
         const workouts = data.plan
           .split("天")
           .slice(2)
           .map((w: string, index: number) => {
-            let text = "第" + (index + 1) + "天" + w;
-            // Trim everything after ### or ---
-            if (text.includes("###")) {
-              text = text.split("###")[0].trim();
-            }
-            if (text.includes("---")) {
-              text = text.split("---")[0].trim();
-            }
-            if (text.includes("\n\n")) {
-              text = text.split("\n\n")[0].trim();
-            }
+            let text =
+              tr("table.workout.dayPrefix", { n: String(index + 1) }) + w;
+            if (text.includes("###")) text = text.split("###")[0].trim();
+            if (text.includes("---")) text = text.split("---")[0].trim();
+            if (text.includes("\n\n")) text = text.split("\n\n")[0].trim();
             return text.trim();
           });
         setRows((prevRows) =>
@@ -252,35 +254,76 @@ export default function AthleteTable() {
     }
   };
 
-  const columns: GridColDef[] = [
-    { field: "team", headerName: "球隊", width: 200, editable: true },
+  // Columns with translated headers
+  const columns: GridColDef<Athlete>[] = [
+    {
+      field: "team",
+      headerName: tr("table.columns.team"),
+      width: 200,
+      editable: true,
+    },
     {
       field: "firstName",
-      headerName: "名",
+      headerName: tr("table.columns.firstName"),
       width: 130,
       editable: true,
     },
-    { field: "lastName", headerName: "姓", width: 130, editable: true },
+    {
+      field: "lastName",
+      headerName: tr("table.columns.lastName"),
+      width: 130,
+      editable: true,
+    },
     {
       field: "birthdate",
-      headerName: "出生日期",
+      headerName: tr("table.columns.birthdate"),
       width: 130,
       editable: true,
     },
-    { field: "jersey", headerName: "球號", width: 100, editable: true },
-    { field: "position", headerName: "球位", width: 100, editable: true },
-    { field: "weight", headerName: "重量 (kg)", width: 100, editable: true },
-    { field: "height", headerName: "身高 (cm)", width: 100, editable: true },
-    { field: "maxHR", headerName: "最高心跳", width: 100, editable: true },
-    { field: "maxVel", headerName: "最高速度", width: 100, editable: true },
+    {
+      field: "jersey",
+      headerName: tr("table.columns.jersey"),
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "position",
+      headerName: tr("table.columns.position"),
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "weight",
+      headerName: tr("table.columns.weightKg"),
+      width: 120,
+      editable: true,
+    },
+    {
+      field: "height",
+      headerName: tr("table.columns.heightCm"),
+      width: 120,
+      editable: true,
+    },
+    {
+      field: "maxHR",
+      headerName: tr("table.columns.maxHR"),
+      width: 120,
+      editable: true,
+    },
+    {
+      field: "maxVel",
+      headerName: tr("table.columns.maxVel"),
+      width: 120,
+      editable: true,
+    },
     {
       field: "actions",
-      headerName: "功能",
+      headerName: tr("table.columns.actions"),
       width: 150,
       sortable: false,
-      renderCell: (params: GridRenderCellParams) => (
+      renderCell: (params: GridRenderCellParams<Athlete>) => (
         <Box display="flex" gap={0.5} padding={0.5}>
-          {/* Test button */}
+          {/* Edit/Test button */}
           <IconButton
             onClick={() => setEditingAthlete(params.row)}
             sx={{
@@ -290,28 +333,26 @@ export default function AthleteTable() {
                   key !== "workouts" &&
                   key !== "values" &&
                   key !== "goal" &&
-                  key !== "workouts" &&
                   (value === "" ||
                     value === null ||
                     value === undefined ||
                     value === 0)
               )
-                ? "#ddd" // disabled bg color
-                : "#e3f2fd", // normal bg color
+                ? "#ddd"
+                : "#e3f2fd",
               color: Object.entries(params.row).some(
                 ([key, value]) =>
                   key !== "id" &&
                   key !== "workouts" &&
                   key !== "values" &&
                   key !== "goal" &&
-                  key !== "workouts" &&
                   (value === "" ||
                     value === null ||
                     value === undefined ||
                     value === 0)
               )
-                ? "#888" // disabled text/icon color
-                : "#1976d2", // normal icon color
+                ? "#888"
+                : "#1976d2",
               "&:hover": {
                 backgroundColor: Object.entries(params.row).some(
                   ([key, value]) =>
@@ -319,14 +360,13 @@ export default function AthleteTable() {
                     key !== "workouts" &&
                     key !== "values" &&
                     key !== "goal" &&
-                    key !== "workouts" &&
                     (value === "" ||
                       value === null ||
                       value === undefined ||
                       value === 0)
                 )
-                  ? "#ddd" // stay same if disabled
-                  : "#bbdefb", // hover bg color
+                  ? "#ddd"
+                  : "#bbdefb",
               },
             }}
             disabled={Object.entries(params.row).some(
@@ -335,12 +375,12 @@ export default function AthleteTable() {
                 key !== "workouts" &&
                 key !== "values" &&
                 key !== "goal" &&
-                key !== "workouts" &&
                 (value === "" ||
                   value === null ||
                   value === undefined ||
                   value === 0)
             )}
+            aria-label={tr("table.actions.editMetrics")}
           >
             <EditIcon />
           </IconButton>
@@ -349,25 +389,19 @@ export default function AthleteTable() {
           <IconButton
             onClick={() => {
               setGoalAthlete(params.row);
-              setGoal(params.row.goal); // prefill goal
+              setGoal(params.row.goal);
             }}
             sx={{
               backgroundColor:
-                params.row.suggestions[0] === ""
-                  ? "#ddd" // disabled bg color
-                  : "#e3f2fd", // normal bg color
-              color:
-                params.row.suggestions[0] === ""
-                  ? "#888" // disabled text/icon color
-                  : "#1976d2", // normal icon color
+                params.row.suggestions[0] === "" ? "#ddd" : "#e3f2fd",
+              color: params.row.suggestions[0] === "" ? "#888" : "#1976d2",
               "&:hover": {
                 backgroundColor:
-                  params.row.suggestions[0] === ""
-                    ? "#ddd" // stay same if disabled
-                    : "#bbdefb", // hover bg color
+                  params.row.suggestions[0] === "" ? "#ddd" : "#bbdefb",
               },
             }}
             disabled={params.row.suggestions[0] === ""}
+            aria-label={tr("table.actions.setGoal")}
           >
             {params.row.id === loadingSuggestionsID ? (
               <CircularProgress size={20} thickness={5} />
@@ -381,21 +415,15 @@ export default function AthleteTable() {
             onClick={() => setWorkoutAthlete(params.row)}
             sx={{
               backgroundColor:
-                params.row.workouts.length < 1
-                  ? "#ddd" // disabled bg color
-                  : "#e3f2fd", // normal bg color
-              color:
-                params.row.workouts.length < 1
-                  ? "#888" // disabled text/icon color
-                  : "#1976d2", // normal icon color
+                params.row.workouts.length < 1 ? "#ddd" : "#e3f2fd",
+              color: params.row.workouts.length < 1 ? "#888" : "#1976d2",
               "&:hover": {
                 backgroundColor:
-                  params.row.workouts.length < 1
-                    ? "#ddd" // stay same if disabled
-                    : "#bbdefb", // hover bg color
+                  params.row.workouts.length < 1 ? "#ddd" : "#bbdefb",
               },
             }}
             disabled={params.row.workouts.length < 1}
+            aria-label={tr("table.actions.viewWorkouts")}
           >
             {params.row.id === loadingWorkoutsID ? (
               <CircularProgress size={20} thickness={5} />
@@ -410,6 +438,15 @@ export default function AthleteTable() {
 
   return (
     <Box sx={{ height: "90vh", width: "100%", p: 2 }}>
+      {/* Optional global toggle */}
+      {onToggleLang && (
+        <Box sx={{ position: "fixed", top: 12, right: 12, zIndex: 20 }}>
+          <Button size="small" variant="outlined" onClick={onToggleLang}>
+            {lang === "zh-TW" ? "English" : "繁體中文"}
+          </Button>
+        </Box>
+      )}
+
       {/* Toolbar */}
       <Box
         sx={{
@@ -419,7 +456,7 @@ export default function AthleteTable() {
           mb: 2,
         }}
       >
-        <Typography variant="h5">球員</Typography>
+        <Typography variant="h5">{tr("table.title")}</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -444,7 +481,7 @@ export default function AthleteTable() {
             setRows((prev) => [...prev, newAthlete]);
           }}
         >
-          加球員
+          {tr("table.actions.addAthlete")}
         </Button>
       </Box>
 
@@ -453,7 +490,6 @@ export default function AthleteTable() {
         rows={rows}
         columns={columns}
         paginationModel={{ pageSize: 10, page: 0 }}
-        // pageSizeOptions={[5, 10, 20]}
         checkboxSelection
         disableRowSelectionOnClick
         sx={{
@@ -470,13 +506,11 @@ export default function AthleteTable() {
         maxWidth="sm"
         fullWidth
       >
-        {/* <DialogTitle>Edit Athlete Info</DialogTitle> */}
         <DialogContent dividers>
           {labels.map((label, index) => (
             <Stack
               key={index}
               width="100%"
-              display="flex"
               flexDirection="row"
               alignItems="center"
               sx={{ p: 1, gap: 1 }}
@@ -484,17 +518,17 @@ export default function AthleteTable() {
               <Typography
                 sx={{
                   color: "black",
-                  fontWeight: "600",
+                  fontWeight: 600,
                   fontSize: "1rem",
+                  minWidth: 120,
                   whiteSpace: "nowrap",
-                  minWidth: "120px",
                 }}
               >
-                {label}
+                {`${index + 1}. ${label}`}
               </Typography>
               <TextField
                 variant="outlined"
-                placeholder={`輸入${label.replace(/^\d+\./, "")}`}
+                placeholder={`${tr("common.input")} ${label}`}
                 value={editingAthlete?.values[index] || ""}
                 onChange={(e) => {
                   if (editingAthlete) {
@@ -521,13 +555,15 @@ export default function AthleteTable() {
           ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditingAthlete(null)}>Cancel</Button>
+          <Button onClick={() => setEditingAthlete(null)}>
+            {tr("common.cancel")}
+          </Button>
           <Button
             variant="contained"
             onClick={handleSaveAthlete}
             disabled={!editingAthlete?.values.every((v: string) => v !== "")}
           >
-            Save
+            {tr("common.save")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -539,21 +575,20 @@ export default function AthleteTable() {
         maxWidth="md"
         fullWidth
       >
-        {/* <DialogTitle>目標設定</DialogTitle> */}
         <DialogContent dividers>
           <Box
             width="100%"
             height="75%"
             display="flex"
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            flexDirection={"column"}
+            justifyContent="space-between"
+            alignItems="center"
+            flexDirection="column"
             sx={{ overflowY: "auto", pr: 1, position: "relative" }}
           >
             <Typography
               sx={{ fontSize: "2.5rem", fontWeight: 700, color: "black" }}
             >
-              目標設定
+              {tr("table.goal.title")}
             </Typography>
             <Stack width="100%" height="100%">
               <Stack
@@ -602,11 +637,11 @@ export default function AthleteTable() {
                         p: ({ node, ...props }) => (
                           <Typography
                             sx={{
-                              color: "#444", // body text color
+                              color: "#444",
                               fontSize: "0.95rem",
                               lineHeight: 1.6,
                               mb: 1,
-                              whiteSpace: "pre-wrap", // ✅ preserve line breaks + spaces
+                              whiteSpace: "pre-wrap",
                             }}
                             {...props}
                           />
@@ -615,8 +650,8 @@ export default function AthleteTable() {
                           <li
                             style={{
                               marginBottom: "0.5rem",
-                              color: "#555", // muted list color
-                              whiteSpace: "pre-wrap", // ✅ preserve line breaks
+                              color: "#555",
+                              whiteSpace: "pre-wrap",
                             }}
                             {...props}
                           />
@@ -625,9 +660,9 @@ export default function AthleteTable() {
                           <Typography
                             component="span"
                             sx={{
-                              color: "#111", // darker bold text
+                              color: "#111",
                               fontWeight: "bold",
-                              whiteSpace: "pre-wrap", // ✅ preserve spacing for bold too
+                              whiteSpace: "pre-wrap",
                             }}
                             {...props}
                           />
@@ -641,7 +676,7 @@ export default function AthleteTable() {
               </Stack>
               <TextField
                 variant="outlined"
-                placeholder="輸入目標"
+                placeholder={tr("table.goal.placeholder")}
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 sx={{
@@ -660,13 +695,15 @@ export default function AthleteTable() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setGoalAthlete(null)}>Cancel</Button>
+          <Button onClick={() => setGoalAthlete(null)}>
+            {tr("common.cancel")}
+          </Button>
           <Button
             variant="contained"
             onClick={handleSaveGoal}
             disabled={goal === ""}
           >
-            Save Goal
+            {tr("table.goal.save")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -678,7 +715,9 @@ export default function AthleteTable() {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>{workoutAthlete?.firstName} 的訓練計劃</DialogTitle>
+        <DialogTitle>
+          {workoutAthlete?.firstName} {tr("table.workout.plan")}
+        </DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2} sx={{ maxHeight: "500px", overflowY: "auto" }}>
             {workoutAthlete?.workouts.map((workout, index) => (
@@ -697,7 +736,9 @@ export default function AthleteTable() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setWorkoutAthlete(null)}>Close</Button>
+          <Button onClick={() => setWorkoutAthlete(null)}>
+            {tr("common.close")}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
