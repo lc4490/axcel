@@ -18,19 +18,68 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
+import type React from "react";
 import { t, type Lang } from "@/i18n/translations";
 
 const boxColors = ["#7badaf", "#f8ce7e", "#7eb1eb", "#aa6b87", "#e57974"];
 
 type AthleteProps = {
-  lang: Lang; // or: lang: "en" | "zh-TW";
+  lang: Lang; // e.g. "en" | "zh-TW"
+};
+
+/** ---------- helpers (no `any`) ---------- */
+const hasTrailingSingleDot = (s: string): boolean =>
+  s.endsWith(".") && s.slice(0, -1).length > 0 && !s.slice(0, -1).includes(".");
+
+const toInt = (s: string): number | null => {
+  const n = Number.parseInt(s, 10);
+  return Number.isNaN(n) ? null : n;
+};
+
+const toFloat = (s: string): number | null => {
+  const n = Number.parseFloat(s);
+  return Number.isNaN(n) ? null : n;
+};
+
+/** ---------- markdown components (typed) ---------- */
+const mdComponents: Components = {
+  p: ({ children }) => (
+    <Typography
+      sx={{
+        color: "#444",
+        fontSize: "0.95rem",
+        lineHeight: 1.6,
+        mb: 1,
+        whiteSpace: "pre-wrap",
+      }}
+    >
+      {children as React.ReactNode}
+    </Typography>
+  ),
+  li: ({ children }) => (
+    <li
+      style={{
+        marginBottom: "0.5rem",
+        color: "#555",
+        whiteSpace: "pre-wrap",
+      }}
+    >
+      {children as React.ReactNode}
+    </li>
+  ),
+  strong: ({ children }) => (
+    <Typography
+      component="span"
+      sx={{ color: "#111", fontWeight: "bold", whiteSpace: "pre-wrap" }}
+    >
+      {children as React.ReactNode}
+    </Typography>
+  ),
 };
 
 export default function Athlete({ lang }: AthleteProps) {
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-
-  // Language (remove this toggle if you manage language globally)
   const tr = t(lang);
 
   const [onboarded, setOnboarded] = useState(false);
@@ -53,10 +102,10 @@ export default function Athlete({ lang }: AthleteProps) {
   const [maxVelocity, setMaxVelocity] = useState("20");
   const [goal, setGoal] = useState("");
 
-  // Labels for Page 2
+  // Page-2 labels
   const labels = Array.from({ length: 9 }, (_, i) => tr(`labels.${i + 1}`));
 
-  const [values, setValues] = useState([
+  const [values, setValues] = useState<string[]>([
     "體脂 16%、瘦體重 58.8 kg",
     "52 cm",
     "4.3 秒",
@@ -68,14 +117,14 @@ export default function Athlete({ lang }: AthleteProps) {
     "Level 17.1 (~1800 m)",
   ]);
 
-  const [suggestions, setSuggestions] = useState([
+  const [suggestions, setSuggestions] = useState<string[]>([
     `**[力量增強挑戰]**- **目標**: 提升全身力量，特別是下肢以提升跳躍與衝刺表現。- **原因**: 基於你的測試結果-垂直跳52cm與30公尺衝刺4.3秒與40公尺衝刺5.8秒表現，指出你的下肢力量還有上升的空間。此外，深蹲的1RM（一次最大重量）110kg與身高體重比例相較尚處於中等程度，故有加強的需要。- **重點**:  - 針對腿部力量的訓練，包含深蹲、腿舉等重量訓練，並逐步增加重量負荷以挑戰自我。  - 發展肌肉耐力是提升1RM的有效手段，如將重訓組數調整到3-4組，每組12-15次，讓肌肉適應後再調整到較重的重量，6-8次/組。  - 飲食上要保證足夠的蛋白質攝取，幫助肌肉恢復與成長。`,
     `**[速度魔咒突破]**- **目標**: 進一步提升衝刺速度與靈活度。- **原因**: 根據你的測試結果-30公尺衝刺4.3秒與40公尺衝刺5.8秒展現出你在短距離的速度表現已經很好，但仍能進一步提升。- **重點**:  - 重新設計你的跑步訓練計畫，包括間歇訓練、爆發力訓練與耐力訓練，使你的肌肉和神經系統適應更高的速度。  - 透過仿真訓練，模仿實戰中需要高速跑動的情況，提升你的應變能力與移動敏捷性。  - 確保適當的碳水化合物攝取，為你的訓練與恢復提供足夠的能量。`,
     `**[體能能量爆發]**- **目標**: 提升體能耐力並壓縮折返跑時間。- **原因**: 你的Yo-Yo Test Level 17.1 (~1800m)和折返跑8.5秒的測試結果顯示，你的耐力與爆發力均有出色的表現，但進一步的提升可以將你的全面體能拉到更高的層次。- **重點**:  - 多元化你的有氧訓練，如游泳、自行車、慢跑等，提高你的心肺功能並提高你的耐力。  - 加強核心肌群訓練，如俯臥撐、仰臥起坐、橋式運動等，進一步提升你的爆發力和速度。  - 飲食上要攝取足夠且均衡`,
   ]);
 
   const [input, setInput] = useState("");
-  const [workouts, setWorkouts] = useState([
+  const [workouts, setWorkouts] = useState<string[]>([
     "第1天 – 力量訓練\n1. 深蹲 – 4x12 @ 60% 1RM\n2. 腿舉 – 4x12 @ 60% 1RM\n3. 30公尺衝刺 – 4x全力爆發\n4. 自身重量伏地挺身 – 5x15",
     "第2天 – 耐力訓練\n1. 站立式跳躍 – 4x15\n2. 單腿深蹲 – 4x12 @ 自身重量\n3. 40公尺衝刺 – 4x全力爆發\n4. 核心訓練（如捲腹）– 4x15",
     "第3天 – 力量訓練\n1. 深蹲 – 3x8 @ 70% 1RM\n2. 腿舉 – 3x8 @ 70% 1RM\n3. 30公尺衝刺 – 3x全力爆發\n4. 腕力",
@@ -86,63 +135,62 @@ export default function Athlete({ lang }: AthleteProps) {
   const [deviceID, setDeviceID] = useState("");
   const [tempID, setTempID] = useState("");
 
+  // Generate goal suggestions
   const makeSuggestions = async () => {
-    if (suggestions[0] === "") {
-      let body = "";
-      const height =
-        heightUnit === "cm"
-          ? heightCM + " " + heightUnit
-          : heightFT + ", " + heightIN + " " + heightUnit;
-      const weight =
-        weightUnit === "kg"
-          ? weightKG + " " + weightUnit
-          : weightLB + " " + weightUnit;
-      body += `${tr("onboard.height")}：${height}\n`;
-      body += `${tr("onboard.weight")}：${weight}\n`;
-      body += `${tr("loading.makingGoals")}\n`;
-      for (let i = 0; i < labels.length; i++) {
-        body += labels[i] + values[i] + "\n";
-      }
-      setInput(body);
-      const res = await fetch("/api/goal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: body }),
-      });
-      const data = await res.json();
-      const sgs = data.result
-        .split(/\*\*\d+\.\s*/)
-        .filter(Boolean)
-        .map((str: string) => `**${str}`);
-      setSuggestions(sgs);
+    if (suggestions[0] !== "") return;
+
+    let body = "";
+    const height =
+      heightUnit === "cm"
+        ? `${heightCM} ${heightUnit}`
+        : `${heightFT}, ${heightIN} ${heightUnit}`;
+    const weight =
+      weightUnit === "kg"
+        ? `${weightKG} ${weightUnit}`
+        : `${weightLB} ${weightUnit}`;
+    body += `${tr("onboard.height")}：${height}\n`;
+    body += `${tr("onboard.weight")}：${weight}\n`;
+    body += `${tr("onboard.testResults")}\n`;
+    for (let i = 0; i < labels.length; i++) {
+      body += labels[i] + values[i] + "\n";
     }
+    setInput(body);
+
+    const res = await fetch("/api/goal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input: body }),
+    });
+    const data: { result: string } = await res.json();
+    const sgs = data.result
+      .split(/\*\*\d+\.\s*/)
+      .filter(Boolean)
+      .map((str) => `**${str}`);
+    setSuggestions(sgs);
   };
 
+  // Generate workout plan
   const makePlan = async () => {
-    if (workouts.length === 0) {
-      try {
-        const res = await fetch("/api/plan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input, goal }),
-        });
-        const data = await res.json();
-        setWorkouts(
-          data.plan
-            .split("天")
-            .slice(2)
-            .map((w: string, index: number) => {
-              let text = "第" + (index + 1) + "天" + w;
-              if (text.includes("###")) text = text.split("###")[0].trim();
-              if (text.includes("---")) text = text.split("---")[0].trim();
-              if (text.includes("\n\n")) text = text.split("\n\n")[0].trim();
-              return text.trim();
-            })
-        );
-      } catch (err) {
-        console.error("Failed to generate workout plan", err);
-      }
-    }
+    if (workouts.length > 0) return;
+
+    const res = await fetch("/api/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ input, goal }),
+    });
+    const data: { plan: string } = await res.json();
+    const days = data.plan
+      .split("天")
+      .slice(2)
+      .map((w, index) => {
+        let text = `第${index + 1}天${w}`;
+        if (text.includes("###")) text = text.split("###")[0].trim();
+        if (text.includes("---")) text = text.split("---")[0].trim();
+        if (text.includes("\n\n")) text = text.split("\n\n")[0].trim();
+        return text.trim();
+      });
+
+    setWorkouts(days);
   };
 
   const handleDeviceID = (temp: string) => {
@@ -153,10 +201,10 @@ export default function Athlete({ lang }: AthleteProps) {
     <Box
       width="100vw"
       height="100vh"
-      bgcolor={"#eb834c"}
+      bgcolor="#eb834c"
       display="flex"
-      justifyContent={"center"}
-      alignItems={"center"}
+      justifyContent="center"
+      alignItems="center"
       sx={{ overflow: "hidden" }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
@@ -175,10 +223,9 @@ export default function Athlete({ lang }: AthleteProps) {
               birthdate !== null &&
               birthdate.isValid()
             ) {
-              setPage(page + 1);
+              setPage(1);
             }
-          }
-          if (page === 1) {
+          } else if (page === 1) {
             if (
               !(
                 team === "" ||
@@ -188,17 +235,15 @@ export default function Athlete({ lang }: AthleteProps) {
                 maxVelocity === ""
               )
             ) {
-              setPage(page + 1);
+              setPage(2);
             }
-          }
-          if (page === 2) {
+          } else if (page === 2) {
             const isComplete = values.every((v) => v !== "");
             if (isComplete) {
-              setPage(page + 1);
+              setPage(3);
               makeSuggestions();
             }
-          }
-          if (page === 3) {
+          } else if (page === 3) {
             if (goal) {
               setOnboarded(true);
               makePlan();
@@ -212,26 +257,15 @@ export default function Athlete({ lang }: AthleteProps) {
       }}
       tabIndex={0}
     >
-      {/* Language toggle (optional) */}
-      {/* <Box sx={{ position: "fixed", top: 12, right: 12, zIndex: 30 }}>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => setLang(lang === "zh-TW" ? "en" : "zh-TW")}
-        >
-          {lang === "zh-TW" ? "English" : "繁體中文"}
-        </Button>
-      </Box> */}
-
       {/* After onboarding */}
       {onboarded ? (
         <Box
-          width={"100%"}
-          height={"100%"}
-          bgcolor={"#eb834c"}
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"flex-start"}
+          width="100%"
+          height="100%"
+          bgcolor="#eb834c"
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
           sx={{ position: "relative" }}
         >
           {/* Header */}
@@ -252,7 +286,6 @@ export default function Athlete({ lang }: AthleteProps) {
               boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
             }}
           >
-            {/* Edit */}
             <Button
               onClick={() => {
                 setOnboarded(false);
@@ -269,7 +302,6 @@ export default function Athlete({ lang }: AthleteProps) {
               {tr("common.edit")}
             </Button>
 
-            {/* User */}
             <Button
               variant="outlined"
               sx={{
@@ -288,9 +320,9 @@ export default function Athlete({ lang }: AthleteProps) {
             width="100%"
             height="100%"
             display="flex"
-            justifyContent={"center"}
-            alignItems={"center"}
-            flexDirection={"column"}
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column"
           >
             {/* Logo */}
             <Box
@@ -310,7 +342,7 @@ export default function Athlete({ lang }: AthleteProps) {
             {workouts.length === 0 ? (
               <Stack
                 display="flex"
-                flexDirection={"column"}
+                flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
                 spacing={2}
@@ -335,8 +367,8 @@ export default function Athlete({ lang }: AthleteProps) {
                 sx={{
                   overflow: "auto",
                   flexWrap: "nowrap",
-                  padding: 1,
-                  marginBottom: "10vh",
+                  p: 1,
+                  mb: "10vh",
                 }}
               >
                 {workouts.map((item, index) => (
@@ -424,15 +456,14 @@ export default function Athlete({ lang }: AthleteProps) {
                   >
                     {tr("sensor.title")}
                   </Typography>
-                  <Stack display="flex" flexDirection={"row"} gap={2}>
+                  <Stack display="flex" flexDirection="row" gap={2}>
                     <TextField
                       variant="outlined"
                       value={tempID}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (parseInt(value as any))
-                          setTempID(String(parseInt(value as any)));
-                        else setTempID("");
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const value = e.target.value.trim();
+                        const n = toInt(value);
+                        setTempID(n !== null ? String(n) : "");
                       }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
@@ -615,7 +646,9 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("onboard.placeholder.lastName")}
                       value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setLastName(e.target.value)
+                      }
                       sx={{
                         width: "100%",
                         "& .MuiOutlinedInput-root": {
@@ -631,7 +664,9 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("onboard.placeholder.firstName")}
                       value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setFirstName(e.target.value)
+                      }
                       sx={{
                         width: "100%",
                         "& .MuiOutlinedInput-root": {
@@ -669,7 +704,9 @@ export default function Athlete({ lang }: AthleteProps) {
                             setHeightFT(
                               heightCM
                                 ? String(
-                                    Math.floor(parseFloat(heightCM) / 2.54 / 12)
+                                    Math.floor(
+                                      Number.parseFloat(heightCM) / 2.54 / 12
+                                    )
                                   )
                                 : ""
                             );
@@ -677,7 +714,7 @@ export default function Athlete({ lang }: AthleteProps) {
                               heightCM
                                 ? String(
                                     (
-                                      (parseFloat(heightCM) / 2.54) %
+                                      (Number.parseFloat(heightCM) / 2.54) %
                                       12
                                     ).toFixed(2)
                                   )
@@ -688,8 +725,8 @@ export default function Athlete({ lang }: AthleteProps) {
                               heightIN && heightFT
                                 ? String(
                                     (
-                                      (parseInt(heightFT) * 12 +
-                                        parseFloat(heightIN)) *
+                                      (Number.parseInt(heightFT, 10) * 12 +
+                                        Number.parseFloat(heightIN)) *
                                       2.54
                                     ).toFixed(2)
                                   )
@@ -717,21 +754,16 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("onboard.placeholder.heightCm")}
                       value={heightCM || ""}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value;
-                        if (
-                          value.slice(-1) === "." &&
-                          !isNaN(parseFloat(value.slice(0, -1))) &&
-                          !value.slice(0, -1).includes(".")
-                        ) {
+                        if (hasTrailingSingleDot(value)) {
                           setHeightCM(
-                            String(parseFloat(value.slice(0, -1)) + ".")
+                            `${Number.parseFloat(value.slice(0, -1))}.`
                           );
-                        } else if (parseFloat(value as any)) {
-                          setHeightCM(String(parseFloat(value as any)));
-                        } else {
-                          setHeightCM("");
+                          return;
                         }
+                        const n = toFloat(value);
+                        setHeightCM(n !== null ? String(n) : "");
                       }}
                       sx={{
                         width: "100%",
@@ -752,11 +784,9 @@ export default function Athlete({ lang }: AthleteProps) {
                         variant="outlined"
                         placeholder={tr("onboard.placeholder.heightFt")}
                         value={heightFT || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (parseInt(value as any))
-                            setHeightFT(String(parseInt(value as any)));
-                          else setHeightFT("");
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          const n = toInt(e.target.value);
+                          setHeightFT(n !== null ? String(n) : "");
                         }}
                         sx={{
                           width: "100%",
@@ -775,21 +805,16 @@ export default function Athlete({ lang }: AthleteProps) {
                         variant="outlined"
                         placeholder={tr("onboard.placeholder.heightIn")}
                         value={heightIN || ""}
-                        onChange={(e) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           const value = e.target.value;
-                          if (
-                            value.slice(-1) === "." &&
-                            !isNaN(parseFloat(value.slice(0, -1))) &&
-                            !value.slice(0, -1).includes(".")
-                          ) {
+                          if (hasTrailingSingleDot(value)) {
                             setHeightIN(
-                              String(parseFloat(value.slice(0, -1)) + ".")
+                              `${Number.parseFloat(value.slice(0, -1))}.`
                             );
-                          } else if (parseFloat(value as any)) {
-                            setHeightIN(String(parseFloat(value as any)));
-                          } else {
-                            setHeightIN("");
+                            return;
                           }
+                          const n = toFloat(value);
+                          setHeightIN(n !== null ? String(n) : "");
                         }}
                         sx={{
                           width: "100%",
@@ -831,7 +856,9 @@ export default function Athlete({ lang }: AthleteProps) {
                             setWeightLB(
                               weightKG
                                 ? String(
-                                    (parseFloat(weightKG) * 2.2).toFixed(2)
+                                    (Number.parseFloat(weightKG) * 2.2).toFixed(
+                                      2
+                                    )
                                   )
                                 : ""
                             );
@@ -839,7 +866,9 @@ export default function Athlete({ lang }: AthleteProps) {
                             setWeightKG(
                               weightLB
                                 ? String(
-                                    (parseFloat(weightLB) / 2.2).toFixed(2)
+                                    (Number.parseFloat(weightLB) / 2.2).toFixed(
+                                      2
+                                    )
                                   )
                                 : ""
                             );
@@ -865,21 +894,16 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("onboard.placeholder.weightKg")}
                       value={weightKG || ""}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value;
-                        if (
-                          value.slice(-1) === "." &&
-                          !isNaN(parseFloat(value.slice(0, -1))) &&
-                          !value.slice(0, -1).includes(".")
-                        ) {
+                        if (hasTrailingSingleDot(value)) {
                           setWeightKG(
-                            String(parseFloat(value.slice(0, -1)) + ".")
+                            `${Number.parseFloat(value.slice(0, -1))}.`
                           );
-                        } else if (parseFloat(value as any)) {
-                          setWeightKG(String(parseFloat(value as any)));
-                        } else {
-                          setWeightKG("");
+                          return;
                         }
+                        const n = toFloat(value);
+                        setWeightKG(n !== null ? String(n) : "");
                       }}
                       sx={{
                         width: "100%",
@@ -899,21 +923,16 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("onboard.placeholder.weightLb")}
                       value={weightLB || ""}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value;
-                        if (
-                          value.slice(-1) === "." &&
-                          !isNaN(parseFloat(value.slice(0, -1))) &&
-                          !value.slice(0, -1).includes(".")
-                        ) {
+                        if (hasTrailingSingleDot(value)) {
                           setWeightLB(
-                            String(parseFloat(value.slice(0, -1)) + ".")
+                            `${Number.parseFloat(value.slice(0, -1))}.`
                           );
-                        } else if (parseFloat(value as any)) {
-                          setWeightLB(String(parseFloat(value as any)));
-                        } else {
-                          setWeightLB("");
+                          return;
                         }
+                        const n = toFloat(value);
+                        setWeightLB(n !== null ? String(n) : "");
                       }}
                       sx={{
                         width: "100%",
@@ -939,7 +958,7 @@ export default function Athlete({ lang }: AthleteProps) {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       value={birthdate}
-                      onChange={setBirthdate}
+                      onChange={(v: Dayjs | null) => setBirthdate(v)}
                       maxDate={dayjs()}
                       disableFuture
                       sx={{ width: "100%" }}
@@ -959,7 +978,7 @@ export default function Athlete({ lang }: AthleteProps) {
               </Box>
 
               <Button
-                onClick={() => setPage(page + 1)}
+                onClick={() => setPage(1)}
                 disabled={
                   firstName === "" ||
                   lastName === "" ||
@@ -1004,7 +1023,9 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("onboard.placeholder.team")}
                     value={team}
-                    onChange={(e) => setTeam(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setTeam(e.target.value)
+                    }
                     sx={{
                       width: "100%",
                       "& .MuiOutlinedInput-root": {
@@ -1028,7 +1049,9 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("onboard.placeholder.jersey")}
                     value={jersey}
-                    onChange={(e) => setJersey(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setJersey(e.target.value)
+                    }
                     sx={{
                       width: "100%",
                       "& .MuiOutlinedInput-root": {
@@ -1052,7 +1075,9 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("onboard.placeholder.position")}
                     value={position}
-                    onChange={(e) => setPosition(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setPosition(e.target.value)
+                    }
                     sx={{
                       width: "100%",
                       "& .MuiOutlinedInput-root": {
@@ -1076,11 +1101,9 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("onboard.placeholder.maxHR")}
                     value={maxHeartRate || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (parseFloat(value as any))
-                        setMaxHeartRate(String(parseFloat(value as any)));
-                      else setMaxHeartRate("");
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const n = toFloat(e.target.value);
+                      setMaxHeartRate(n !== null ? String(n) : "");
                     }}
                     sx={{
                       width: "100%",
@@ -1105,21 +1128,16 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("onboard.placeholder.maxVel")}
                     value={maxVelocity}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const value = e.target.value;
-                      if (
-                        value.slice(-1) === "." &&
-                        !isNaN(parseFloat(value.slice(0, -1))) &&
-                        !value.slice(0, -1).includes(".")
-                      ) {
+                      if (hasTrailingSingleDot(value)) {
                         setMaxVelocity(
-                          String(parseFloat(value.slice(0, -1)) + ".")
+                          `${Number.parseFloat(value.slice(0, -1))}.`
                         );
-                      } else if (parseFloat(value as any)) {
-                        setMaxVelocity(String(parseFloat(value as any)));
-                      } else {
-                        setMaxVelocity("");
+                        return;
                       }
+                      const n = toFloat(value);
+                      setMaxVelocity(n !== null ? String(n) : "");
                     }}
                     sx={{
                       width: "100%",
@@ -1136,7 +1154,7 @@ export default function Athlete({ lang }: AthleteProps) {
               </Box>
 
               <Button
-                onClick={() => setPage(page - 1)}
+                onClick={() => setPage(0)}
                 sx={{
                   position: "absolute",
                   bottom: 16,
@@ -1150,7 +1168,7 @@ export default function Athlete({ lang }: AthleteProps) {
                 {tr("common.prev")}
               </Button>
               <Button
-                onClick={() => setPage(page + 1)}
+                onClick={() => setPage(2)}
                 disabled={
                   team === "" ||
                   jersey === "" ||
@@ -1204,7 +1222,7 @@ export default function Athlete({ lang }: AthleteProps) {
                       variant="outlined"
                       placeholder={tr("common.enterValue")}
                       value={values[index] || ""}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         const updated = [...values];
                         updated[index] = e.target.value;
                         setValues(updated);
@@ -1225,7 +1243,7 @@ export default function Athlete({ lang }: AthleteProps) {
               </Box>
 
               <Button
-                onClick={() => setPage(page - 1)}
+                onClick={() => setPage(1)}
                 sx={{
                   position: "absolute",
                   bottom: 16,
@@ -1242,7 +1260,7 @@ export default function Athlete({ lang }: AthleteProps) {
                 onClick={() => {
                   const isComplete = values.every((v) => v !== "");
                   if (isComplete) {
-                    setPage(page + 1);
+                    setPage(3);
                     makeSuggestions();
                   }
                 }}
@@ -1269,9 +1287,9 @@ export default function Athlete({ lang }: AthleteProps) {
                 width="100%"
                 height="75%"
                 display="flex"
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                flexDirection={"column"}
+                justifyContent="space-between"
+                alignItems="center"
+                flexDirection="column"
                 sx={{ overflowY: "auto", pr: 1, position: "relative" }}
               >
                 <Typography
@@ -1324,43 +1342,7 @@ export default function Athlete({ lang }: AthleteProps) {
                             justifyContent: "flex-start",
                           }}
                         >
-                          <ReactMarkdown
-                            components={{
-                              p: ({ node, ...props }) => (
-                                <Typography
-                                  sx={{
-                                    color: "#444",
-                                    fontSize: "0.95rem",
-                                    lineHeight: 1.6,
-                                    mb: 1,
-                                    whiteSpace: "pre-wrap",
-                                  }}
-                                  {...props}
-                                />
-                              ),
-                              li: ({ node, ...props }) => (
-                                <li
-                                  style={{
-                                    marginBottom: "0.5rem",
-                                    color: "#555",
-                                    whiteSpace: "pre-wrap",
-                                  }}
-                                  {...props}
-                                />
-                              ),
-                              strong: ({ node, ...props }) => (
-                                <Typography
-                                  component="span"
-                                  sx={{
-                                    color: "#111",
-                                    fontWeight: "bold",
-                                    whiteSpace: "pre-wrap",
-                                  }}
-                                  {...props}
-                                />
-                              ),
-                            }}
-                          >
+                          <ReactMarkdown components={mdComponents}>
                             {suggestion}
                           </ReactMarkdown>
                         </Box>
@@ -1370,8 +1352,8 @@ export default function Athlete({ lang }: AthleteProps) {
                     <Box
                       width="100%"
                       display="flex"
-                      justifyContent={"center"}
-                      alignItems={"center"}
+                      justifyContent="center"
+                      alignItems="center"
                     >
                       <Stack
                         display="flex"
@@ -1379,7 +1361,7 @@ export default function Athlete({ lang }: AthleteProps) {
                         alignItems="center"
                         justifyContent="center"
                         spacing={2}
-                        height={"200px"}
+                        height="200px"
                       >
                         <Typography sx={{ color: "black" }}>
                           {tr("loading.makingGoals")}
@@ -1393,7 +1375,9 @@ export default function Athlete({ lang }: AthleteProps) {
                     variant="outlined"
                     placeholder={tr("goals.placeholder")}
                     value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setGoal(e.target.value)
+                    }
                     sx={{
                       width: "100%",
                       "& .MuiOutlinedInput-root": {
@@ -1409,7 +1393,7 @@ export default function Athlete({ lang }: AthleteProps) {
               </Box>
 
               <Button
-                onClick={() => setPage(page - 1)}
+                onClick={() => setPage(2)}
                 sx={{
                   position: "absolute",
                   bottom: 16,
