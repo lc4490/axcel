@@ -456,6 +456,7 @@ export default function HomePage() {
                 {dark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
               </IconButton>
 
+              {/* desktop user icon */}
               <Button
                 size="small"
                 variant="outlined"
@@ -463,6 +464,7 @@ export default function HomePage() {
                 href="/login"
                 startIcon={<PersonOutlineOutlinedIcon />}
                 sx={{
+                  display: { xs: "none", md: "inline-flex" },
                   borderRadius: 999,
                   px: 1.6,
                   color: "text.primary",
@@ -475,12 +477,33 @@ export default function HomePage() {
                     bgcolor: dark
                       ? "rgba(255,255,255,0.12)"
                       : "rgba(0,0,0,0.08)",
-                    display: { xs: "none", md: "block" },
                   },
                 }}
               >
                 {tr("signIn")}
               </Button>
+
+              {/* mobile user icon*/}
+              <IconButton
+                aria-label="Toggle dark mode"
+                href="/login"
+                sx={{
+                  display: { xs: "inline-flex", md: "none" },
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: dark
+                    ? "rgba(255,255,255,0.25)"
+                    : "rgba(0,0,0,0.18)",
+                  bgcolor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+                  "&:hover": {
+                    bgcolor: dark
+                      ? "rgba(255,255,255,0.12)"
+                      : "rgba(0,0,0,0.08)",
+                  },
+                }}
+              >
+                {<PersonOutlineOutlinedIcon />}
+              </IconButton>
             </Stack>
           </Stack>
 
