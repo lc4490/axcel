@@ -456,16 +456,21 @@ export default function HomePage() {
                 {dark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
               </IconButton>
 
-              <IconButton
+              <Button
+                size="small"
+                variant="outlined"
                 aria-label="User log in"
                 href="/login"
+                startIcon={<PersonOutlineOutlinedIcon />}
                 sx={{
-                  borderRadius: 2,
-                  border: "1px solid",
+                  borderRadius: 999,
+                  px: 1.6,
+                  color: "text.primary",
                   borderColor: dark
                     ? "rgba(255,255,255,0.25)"
-                    : "rgba(0,0,0,0.18)",
+                    : "rgba(0,0,0,0.2)",
                   bgcolor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+                  backdropFilter: "blur(8px)",
                   "&:hover": {
                     bgcolor: dark
                       ? "rgba(255,255,255,0.12)"
@@ -473,8 +478,8 @@ export default function HomePage() {
                   },
                 }}
               >
-                {<PersonOutlineOutlinedIcon />}
-              </IconButton>
+                {tr("signIn")}
+              </Button>
             </Stack>
           </Stack>
 

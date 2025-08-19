@@ -141,6 +141,9 @@ export const messages: Record<Lang, Record<string, string>> = {
     "nav.account.my": "我的帳戶",
     "nav.account.lang": "語言",
     "nav.account.logout": "註銷",
+
+    signIn: "登入",
+    signInMessage: "歡迎來到 AXCEL！請登入後繼續。",
   },
 
   // ------------------- ENGLISH -------------------
@@ -285,6 +288,9 @@ export const messages: Record<Lang, Record<string, string>> = {
     "nav.account.my": "My Account",
     "nav.account.lang": "Language",
     "nav.account.logout": "Log Out",
+
+    signIn: "Sign In",
+    signInMessage: "Welcome to AXCEL! Please sign in to continue.",
   },
 };
 
