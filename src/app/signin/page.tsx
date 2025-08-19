@@ -240,12 +240,17 @@ export default function Login() {
               <Box width="50%">
                 <Typography variant="h4">{tr("signIn")}</Typography>
               </Box>
-              <Box width="50%">
+              <Box width="50%" display="flex" flexDirection={"column"} gap={2}>
                 <TextField
                   variant="outlined"
                   label={tr("email")}
                   sx={{ width: "100%" }}
-                ></TextField>
+                />
+                <TextField
+                  variant="outlined"
+                  label={tr("password")}
+                  sx={{ width: "100%" }}
+                />
                 <Box
                   display="flex"
                   gap={2}
@@ -259,7 +264,7 @@ export default function Login() {
                     href="/signup"
                     sx={{
                       //   bgcolor: "#000",
-                      color: "#9ad7ff",
+                      color: dark ? "#9ad7ff" : "#000",
                       px: 4,
                       py: 2,
                       borderRadius: 12,

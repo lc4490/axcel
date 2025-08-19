@@ -245,12 +245,12 @@ export default function Login() {
                   variant="outlined"
                   label={tr("email")}
                   sx={{ width: "100%" }}
-                ></TextField>
+                />
                 <TextField
                   variant="outlined"
                   label={tr("password")}
                   sx={{ width: "100%" }}
-                ></TextField>
+                />
                 <Box
                   display="flex"
                   gap={2}
