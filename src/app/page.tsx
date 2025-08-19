@@ -528,12 +528,12 @@ export default function HomePage() {
             ))}
           </Box>
 
-          <Divider
+          {/* <Divider
             sx={{
               mt: 4,
               borderColor: dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)",
             }}
-          />
+          /> */}
           {/* <Typography
             sx={{
               color: "text.secondary",
