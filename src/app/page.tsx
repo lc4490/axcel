@@ -455,6 +455,26 @@ export default function HomePage() {
               >
                 {dark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
               </IconButton>
+
+              <IconButton
+                aria-label="User log in"
+                href="/login"
+                sx={{
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: dark
+                    ? "rgba(255,255,255,0.25)"
+                    : "rgba(0,0,0,0.18)",
+                  bgcolor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+                  "&:hover": {
+                    bgcolor: dark
+                      ? "rgba(255,255,255,0.12)"
+                      : "rgba(0,0,0,0.08)",
+                  },
+                }}
+              >
+                {<PersonOutlineOutlinedIcon />}
+              </IconButton>
             </Stack>
           </Stack>
 
