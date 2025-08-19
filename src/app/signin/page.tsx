@@ -137,21 +137,23 @@ export default function Login() {
             justifyContent="space-between"
             spacing={1}
           >
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 800,
-                letterSpacing: "-0.5px",
-                background: dark
-                  ? "linear-gradient(90deg, #ffffff 0%, #cfd8ff 40%, #9ad7ff 100%)"
-                  : "linear-gradient(90deg, #111 0%, #2b3a63 40%, #1663a5 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              AXCEL
-            </Typography>
+            <Button href="/">
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 800,
+                  letterSpacing: "-0.5px",
+                  background: dark
+                    ? "linear-gradient(90deg, #ffffff 0%, #cfd8ff 40%, #9ad7ff 100%)"
+                    : "linear-gradient(90deg, #111 0%, #2b3a63 40%, #1663a5 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                AXCEL
+              </Typography>
+            </Button>
 
             <Stack direction="row" spacing={1}>
               <Button
