@@ -475,6 +475,7 @@ export default function HomePage() {
                     bgcolor: dark
                       ? "rgba(255,255,255,0.12)"
                       : "rgba(0,0,0,0.08)",
+                    display: { xs: "none", md: "block" },
                   },
                 }}
               >
