@@ -236,11 +236,25 @@ export default function Login() {
                 pointerEvents: "none",
               }}
             />
-            <Stack display="flex" flexDirection={"row"} p={2}>
-              <Box width="50%">
+            <Stack
+              display="flex"
+              flexDirection={{ xs: "column", md: "row" }}
+              p={2}
+              gap={2}
+            >
+              <Box
+                width={{ xs: "100%", md: "50%" }}
+                display="flex"
+                justifyContent={{ xs: "center", md: "flex-start" }}
+              >
                 <Typography variant="h4">{tr("createAccount")}</Typography>
               </Box>
-              <Box width="50%" display="flex" flexDirection={"column"} gap={2}>
+              <Box
+                width={{ xs: "100%", md: "50%" }}
+                display="flex"
+                flexDirection={"column"}
+                gap={2}
+              >
                 <TextField
                   variant="outlined"
                   label={tr("email")}
@@ -272,7 +286,9 @@ export default function Login() {
                       "&.Mui-disabled": { bgcolor: "#ccc", color: "#888" },
                     }}
                   >
-                    {tr("createAccount")}
+                    <Typography sx={{ textAlign: "center" }}>
+                      {tr("createAccount")}
+                    </Typography>
                   </Button>
                 </Box>
               </Box>
