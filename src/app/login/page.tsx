@@ -211,7 +211,7 @@ export default function Login() {
           <Paper
             elevation={0}
             sx={{
-              minHeight: { xs: "75vh", md: "50vh" },
+              minHeight: "50vh",
               py: { xs: 4, md: 8 },
               position: "relative",
               overflow: "hidden",
