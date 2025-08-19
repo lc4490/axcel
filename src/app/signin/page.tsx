@@ -11,6 +11,7 @@ import {
   IconButton,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -211,7 +212,7 @@ export default function Login() {
           <Paper
             elevation={0}
             sx={{
-              minHeight: "50vh",
+              minHeight: { xs: "60vh", md: "50vh" },
               py: { xs: 4, md: 8 },
               position: "relative",
               overflow: "hidden",
@@ -235,6 +236,56 @@ export default function Login() {
                 pointerEvents: "none",
               }}
             />
+            <Stack display="flex" flexDirection={"row"} p={2}>
+              <Box width="50%">
+                <Typography variant="h4">{tr("signIn")}</Typography>
+              </Box>
+              <Box width="50%">
+                <TextField
+                  variant="outlined"
+                  label={tr("email")}
+                  sx={{ width: "100%" }}
+                ></TextField>
+                <Box
+                  display="flex"
+                  gap={2}
+                  sx={{
+                    position: "absolute",
+                    right: 32,
+                    bottom: 32,
+                  }}
+                >
+                  <Button
+                    href="/signup"
+                    sx={{
+                      //   bgcolor: "#000",
+                      color: "#9ad7ff",
+                      px: 4,
+                      py: 2,
+                      borderRadius: 12,
+                      //   "&:hover": { bgcolor: "#cfd8ff" },
+                      "&.Mui-disabled": { bgcolor: "#ccc", color: "#888" },
+                    }}
+                  >
+                    {tr("createAccount")}
+                  </Button>
+                  <Button
+                    href="/"
+                    sx={{
+                      bgcolor: "#9ad7ff",
+                      color: "#000",
+                      px: 4,
+                      py: 2,
+                      borderRadius: 12,
+                      "&:hover": { bgcolor: "#cfd8ff" },
+                      "&.Mui-disabled": { bgcolor: "#ccc", color: "#888" },
+                    }}
+                  >
+                    {tr("signIn")}
+                  </Button>
+                </Box>
+              </Box>
+            </Stack>
           </Paper>
 
           {/* <Divider

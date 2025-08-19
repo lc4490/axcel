@@ -144,6 +144,9 @@ export const messages: Record<Lang, Record<string, string>> = {
 
     signIn: "登入",
     signInMessage: "歡迎來到 AXCEL！請登入後繼續。",
+    email: "郵件",
+    password: "密碼",
+    createAccount: "建立帳戶",
   },
 
   // ------------------- ENGLISH -------------------
@@ -291,6 +294,9 @@ export const messages: Record<Lang, Record<string, string>> = {
 
     signIn: "Sign In",
     signInMessage: "Welcome to AXCEL! Please sign in to continue.",
+    email: "Email",
+    password: "Password",
+    createAccount: "Create Account",
   },
 };
 

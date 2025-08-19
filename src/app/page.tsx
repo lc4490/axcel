@@ -461,7 +461,7 @@ export default function HomePage() {
                 size="small"
                 variant="outlined"
                 aria-label="User log in"
-                href="/login"
+                href="/signin"
                 startIcon={<PersonOutlineOutlinedIcon />}
                 sx={{
                   display: { xs: "none", md: "inline-flex" },
@@ -486,7 +486,7 @@ export default function HomePage() {
               {/* mobile user icon*/}
               <IconButton
                 aria-label="Toggle dark mode"
-                href="/login"
+                href="/signin"
                 sx={{
                   display: { xs: "inline-flex", md: "none" },
                   borderRadius: 2,
