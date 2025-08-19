@@ -200,7 +200,7 @@ export default function Login() {
           </Stack>
 
           <Typography
-            sx={{ color: "text.secondary", mt: 0.75, mb: 1.5, fontSize: 14.5 }}
+            sx={{ color: "text.secondary", mt: 1.5, mb: 1.5, fontSize: 14.5 }}
           >
             {tr("signInMessage")}
           </Typography>
@@ -243,7 +243,7 @@ export default function Login() {
               borderColor: dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)",
             }}
           />
-          <Typography
+          {/* <Typography
             sx={{
               color: "text.secondary",
               mt: 2,
@@ -252,7 +252,7 @@ export default function Login() {
             }}
           >
             {tr("home.footerNote")}
-          </Typography>
+          </Typography> */}
         </Container>
       </Box>
     </ThemeProvider>
