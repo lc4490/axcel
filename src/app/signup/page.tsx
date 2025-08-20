@@ -19,6 +19,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 
 import { t, type Lang } from "@/i18n/translations";
+import { useI18n } from "@/i18n/I18nContext";
 import {
   createTheme,
   ThemeProvider,
@@ -116,7 +117,7 @@ export default function Login() {
   const dark = mode === "dark";
 
   // If you already manage `lang` globally, pass it down as a prop and remove local state.
-  const [lang, setLang] = React.useState<Lang>("zh-TW");
+  const { lang, setLang } = useI18n();
   const tr = t(lang);
 
   const [email, setEmail] = React.useState("");

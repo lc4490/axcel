@@ -34,6 +34,7 @@ import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRound
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { t, type Lang } from "@/i18n/translations";
+import { useI18n } from "@/i18n/I18nContext";
 import { JSX } from "react";
 
 // ---------- Types ----------
@@ -371,7 +372,7 @@ export default function HomePage() {
   const dark = mode === "dark";
 
   // If you already manage `lang` globally, pass it down as a prop and remove local state.
-  const [lang, setLang] = React.useState<Lang>("zh-TW");
+  const { lang, setLang } = useI18n();
   const tr = t(lang);
   const NAV = React.useMemo(() => buildNav(NAV_KEYS, tr), [tr]);
 

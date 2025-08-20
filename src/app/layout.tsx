@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { cookies, headers } from "next/headers";
+import { I18nProvider } from "@/i18n/I18nContext";
+import type { Lang } from "@/i18n/translations";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,17 +20,31 @@ export const metadata: Metadata = {
   description: "Accelerate your excellence",
 };
 
-export default function RootLayout({
+function isLang(v: unknown): v is Lang {
+  return v === "en" || v === "zh-TW";
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies(); // <-- await
+  const headerList = await headers(); // <-- await
+
+  const cookieLang = cookieStore.get("lang")?.value;
+  const accept = headerList.get("accept-language") ?? "";
+
+  const inferred: Lang = accept.toLowerCase().startsWith("zh") ? "zh-TW" : "en";
+  const initialLang: Lang =
+    (isLang(cookieLang) ? cookieLang : undefined) ?? inferred;
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <I18nProvider initialLang={initialLang}>{children}</I18nProvider>
       </body>
     </html>
   );
