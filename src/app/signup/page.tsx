@@ -25,6 +25,7 @@ import {
   PaletteMode,
   alpha,
 } from "@mui/material/styles";
+import { useRouter } from "next/navigation";
 
 // ---------- Theme (dark-mode first, with toggle + persistence) ----------
 const useMode = () => {
@@ -117,6 +118,25 @@ export default function Login() {
   // If you already manage `lang` globally, pass it down as a prop and remove local state.
   const [lang, setLang] = React.useState<Lang>("zh-TW");
   const tr = t(lang);
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const router = useRouter();
+
+  const handleSignUp = async (email: string, password: string) => {
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+    } catch (err) {
+      console.error("Error");
+    } finally {
+      router.push("/");
+    }
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -260,11 +280,15 @@ export default function Login() {
                 <TextField
                   variant="outlined"
                   label={tr("email")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   sx={{ width: "100%" }}
                 />
                 <TextField
                   variant="outlined"
                   label={tr("password")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   sx={{ width: "100%" }}
                 />
                 <Box
@@ -277,7 +301,7 @@ export default function Login() {
                   }}
                 >
                   <Button
-                    href="/"
+                    onClick={() => handleSignUp(email, password)}
                     sx={{
                       bgcolor: "#9ad7ff",
                       color: "#000",
