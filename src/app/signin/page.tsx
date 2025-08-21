@@ -133,7 +133,7 @@ export default function SignIn() {
     try {
       setLoading(true);
       setErrMsg(null);
-      const res = await fetch("/api/signin", {
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "applications/json" },
         body: JSON.stringify({ email, password }),
