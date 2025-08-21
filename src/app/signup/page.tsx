@@ -132,10 +132,10 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+      router.push("/");
     } catch (err) {
       console.error("Error");
     } finally {
-      router.push("/");
     }
   };
   return (
