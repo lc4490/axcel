@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         typeof err === "object" &&
         err &&
         "code" in err &&
-        (err as any).code?.toString().startsWith("SQLITE_CONSTRAINT")
+        err.code?.toString().startsWith("SQLITE_CONSTRAINT")
       ) {
         return NextResponse.json(
           { error: "Email already exists" },
