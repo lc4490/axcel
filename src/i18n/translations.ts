@@ -147,6 +147,15 @@ export const messages: Record<Lang, Record<string, string>> = {
     email: "郵件",
     password: "密碼",
     createAccount: "建立帳戶",
+    emailErrMsg: "請輸入有效的電子郵件地址。",
+    passwordErrMsg:
+      "密碼必須超過八個字符，包含一個大寫字母、一個小寫字母、一個數字和一個特殊字符。",
+    emailAlreadyExists: "該郵箱已被註冊。請嘗試登入或重設密碼。",
+    signupFailed: "註冊失敗。請重試。",
+    signinFailed: "登入失敗。請重試。",
+    networkErrMsg: "網路錯誤。請重試。",
+    userDoesNotExist: "用戶不存在。",
+    invalidPassword: "密碼無效",
   },
 
   // ------------------- ENGLISH -------------------
@@ -297,6 +306,16 @@ export const messages: Record<Lang, Record<string, string>> = {
     email: "Email",
     password: "Password",
     createAccount: "Create Account",
+    emailErrMsg: "Please enter a valid email address.",
+    passwordErrMsg:
+      "Password must have more than eight characters, have one capital letter, one lower case letter, one number, and one special character.",
+    emailAlreadyExists:
+      "That email is already registered. Try signing in or reset your password",
+    signupFailed: "Sign up failed. Please try again.",
+    signinFailed: "Sign in failed. Please try again.",
+    networkErrMsg: "Network error. Please try again.",
+    userDoesNotExist: "User does not exist",
+    invalidPassword: "Invalid Password",
   },
 };
 

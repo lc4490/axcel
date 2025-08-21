@@ -32,17 +32,14 @@ export async function POST(req: Request) {
     if (!row) {
       // Email not found
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "User does not exist" },
         { status: 401 }
       );
     }
 
     const ok = await bcrypt.compare(password, row.password_hash);
     if (!ok) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid password" }, { status: 402 });
     }
 
     // ✅ Auth success (you can set a cookie/JWT here later)

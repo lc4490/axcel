@@ -2,23 +2,24 @@
 import * as React from "react";
 
 import {
+  Alert,
   Box,
   Button,
-  Chip,
+  CircularProgress,
   Container,
   CssBaseline,
-  Divider,
   IconButton,
+  InputAdornment,
   Paper,
+  Snackbar,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 
-import { t, type Lang } from "@/i18n/translations";
+import { t } from "@/i18n/translations";
 import { useI18n } from "@/i18n/I18nContext";
 import {
   createTheme,
@@ -27,6 +28,10 @@ import {
   alpha,
 } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+const emailSchema = z.string().trim().email();
 
 // ---------- Theme (dark-mode first, with toggle + persistence) ----------
 const useMode = () => {
@@ -112,7 +117,7 @@ const useMode = () => {
   return { mode, toggle, theme };
 };
 
-export default function Login() {
+export default function SignUp() {
   const { mode, toggle, theme } = useMode();
   const dark = mode === "dark";
 
@@ -123,21 +128,57 @@ export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const router = useRouter();
+  const [errMsg, setErrMsg] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  const [showPwd, setShowPwd] = React.useState(false);
 
   const handleSignUp = async (email: string, password: string) => {
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      setErrMsg(tr("emailErrMsg"));
+      return;
+    }
+    if (
+      !/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)
+    ) {
+      return setErrMsg(tr("passwordErrMsg"));
+    }
     try {
+      setLoading(true);
+      setErrMsg(null);
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+      if (res.status === 409) {
+        return setErrMsg(tr("emailAlreadyExists"));
+      }
+      if (!res.ok) {
+        return setErrMsg(data?.error ?? tr("signupFailed"));
+      }
+
       router.push("/");
     } catch (err) {
-      console.error("Error");
+      setErrMsg(tr("networkErrMsg"));
     } finally {
+      setLoading(false);
     }
   };
+  if (loading) {
+    return (
+      <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -281,6 +322,7 @@ export default function Login() {
                 <TextField
                   variant="outlined"
                   label={tr("email")}
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   sx={{ width: "100%" }}
@@ -288,9 +330,29 @@ export default function Login() {
                 <TextField
                   variant="outlined"
                   label={tr("password")}
+                  type={showPwd ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   sx={{ width: "100%" }}
+                  autoComplete="new-password"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPwd ? tr("hidePassword") : tr("showPassword")
+                            }
+                            onClick={() => setShowPwd((s) => !s)}
+                            onMouseDown={(e) => e.preventDefault()} // keep focus on input
+                            edge="end"
+                          >
+                            {showPwd ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
                 <Box
                   display="flex"
@@ -302,7 +364,7 @@ export default function Login() {
                   }}
                 >
                   <Button
-                    onClick={() => handleSignUp(email, password)}
+                    onClick={() => handleSignUp(email.toLowerCase(), password)}
                     sx={{
                       bgcolor: "#9ad7ff",
                       color: "#000",
@@ -321,6 +383,22 @@ export default function Login() {
               </Box>
             </Stack>
           </Paper>
+
+          {/* Email error message */}
+          <Snackbar
+            open={!!errMsg}
+            autoHideDuration={6000}
+            onClose={() => setErrMsg(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert
+              onClose={() => setErrMsg(null)}
+              severity="error"
+              variant="filled"
+            >
+              {errMsg}
+            </Alert>
+          </Snackbar>
 
           {/* <Divider
             sx={{
