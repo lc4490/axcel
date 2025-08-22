@@ -18,8 +18,13 @@ export function createUser(
     );
     const res = stmt.run(email, passwordHash, createdAt);
     return { ok: true as const, id: String(res.lastInsertRowid) };
-  } catch (err: any) {
-    if (err?.code?.toString?.().startsWith?.("SQLITE_CONSTRAINT")) {
+  } catch (err: unknown) {
+    if (
+      typeof err === "object" &&
+      err &&
+      "code" in err &&
+      err.code?.toString().startsWith("SQLITE_CONSTRAINT")
+    ) {
       return { ok: false as const, reason: "duplicate" as const };
     }
     return { ok: false as const, reason: "unknown" as const, error: err };
