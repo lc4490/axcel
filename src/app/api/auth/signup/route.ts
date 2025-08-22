@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/session";
 
 // Ensure Node runtime so fs/sqlite are allowed
 export const runtime = "nodejs";
@@ -41,7 +42,13 @@ export async function POST(req: Request) {
       throw err;
     }
 
-    return NextResponse.json({ ok: true });
+    const stmt2 = db.prepare("SELECT id FROM users WHERE email = ?");
+    const row = stmt2.get(email) as { id: number } | undefined;
+    if (!row) throw new Error("User not found after insert");
+    if (row == null) throw new Error("User not found after insert");
+    await createSession(String(row.id));
+
+    return NextResponse.json({ ok: true, user: { id: String(row.id) } });
   } catch (error) {
     console.error("Register error:", error);
     return NextResponse.json(

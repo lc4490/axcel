@@ -33,9 +33,12 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { t, type Lang } from "@/i18n/translations";
 import { useI18n } from "@/i18n/I18nContext";
 import { JSX } from "react";
+import { useUser } from "@/providers/UserProvider";
+import { useRouter } from "next/navigation";
 
 // ---------- Types ----------
 type KeyNavNode = { key: string; href?: string; children?: KeyNavNode[] };
@@ -376,6 +379,15 @@ export default function HomePage() {
   const tr = t(lang);
   const NAV = React.useMemo(() => buildNav(NAV_KEYS, tr), [tr]);
 
+  const router = useRouter();
+  const { user, isLoggedIn, setUser } = useUser();
+  console.log(user, isLoggedIn);
+  const logout = async () => {
+    await fetch("/api/logout", { method: "POST" });
+    setUser(null);
+    router.refresh();
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -459,54 +471,119 @@ export default function HomePage() {
                 {dark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
               </IconButton>
 
-              {/* desktop user icon */}
-              <Button
-                size="small"
-                variant="outlined"
-                aria-label="User log in"
-                href="/signin"
-                startIcon={<PersonOutlineOutlinedIcon />}
-                sx={{
-                  display: { xs: "none", md: "inline-flex" },
-                  borderRadius: 999,
-                  px: 1.6,
-                  color: "text.primary",
-                  borderColor: dark
-                    ? "rgba(255,255,255,0.25)"
-                    : "rgba(0,0,0,0.2)",
-                  bgcolor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-                  backdropFilter: "blur(8px)",
-                  "&:hover": {
-                    bgcolor: dark
-                      ? "rgba(255,255,255,0.12)"
-                      : "rgba(0,0,0,0.08)",
-                  },
-                }}
-              >
-                {tr("signIn")}
-              </Button>
+              {!user && (
+                <>
+                  {/* desktop user icon */}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    aria-label="User log in"
+                    href="/signin"
+                    startIcon={<PersonOutlineOutlinedIcon />}
+                    sx={{
+                      display: { xs: "none", md: "inline-flex" },
+                      borderRadius: 999,
+                      px: 1.6,
+                      color: "text.primary",
+                      borderColor: dark
+                        ? "rgba(255,255,255,0.25)"
+                        : "rgba(0,0,0,0.2)",
+                      bgcolor: dark
+                        ? "rgba(255,255,255,0.06)"
+                        : "rgba(0,0,0,0.04)",
+                      backdropFilter: "blur(8px)",
+                      "&:hover": {
+                        bgcolor: dark
+                          ? "rgba(255,255,255,0.12)"
+                          : "rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    {tr("signIn")}
+                  </Button>
 
-              {/* mobile user icon*/}
-              <IconButton
-                aria-label="Toggle dark mode"
-                href="/signin"
-                sx={{
-                  display: { xs: "inline-flex", md: "none" },
-                  borderRadius: 2,
-                  border: "1px solid",
-                  borderColor: dark
-                    ? "rgba(255,255,255,0.25)"
-                    : "rgba(0,0,0,0.18)",
-                  bgcolor: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-                  "&:hover": {
-                    bgcolor: dark
-                      ? "rgba(255,255,255,0.12)"
-                      : "rgba(0,0,0,0.08)",
-                  },
-                }}
-              >
-                {<PersonOutlineOutlinedIcon />}
-              </IconButton>
+                  {/* mobile user icon */}
+                  <IconButton
+                    aria-label="Toggle dark mode"
+                    href="/signin"
+                    sx={{
+                      display: { xs: "inline-flex", md: "none" },
+                      borderRadius: 2,
+                      border: "1px solid",
+                      borderColor: dark
+                        ? "rgba(255,255,255,0.25)"
+                        : "rgba(0,0,0,0.18)",
+                      bgcolor: dark
+                        ? "rgba(255,255,255,0.06)"
+                        : "rgba(0,0,0,0.04)",
+                      "&:hover": {
+                        bgcolor: dark
+                          ? "rgba(255,255,255,0.12)"
+                          : "rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    {<PersonOutlineOutlinedIcon />}
+                  </IconButton>
+                </>
+              )}
+
+              {user && (
+                <>
+                  {/* desktop user icon */}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    aria-label="Log out"
+                    onClick={() => logout()}
+                    startIcon={<LogoutIcon />}
+                    sx={{
+                      display: { xs: "none", md: "inline-flex" },
+                      borderRadius: 999,
+                      px: 1.6,
+                      color: "text.primary",
+                      borderColor: dark
+                        ? "rgba(255,255,255,0.25)"
+                        : "rgba(0,0,0,0.2)",
+                      bgcolor: dark
+                        ? "rgba(255,255,255,0.06)"
+                        : "rgba(0,0,0,0.04)",
+                      backdropFilter: "blur(8px)",
+                      "&:hover": {
+                        bgcolor: dark
+                          ? "rgba(255,255,255,0.12)"
+                          : "rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    {tr("logout")}
+                  </Button>
+
+                  {/* mobile user icon */}
+                  <IconButton
+                    aria-label="Toggle dark mode"
+                    onClick={() => logout()}
+                    sx={{
+                      display: { xs: "inline-flex", md: "none" },
+                      borderRadius: 2,
+                      border: "1px solid",
+                      borderColor: dark
+                        ? "rgba(255,255,255,0.25)"
+                        : "rgba(0,0,0,0.18)",
+                      bgcolor: dark
+                        ? "rgba(255,255,255,0.06)"
+                        : "rgba(0,0,0,0.04)",
+                      "&:hover": {
+                        bgcolor: dark
+                          ? "rgba(255,255,255,0.12)"
+                          : "rgba(0,0,0,0.08)",
+                      },
+                    }}
+                  >
+                    {<LogoutIcon />}
+                  </IconButton>
+                </>
+              )}
             </Stack>
           </Stack>
 

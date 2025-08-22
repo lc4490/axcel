@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db"; // same helper used in /api/register
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/session";
 
 // Ensure Node runtime so sqlite is allowed
 export const runtime = "nodejs";
@@ -42,8 +43,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid password" }, { status: 402 });
     }
 
+    await createSession(String(row.id));
     // ✅ Auth success (you can set a cookie/JWT here later)
-    return NextResponse.json({ ok: true, userId: row.id, email: row.email });
+    return NextResponse.json({
+      ok: true,
+      userId: String(row.id),
+      email: String(row.email),
+    });
   } catch (err) {
     console.error("Signin error:", err);
     return NextResponse.json(

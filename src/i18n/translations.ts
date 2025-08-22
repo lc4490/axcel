@@ -156,6 +156,7 @@ export const messages: Record<Lang, Record<string, string>> = {
     networkErrMsg: "網路錯誤。請重試。",
     userDoesNotExist: "用戶不存在。",
     invalidPassword: "密碼無效",
+    logout: "登出",
   },
 
   // ------------------- ENGLISH -------------------
@@ -316,6 +317,7 @@ export const messages: Record<Lang, Record<string, string>> = {
     networkErrMsg: "Network error. Please try again.",
     userDoesNotExist: "User does not exist",
     invalidPassword: "Invalid Password",
+    logout: "Log Out",
   },
 };
 

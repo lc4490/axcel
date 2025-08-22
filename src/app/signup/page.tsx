@@ -30,6 +30,7 @@ import {
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUser } from "@/providers/UserProvider";
 
 const emailSchema = z.string().trim().email();
 
@@ -131,6 +132,7 @@ export default function SignUp() {
   const [errMsg, setErrMsg] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [showPwd, setShowPwd] = React.useState(false);
+  const { setUser } = useUser();
 
   const handleSignUp = async (email: string, password: string) => {
     const parsed = emailSchema.safeParse(email);
@@ -158,7 +160,8 @@ export default function SignUp() {
       if (!res.ok) {
         return setErrMsg(data?.error ?? tr("signupFailed"));
       }
-
+      if (data?.user?.id) setUser({ id: String(data.user.id) });
+      router.refresh();
       router.push("/");
     } catch (err) {
       setErrMsg(tr("networkErrMsg"));

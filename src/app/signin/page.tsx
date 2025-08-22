@@ -29,6 +29,7 @@ import {
 } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUser } from "@/providers/UserProvider";
 
 // ---------- Theme (dark-mode first, with toggle + persistence) ----------
 const useMode = () => {
@@ -128,6 +129,7 @@ export default function SignIn() {
   const [errMsg, setErrMsg] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [showPwd, setShowPwd] = React.useState(false);
+  const { setUser } = useUser();
 
   const handleSignIn = async (email: string, password: string) => {
     try {
@@ -148,6 +150,8 @@ export default function SignIn() {
       if (!res.ok) {
         return setErrMsg(data?.error ?? tr("signinFailed"));
       }
+      if (data?.userId) setUser({ id: String(data.userId) });
+      router.refresh();
       router.push("/");
     } catch (err) {
       setErrMsg(tr("networkErrMsg"));
@@ -178,6 +182,14 @@ export default function SignIn() {
           background: dark
             ? "radial-gradient(1200px 500px at -10% -10%, rgba(255,255,255,0.06), transparent 60%), linear-gradient(140deg, #0b0c10 0%, #0f1116 60%, #151821 100%)"
             : "linear-gradient(140deg, #f7f9fc 0%, #ffffff 50%, #f4f6fb 100%)",
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (email && password) {
+              handleSignIn(email.toLowerCase(), password);
+            }
+          }
         }}
       >
         {/* top controls */}
