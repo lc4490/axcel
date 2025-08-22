@@ -1,16 +1,9 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db"; // same helper used in /api/register
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/session";
+import { getUserByEmail } from "@/lib/users";
 
-// Ensure Node runtime so sqlite is allowed
 export const runtime = "nodejs";
-
-type UserRow = {
-  id: number;
-  email: string;
-  password_hash: string;
-};
 
 export async function POST(req: Request) {
   try {
@@ -26,29 +19,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const row = db
-      .prepare("SELECT id, email, password_hash FROM users WHERE email = ?")
-      .get(email) as UserRow | undefined;
+    const user = getUserByEmail(email);
 
-    if (!row) {
-      // Email not found
+    if (!user) {
       return NextResponse.json(
         { error: "User does not exist" },
         { status: 401 }
       );
     }
 
-    const ok = await bcrypt.compare(password, row.password_hash);
+    const ok = await bcrypt.compare(password, user.password_hash);
     if (!ok) {
       return NextResponse.json({ error: "Invalid password" }, { status: 402 });
     }
 
-    await createSession(String(row.id));
-    // ✅ Auth success (you can set a cookie/JWT here later)
+    await createSession(String(user.id));
+
     return NextResponse.json({
       ok: true,
-      userId: String(row.id),
-      email: String(row.email),
+      userId: String(user.id),
+      email: user.email,
     });
   } catch (err) {
     console.error("Signin error:", err);

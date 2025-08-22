@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/session";
+import { createUser, getUserByEmail } from "@/lib/users";
 
 // Ensure Node runtime so fs/sqlite are allowed
 export const runtime = "nodejs";
@@ -17,38 +17,34 @@ export async function POST(req: Request) {
       );
     }
 
-    // Never store plaintext passwords: hash them
+    // Hash password before saving
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const stmt = db.prepare(
-      "INSERT INTO users (email, password_hash, created_at) VALUES (?, ?, ?)"
-    );
+    const created = createUser(email, passwordHash, Date.now());
 
-    try {
-      stmt.run(email, passwordHash, Date.now());
-    } catch (err: unknown) {
-      // Unique constraint (email already exists)
-      if (
-        typeof err === "object" &&
-        err &&
-        "code" in err &&
-        err.code?.toString().startsWith("SQLITE_CONSTRAINT")
-      ) {
+    if (!created.ok) {
+      if (created.reason === "duplicate") {
         return NextResponse.json(
           { error: "Email already exists" },
           { status: 409 }
         );
       }
-      throw err;
+      console.error("Unexpected DB error:", created.error);
+      return NextResponse.json(
+        { error: "Internal Server Error" },
+        { status: 500 }
+      );
     }
 
-    const stmt2 = db.prepare("SELECT id FROM users WHERE email = ?");
-    const row = stmt2.get(email) as { id: number } | undefined;
-    if (!row) throw new Error("User not found after insert");
-    if (row == null) throw new Error("User not found after insert");
-    await createSession(String(row.id));
+    // Fetch user ID (or use created.id directly)
+    const user = getUserByEmail(email);
+    if (!user?.id) {
+      throw new Error("User not found after insert");
+    }
 
-    return NextResponse.json({ ok: true, user: { id: String(row.id) } });
+    await createSession(String(user?.id));
+
+    return NextResponse.json({ ok: true, user: { id: String(user?.id) } });
   } catch (error) {
     console.error("Register error:", error);
     return NextResponse.json(
