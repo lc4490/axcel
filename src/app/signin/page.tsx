@@ -150,7 +150,7 @@ export default function SignIn() {
       if (!res.ok) {
         return setErrMsg(data?.error ?? tr("signinFailed"));
       }
-      if (data?.userId) setUser({ id: String(data.userId) });
+      if (data?.userId) setUser({ id: String(data.userId), email: email });
       router.refresh();
       router.push("/");
     } catch (err) {

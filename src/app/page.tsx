@@ -16,6 +16,9 @@ import {
   Stack,
   IconButton,
   CssBaseline,
+  Avatar,
+  MenuItem,
+  Menu,
 } from "@mui/material";
 import {
   createTheme,
@@ -371,15 +374,19 @@ const SectionCard: React.FC<{ node: NavNode; dark: boolean }> = ({
 
 // ---------- Page ----------
 export default function HomePage() {
+  // theming
   const { mode, toggle, theme } = useMode();
   const dark = mode === "dark";
 
-  // If you already manage `lang` globally, pass it down as a prop and remove local state.
+  // language
   const { lang, setLang } = useI18n();
   const tr = t(lang);
+  // for pages
   const NAV = React.useMemo(() => buildNav(NAV_KEYS, tr), [tr]);
 
   const router = useRouter();
+
+  // user functions
   const { user, isLoggedIn, setUser } = useUser();
   console.log(user, isLoggedIn);
   const logout = async () => {
@@ -387,6 +394,15 @@ export default function HomePage() {
     setUser(null);
     router.refresh();
   };
+
+  // user menu
+  const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(menuAnchor);
+
+  const handleOpenMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchor(e.currentTarget);
+  };
+  const handleCloseMenu = () => setMenuAnchor(null);
 
   return (
     <ThemeProvider theme={theme}>
@@ -471,6 +487,7 @@ export default function HomePage() {
                 {dark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
               </IconButton>
 
+              {/* login button */}
               {!user && (
                 <>
                   {/* desktop user icon */}
@@ -528,43 +545,18 @@ export default function HomePage() {
                 </>
               )}
 
+              {/* user button */}
               {user && (
                 <>
-                  {/* desktop user icon */}
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    aria-label="Log out"
-                    onClick={() => logout()}
-                    startIcon={<LogoutIcon />}
-                    sx={{
-                      display: { xs: "none", md: "inline-flex" },
-                      borderRadius: 999,
-                      px: 1.6,
-                      color: "text.primary",
-                      borderColor: dark
-                        ? "rgba(255,255,255,0.25)"
-                        : "rgba(0,0,0,0.2)",
-                      bgcolor: dark
-                        ? "rgba(255,255,255,0.06)"
-                        : "rgba(0,0,0,0.04)",
-                      backdropFilter: "blur(8px)",
-                      "&:hover": {
-                        bgcolor: dark
-                          ? "rgba(255,255,255,0.12)"
-                          : "rgba(0,0,0,0.08)",
-                      },
-                    }}
-                  >
-                    {tr("logout")}
-                  </Button>
-
                   {/* mobile user icon */}
                   <IconButton
-                    aria-label="Toggle dark mode"
-                    onClick={() => logout()}
+                    aria-label="Open account menu"
+                    aria-controls={menuOpen ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={menuOpen ? "true" : undefined}
+                    onClick={handleOpenMenu}
                     sx={{
-                      display: { xs: "inline-flex", md: "none" },
+                      // display: { xs: "inline-flex", md: "none" },
                       borderRadius: 2,
                       border: "1px solid",
                       borderColor: dark
@@ -580,8 +572,85 @@ export default function HomePage() {
                       },
                     }}
                   >
-                    {<LogoutIcon />}
+                    <PersonOutlineOutlinedIcon />
                   </IconButton>
+
+                  {/* ACCOUNT MENU */}
+                  <Menu
+                    id="account-menu"
+                    anchorEl={menuAnchor}
+                    open={menuOpen}
+                    onClose={handleCloseMenu}
+                    onClick={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    slotProps={{
+                      paper: {
+                        elevation: 8,
+                        sx: {
+                          mt: 1,
+                          minWidth: 260,
+                          borderRadius: 3,
+                          border: "1px solid",
+                          borderColor: dark
+                            ? "rgba(255,255,255,0.12)"
+                            : "rgba(0,0,0,0.08)",
+                          backdropFilter: "blur(10px)",
+                          bgcolor: dark
+                            ? "rgba(20,20,20,0.9)"
+                            : "rgba(255,255,255,0.9)",
+                        },
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1.5,
+                        px: 2,
+                        pt: 2,
+                        pb: 1,
+                      }}
+                    >
+                      <Avatar sx={{ width: 36, height: 36 }}>
+                        {(user?.email ?? "?").slice(0, 1).toUpperCase()}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="subtitle1" noWrap>
+                          {user?.email
+                            ? user.email.split("@")[0].charAt(0).toUpperCase() +
+                              user.email.split("@")[0].slice(1)
+                            : ""}
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          noWrap
+                        >
+                          {user?.email}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Divider sx={{ my: 1 }} />
+
+                    {/* Add more items if you want: Manage account, Settings, etc. */}
+                    {/* <MenuItem onClick={() => { /* navigate('/account'); *\/ }}>Account settings</MenuItem> */}
+
+                    <MenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseMenu();
+                        logout();
+                      }}
+                      sx={{ gap: 1 }}
+                    >
+                      <LogoutIcon fontSize="small" />
+                      {tr("logout")}
+                    </MenuItem>
+                  </Menu>
                 </>
               )}
             </Stack>

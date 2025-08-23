@@ -160,7 +160,8 @@ export default function SignUp() {
       if (!res.ok) {
         return setErrMsg(data?.error ?? tr("signupFailed"));
       }
-      if (data?.user?.id) setUser({ id: String(data.user.id) });
+      if (data?.user?.id)
+        setUser({ id: String(data.user.id), email: String(email) });
       router.refresh();
       router.push("/");
     } catch (err) {

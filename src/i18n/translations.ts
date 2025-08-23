@@ -3,7 +3,7 @@ export type Lang = "en" | "zh-TW";
 export const messages: Record<Lang, Record<string, string>> = {
   "zh-TW": {
     // Home (mode)
-    "home.mode.athlete": "個人",
+    "home.mode.athlete": "選手",
     "home.mode.coach": "教練",
 
     // Common / buttons
